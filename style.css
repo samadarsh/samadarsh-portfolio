@@ -62,6 +62,11 @@
 
     --transition-fast: 0.2s ease;
     --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 /* Modern Reset */
@@ -307,8 +312,10 @@ section {
 }
 
 .skill-tag {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 0.75rem 1.5rem;
     border-radius: 100px;
     font-size: var(--text-sm);
@@ -338,8 +345,11 @@ section {
 }
 
 .project-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border-radius: var(--radius-md);
     padding: var(--spacing-md);
     transition: var(--transition-smooth);
@@ -402,10 +412,13 @@ section {
 }
 
 .contact-content {
-    background: var(--gradient-surface);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: var(--glass-shadow);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
     max-width: 600px;
     margin: 0 auto;
 }
@@ -461,11 +474,14 @@ section {
     opacity: 0.4;
     z-index: -1;
     pointer-events: none;
+    animation: float 20s infinite ease-in-out;
+    transform-origin: center center;
 }
 
 .top-right {
     top: -100px;
     right: -100px;
+    animation-delay: 0s;
 }
 
 .bottom-left {
@@ -473,6 +489,7 @@ section {
     left: -100px;
     background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
     opacity: 0.2;
+    animation-delay: -10s;
 }
 
 /* Responsive */
@@ -554,4 +571,18 @@ section {
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(30px, 50px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
 }
