@@ -45,6 +45,7 @@
     --spacing-md: 2rem;
     --spacing-lg: 4rem;
     --spacing-xl: clamp(4rem, 10vw, 8rem);
+    --section-spacing: clamp(4rem, 8vw, 6rem);
 
     /* Layout */
     --container-width: 1200px;
@@ -221,7 +222,7 @@ button {
 
 /* Base Components & Global Styles */
 section {
-    padding: var(--spacing-lg) 0;
+    padding: var(--section-spacing) 0;
     /* Reduced from XL to match desired spacing */
 }
 
@@ -281,9 +282,7 @@ section {
 }
 
 /* Experience Section */
-.experience-section {
-    padding: var(--spacing-xl) 0;
-}
+/* Padding handled by global section rule */
 
 .experience-role {
     color: var(--color-accent);
@@ -407,7 +406,7 @@ section {
 /* Contact Section */
 .contact-section {
     text-align: center;
-    padding: 8rem 0;
+    /* Padding handled by global section rule */
     /* Restored to default section padding */
 }
 
