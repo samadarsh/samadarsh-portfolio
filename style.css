@@ -211,8 +211,10 @@ button {
     font-size: var(--text-sm);
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
     color: var(--color-text-main);
+    text-shadow: 0 0 10px var(--color-primary-glow);
 }
 
 .mobile-menu-btn {
@@ -361,8 +363,8 @@ section {
 
 .project-card:hover {
     border-color: var(--color-primary);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--color-primary-glow);
 }
 
 .project-title {

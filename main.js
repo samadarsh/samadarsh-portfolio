@@ -27,7 +27,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Scroll Animations (Intersection Observer)
+    // ScrollSpy: Highlight active menu item
+    // Select all sections that have an ID and match our nav links
+    const sections = document.querySelectorAll('section[id]');
+
+    function scrollSpy() {
+        const scrollY = window.pageYOffset;
+
+        sections.forEach(current => {
+            const sectionHeight = current.offsetHeight;
+            const sectionTop = current.offsetTop - 100; // Adjust offset for header
+            const sectionId = current.getAttribute('id');
+            const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                if (navLink) navLink.classList.add('active');
+            } else {
+                if (navLink) navLink.classList.remove('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', scrollSpy);
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
