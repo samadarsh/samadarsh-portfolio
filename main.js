@@ -27,28 +27,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ScrollSpy: Highlight active menu item
-    // Select all sections that have an ID and match our nav links
+    // ScrollSpy: Highlight active menu item using IntersectionObserver
     const sections = document.querySelectorAll('section[id]');
+    const navLinksItems = document.querySelectorAll('.nav-link');
 
-    function scrollSpy() {
-        const scrollY = window.pageYOffset;
-
-        sections.forEach(current => {
-            const sectionHeight = current.offsetHeight;
-            const sectionTop = current.offsetTop - 100; // Adjust offset for header
-            const sectionId = current.getAttribute('id');
-            const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
-
-            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                if (navLink) navLink.classList.add('active');
-            } else {
-                if (navLink) navLink.classList.remove('active');
+    const scrollSpyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                // Remove active from all links
+                navLinksItems.forEach(link => link.classList.remove('active'));
+                // Add active to current link
+                const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                if (activeLink) activeLink.classList.add('active');
             }
         });
-    }
+    }, {
+        rootMargin: '-20% 0px -60% 0px', // Active zone is near the top of the viewport
+        threshold: 0
+    });
 
-    window.addEventListener('scroll', scrollSpy);
+    sections.forEach(section => {
+        scrollSpyObserver.observe(section);
+    });
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
