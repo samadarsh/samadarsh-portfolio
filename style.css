@@ -211,13 +211,13 @@ button {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    line-height: 1; /* Normalize line-height for better flex centering */
 }
 
 .nav-link i,
 .nav-link svg {
     display: inline-flex;
-    align-self: center;
-    margin-bottom: 2px; /* Fine-tune vertical position */
+    flex-shrink: 0;
 }
 
 .nav-link:hover,
