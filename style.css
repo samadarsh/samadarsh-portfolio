@@ -210,7 +210,14 @@ button {
     font-size: var(--text-sm);
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
+}
+
+.nav-link i,
+.nav-link svg {
+    display: inline-flex;
+    align-self: center;
+    margin-bottom: 2px; /* Fine-tune vertical position */
 }
 
 .nav-link:hover,
