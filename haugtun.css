@@ -724,8 +724,8 @@ img {
     }
 
     .header-actions {
-        position: fixed;
-        top: 88px;
+        position: absolute;
+        top: calc(100% + 0.85rem);
         left: 1.5rem;
         right: 1.5rem;
         z-index: 320;

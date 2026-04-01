@@ -633,7 +633,7 @@ body.js-ready .reveal-on-scroll.is-visible {
     }
 
     .header-actions {
-        position: fixed;
+        position: absolute;
         top: calc(var(--header-height) + 8px);
         left: 1rem;
         right: 1rem;
