@@ -173,6 +173,10 @@ ul {
     list-style: none;
 }
 
+.mobile-nav-only {
+    display: none;
+}
+
 .nav-link {
     display: inline-flex;
     align-items: center;
@@ -635,8 +639,15 @@ body.js-ready .reveal-on-scroll.is-visible {
 
     .desktop-nav ul {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 1.25rem;
+    }
+
+    .desktop-nav .nav-link {
+        display: inline-flex;
+        width: 100%;
+        justify-content: center;
+        text-align: center;
     }
 
     .mobile-menu-btn {
@@ -645,6 +656,10 @@ body.js-ready .reveal-on-scroll.is-visible {
 
     .feature-pill {
         display: none;
+    }
+
+    .mobile-nav-only {
+        display: list-item;
     }
 
     .hero-section {

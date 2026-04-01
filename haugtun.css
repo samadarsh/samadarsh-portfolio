@@ -759,6 +759,8 @@ img {
     .back-link {
         width: 100%;
         justify-content: center;
+        text-align: center;
+        align-self: stretch;
     }
 
     .hero-section {
