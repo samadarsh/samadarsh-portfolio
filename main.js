@@ -6,30 +6,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const body = document.body;
+    const siteHeader = document.querySelector('.site-header');
     const menuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('.desktop-nav');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
+    const menuActions = document.querySelectorAll('.desktop-nav .nav-link, .feature-pill');
     const sections = document.querySelectorAll('section[id]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const closeMenu = () => {
-        if (!menuBtn || !nav) return;
+        if (!menuBtn || !nav || !siteHeader) return;
         nav.classList.remove('open');
+        siteHeader.classList.remove('is-open');
         body.classList.remove('menu-open');
         menuBtn.classList.remove('active');
         menuBtn.setAttribute('aria-expanded', 'false');
     };
 
-    if (menuBtn && nav) {
+    if (menuBtn && nav && siteHeader) {
         menuBtn.addEventListener('click', () => {
             const willOpen = !nav.classList.contains('open');
             nav.classList.toggle('open', willOpen);
+            siteHeader.classList.toggle('is-open', willOpen);
             body.classList.toggle('menu-open', willOpen);
             menuBtn.classList.toggle('active', willOpen);
             menuBtn.setAttribute('aria-expanded', String(willOpen));
         });
 
-        navLinks.forEach((link) => {
+        menuActions.forEach((link) => {
             link.addEventListener('click', closeMenu);
         });
 
@@ -41,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('click', (event) => {
             if (!nav.classList.contains('open')) return;
-            if (nav.contains(event.target) || menuBtn.contains(event.target)) return;
+            if (siteHeader.contains(event.target)) return;
             closeMenu();
         });
     }
