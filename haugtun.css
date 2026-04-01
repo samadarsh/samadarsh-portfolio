@@ -64,6 +64,7 @@ img {
 }
 
 .site-header {
+    z-index: 260;
     padding: 1.25rem 0 0;
 }
 
@@ -723,11 +724,11 @@ img {
     }
 
     .header-actions {
-        position: absolute;
-        top: calc(100% + 0.85rem);
+        position: fixed;
+        top: 88px;
         left: 1.5rem;
         right: 1.5rem;
-        z-index: 20;
+        z-index: 320;
         display: none;
         flex-direction: column;
         align-items: stretch;
@@ -738,6 +739,9 @@ img {
         background: rgba(8, 15, 39, 0.98);
         box-shadow: var(--shadow-soft);
         backdrop-filter: blur(16px);
+        max-height: calc(100vh - 104px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .site-header.is-open .header-actions {

@@ -131,7 +131,7 @@ ul {
 .site-header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 260;
     height: var(--header-height);
     border-bottom: 1px solid var(--color-border);
     background: rgba(9, 9, 12, 0.72);
@@ -637,11 +637,11 @@ body.js-ready .reveal-on-scroll.is-visible {
     }
 
     .header-actions {
-        position: absolute;
-        top: calc(100% + 0.85rem);
+        position: fixed;
+        top: calc(var(--header-height) + 8px);
         left: 1rem;
         right: 1rem;
-        z-index: 20;
+        z-index: 320;
         display: none;
         flex-direction: column;
         align-items: stretch;
@@ -652,6 +652,9 @@ body.js-ready .reveal-on-scroll.is-visible {
         background: rgba(9, 9, 12, 0.98);
         box-shadow: var(--shadow-soft);
         backdrop-filter: blur(16px);
+        max-height: calc(100vh - var(--header-height) - 24px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .site-header.is-open .header-actions {
