@@ -648,11 +648,6 @@ body.js-ready .reveal-on-scroll.is-visible {
         background: rgba(9, 9, 12, 0.98);
         box-shadow: var(--shadow-soft);
         backdrop-filter: blur(16px);
-        max-height: calc(100dvh - var(--header-height) - 24px);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-        touch-action: pan-y;
     }
 
     .site-header.is-open .header-actions {
