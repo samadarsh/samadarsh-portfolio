@@ -147,7 +147,7 @@ img {
 
 .hero-copy h1,
 .section-title {
-    margin: 1rem 0 1rem;
+    margin: 1.1rem 0 1.5rem;
     font-family: var(--font-display);
     letter-spacing: -0.045em;
     line-height: 1.02;
@@ -278,8 +278,9 @@ img {
 .plans-section,
 .about-section,
 .contact-section,
+.enquiry-section,
 .disclaimer-section {
-    padding: 2.5rem 0 0;
+    padding: 6rem 0 0;
 }
 
 .signal-grid,
@@ -296,6 +297,7 @@ img {
 .signal-card,
 .service-card,
 .plan-card,
+.enquiry-card,
 .about-panel,
 .contact-card {
     border: 1px solid var(--border);
@@ -318,6 +320,14 @@ img {
 .section-title {
     font-size: clamp(2rem, 4vw, 3.3rem);
     max-width: 14ch;
+}
+
+.service-grid,
+.plan-grid,
+.about-grid,
+.contact-grid,
+.enquiry-grid {
+    margin-top: 2.9rem;
 }
 
 .service-grid {
@@ -350,7 +360,7 @@ img {
 
 .plans-note {
     max-width: 62ch;
-    margin: 0 0 1.5rem;
+    margin: 0 0 2.75rem;
 }
 
 .plan-list,
@@ -371,6 +381,130 @@ img {
     grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
     gap: 1.2rem;
     align-items: stretch;
+}
+
+.enquiry-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 1.2rem;
+    align-items: start;
+}
+
+.enquiry-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+    padding-right: 1rem;
+}
+
+.enquiry-copy p {
+    max-width: 58ch;
+    margin: 0;
+}
+
+.enquiry-copy .section-title {
+    max-width: 12ch;
+}
+
+.enquiry-card {
+    padding: 1.6rem;
+}
+
+.enquiry-form {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.field,
+.field-full {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.field-label {
+    color: #ffd2af;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field-full textarea {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    font: inherit;
+    padding: 0.95rem 1rem;
+    outline: none;
+    transition: border-color var(--transition), background var(--transition), transform var(--transition);
+}
+
+.field input::placeholder,
+.field-full textarea::placeholder {
+    color: var(--text-dim);
+}
+
+.field input:focus,
+.field select:focus,
+.field-full textarea:focus {
+    border-color: rgba(255, 125, 31, 0.7);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.field select {
+    appearance: none;
+}
+
+.field-full {
+    grid-column: 1 / -1;
+}
+
+.field-full textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-note,
+.form-feedback {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.65;
+}
+
+.form-note {
+    max-width: 34ch;
+    font-size: 0.96rem;
+}
+
+.form-feedback {
+    min-height: 1.4rem;
+    font-size: 0.96rem;
+}
+
+.form-feedback.is-success {
+    color: #b7ffcf;
+}
+
+.form-feedback.is-error {
+    color: #ffc6bd;
 }
 
 .about-panel {
@@ -413,7 +547,7 @@ img {
 }
 
 .contact-grid {
-    margin-top: 1.5rem;
+    margin-top: 2.9rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
@@ -519,6 +653,7 @@ img {
     .signal-grid,
     .service-grid,
     .plan-grid,
+    .enquiry-grid,
     .about-grid,
     .contact-grid {
         grid-template-columns: 1fr;
@@ -564,9 +699,14 @@ img {
 
     .hero-copy,
     .plan-card,
+    .enquiry-card,
     .about-panel,
     .contact-card {
         padding: 1.35rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
     }
 
     .hero-actions,
