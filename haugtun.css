@@ -17,6 +17,7 @@
     --radius-md: 20px;
     --radius-sm: 14px;
     --container: 1180px;
+    --section-space: 7rem;
     --transition: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     --font-display: 'Sora', system-ui, sans-serif;
     --font-body: 'Outfit', system-ui, sans-serif;
@@ -280,7 +281,7 @@ img {
 .contact-section,
 .enquiry-section,
 .disclaimer-section {
-    padding: 6rem 0 0;
+    padding: var(--section-space) 0 0;
 }
 
 .signal-grid,
@@ -531,8 +532,14 @@ img {
     padding: 1.75rem;
 }
 
+.contact-section,
+.enquiry-section,
+.disclaimer-section {
+    padding-top: var(--section-space);
+}
+
 .disclaimer-card {
-    margin-bottom: 4rem;
+    margin: 0 0 4rem;
     padding: 1.5rem 1.75rem;
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.06);
