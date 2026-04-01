@@ -116,6 +116,9 @@ img {
 
 .nav-link,
 .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.08);
     padding: 0.65rem 1rem;
@@ -690,6 +693,17 @@ img {
 }
 
 @media (max-width: 980px) {
+    body {
+        padding-top: 88px;
+    }
+
+    .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
     .hero-grid,
     .signal-grid,
     .service-grid,
@@ -748,7 +762,7 @@ img {
     }
 
     .hero-section {
-        padding-top: 5rem;
+        padding-top: 2rem;
     }
 
     .hero-copy h1,

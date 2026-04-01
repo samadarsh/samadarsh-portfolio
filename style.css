@@ -606,6 +606,20 @@ body.js-ready .reveal-on-scroll.is-visible {
         --container-padding: 1rem;
     }
 
+    body {
+        padding-top: var(--header-height);
+    }
+
+    .site-header {
+        position: fixed;
+        left: 0;
+        right: 0;
+    }
+
+    .header-container {
+        position: relative;
+    }
+
     .desktop-nav {
         display: none;
         position: fixed;
@@ -634,7 +648,7 @@ body.js-ready .reveal-on-scroll.is-visible {
     }
 
     .hero-section {
-        padding-top: 2.5rem;
+        padding-top: 1.5rem;
     }
 
     .hero-copy,
