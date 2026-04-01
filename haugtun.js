@@ -3,9 +3,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewer = document.querySelector('.card-viewer');
     const lightbox = document.querySelector('.lightbox');
     const closeTargets = document.querySelectorAll('[data-close="true"]');
+    const siteHeader = document.querySelector('.site-header');
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelectorAll('.page-nav a, .back-link');
     const enquiryForm = document.querySelector('[data-enquiry-form]');
     const submitButton = document.querySelector('[data-submit-button]');
     const feedback = document.querySelector('[data-form-feedback]');
+
+    if (siteHeader && navToggle) {
+        const setMenuState = (isOpen) => {
+            siteHeader.classList.toggle('is-open', isOpen);
+            navToggle.setAttribute('aria-expanded', String(isOpen));
+            navToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+        };
+
+        navToggle.addEventListener('click', () => {
+            const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+            setMenuState(!isOpen);
+        });
+
+        navLinks.forEach((link) => {
+            link.addEventListener('click', () => setMenuState(false));
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!siteHeader.classList.contains('is-open')) return;
+
+            if (!siteHeader.contains(event.target)) {
+                setMenuState(false);
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                setMenuState(false);
+            }
+        });
+    }
 
     if (viewer && lightbox) {
         const openLightbox = () => {
