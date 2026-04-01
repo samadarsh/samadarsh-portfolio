@@ -723,11 +723,13 @@ img {
     }
 
     .header-row {
-        align-items: flex-start;
+        align-items: center;
     }
 
     .nav-toggle {
         display: inline-flex;
+        position: relative;
+        z-index: 30;
     }
 
     .header-actions {
