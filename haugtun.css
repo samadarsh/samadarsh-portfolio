@@ -64,8 +64,12 @@ img {
 }
 
 .site-header {
+    position: sticky;
+    top: 0;
     z-index: 260;
     padding: 1.25rem 0 0;
+    background: rgba(5, 11, 31, 0.72);
+    backdrop-filter: blur(18px);
 }
 
 .header-row {
