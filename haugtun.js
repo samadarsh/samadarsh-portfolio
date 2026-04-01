@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const ENQUIRY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwjCf9TE9b8BnpEs8wUmzHU6xzPevHB8fPIL2WwpkNVsSOdA7ycA7a3mo7sg7ad22ch/exec';
-    const body = document.body;
     const viewer = document.querySelector('.card-viewer');
     const lightbox = document.querySelector('.lightbox');
     const closeTargets = document.querySelectorAll('[data-close="true"]');
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (siteHeader && navToggle) {
         const setMenuState = (isOpen) => {
             siteHeader.classList.toggle('is-open', isOpen);
-            body.classList.toggle('menu-open', isOpen);
             navToggle.setAttribute('aria-expanded', String(isOpen));
             navToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
         };

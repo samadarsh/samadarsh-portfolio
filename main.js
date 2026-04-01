@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!menuBtn || !nav || !siteHeader) return;
         nav.classList.remove('open');
         siteHeader.classList.remove('is-open');
-        body.classList.remove('menu-open');
         menuBtn.classList.remove('active');
         menuBtn.setAttribute('aria-expanded', 'false');
     };
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const willOpen = !nav.classList.contains('open');
             nav.classList.toggle('open', willOpen);
             siteHeader.classList.toggle('is-open', willOpen);
-            body.classList.toggle('menu-open', willOpen);
             menuBtn.classList.toggle('active', willOpen);
             menuBtn.setAttribute('aria-expanded', String(willOpen));
         });
