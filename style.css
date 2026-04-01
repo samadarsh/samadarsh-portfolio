@@ -655,6 +655,8 @@ body.js-ready .reveal-on-scroll.is-visible {
         max-height: calc(100vh - var(--header-height) - 24px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 
     .site-header.is-open .header-actions {

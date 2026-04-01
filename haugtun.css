@@ -47,6 +47,10 @@ body.lightbox-open {
     overflow: hidden;
 }
 
+body.menu-open {
+    overflow: hidden;
+}
+
 a {
     color: inherit;
     text-decoration: none;
@@ -742,6 +746,8 @@ img {
         max-height: calc(100vh - 104px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 
     .site-header.is-open .header-actions {
