@@ -305,6 +305,7 @@ img {
 
 .signal-strip,
 .services-section,
+.process-section,
 .plans-section,
 .about-section,
 .contact-section,
@@ -315,6 +316,7 @@ img {
 
 .signal-grid,
 .service-grid,
+.process-grid,
 .plan-grid {
     display: grid;
     gap: 1.2rem;
@@ -326,6 +328,7 @@ img {
 
 .signal-card,
 .service-card,
+.process-card,
 .plan-card,
 .enquiry-card,
 .about-panel,
@@ -353,6 +356,7 @@ img {
 }
 
 .service-grid,
+.process-grid,
 .plan-grid,
 .about-grid,
 .contact-grid,
@@ -364,12 +368,44 @@ img {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.process-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
 .service-card h3,
+.process-card h3,
 .plan-card h3,
 .about-panel h3 {
     margin: 0 0 0.85rem;
     font-family: var(--font-display);
     font-size: 1.25rem;
+}
+
+.process-card {
+    padding: 1.35rem;
+}
+
+.process-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    height: 46px;
+    margin-bottom: 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffd2af;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.process-card p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.68;
 }
 
 .plan-grid {
@@ -715,6 +751,7 @@ img {
     .hero-grid,
     .signal-grid,
     .service-grid,
+    .process-grid,
     .plan-grid,
     .enquiry-grid,
     .about-grid,
