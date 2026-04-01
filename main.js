@@ -1,74 +1,87 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Dynamic Year
     const yearSpan = document.getElementById('year');
+    document.body.classList.add('js-ready');
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
     }
 
-    // Mobile Menu Toggle
+    const body = document.body;
     const menuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('.desktop-nav');
     const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const closeMenu = () => {
+        if (!menuBtn || !nav) return;
+        nav.classList.remove('open');
+        body.classList.remove('menu-open');
+        menuBtn.classList.remove('active');
+        menuBtn.setAttribute('aria-expanded', 'false');
+    };
 
     if (menuBtn && nav) {
         menuBtn.addEventListener('click', () => {
-            nav.classList.toggle('open');
-            menuBtn.classList.toggle('active');
-
-            // Animate hamburger to X (optional, driven by CSS class)
+            const willOpen = !nav.classList.contains('open');
+            nav.classList.toggle('open', willOpen);
+            body.classList.toggle('menu-open', willOpen);
+            menuBtn.classList.toggle('active', willOpen);
+            menuBtn.setAttribute('aria-expanded', String(willOpen));
         });
 
-        // Close menu when clicking a link
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                nav.classList.remove('open');
-                menuBtn.classList.remove('active');
-            });
+        navLinks.forEach((link) => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!nav.classList.contains('open')) return;
+            if (nav.contains(event.target) || menuBtn.contains(event.target)) return;
+            closeMenu();
         });
     }
 
-    // ScrollSpy: Highlight active menu item using IntersectionObserver
-    const sections = document.querySelectorAll('section[id]');
-    const navLinksItems = document.querySelectorAll('.nav-link');
-
     const scrollSpyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                // Remove active from all links
-                navLinksItems.forEach(link => link.classList.remove('active'));
-                // Add active to current link
-                const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-                if (activeLink) activeLink.classList.add('active');
-            }
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach((link) => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+            if (activeLink) activeLink.classList.add('active');
         });
     }, {
-        rootMargin: '-20% 0px -60% 0px', // Active zone is near the top of the viewport
+        rootMargin: '-20% 0px -60% 0px',
         threshold: 0
     });
 
-    sections.forEach(section => {
+    sections.forEach((section) => {
         scrollSpyObserver.observe(section);
     });
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target); // Only animate once
-            }
+    if (reducedMotion) {
+        document.querySelectorAll('.reveal-on-scroll').forEach((element) => {
+            element.classList.add('is-visible');
         });
-    }, observerOptions);
+        return;
+    }
 
-    // Targets to animate
-    const animateTargets = document.querySelectorAll('.hero-content, .section-title, .skills-grid, .project-card, .about-grid, .contact-content');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+    });
 
-    animateTargets.forEach(el => {
-        el.classList.add('reveal');
-        observer.observe(el);
+    document.querySelectorAll('.reveal-on-scroll').forEach((element) => {
+        revealObserver.observe(element);
     });
 });

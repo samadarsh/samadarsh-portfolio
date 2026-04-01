@@ -5,157 +5,177 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description"
-        content="Portfolio of Adarsh S - AI & Data Science Graduate | Finance & Market Analytics" />
-    <title>Adarsh S | AI & Data Science Portfolio</title>
-    <link rel="stylesheet" href="style.css?v=1.3" />
+        content="Portfolio of Adarsh S - AI & Data Science graduate building applied AI, analytics, and finance-focused systems." />
+    <title>Adarsh S | Applied AI & Analytics</title>
+    <link rel="stylesheet" href="style.css?v=2" />
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
-    <!-- Background Elements -->
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="bg-mesh"></div>
     <div class="bg-gradient-orb top-right"></div>
     <div class="bg-gradient-orb bottom-left"></div>
 
     <header class="site-header">
         <div class="container header-container">
-            <a href="#" class="logo">Adarsh <span class="text-gradient">S</span></a>
+            <a href="#hero" class="logo">Adarsh <span class="text-gradient">S</span></a>
 
-            <nav class="desktop-nav">
+            <nav id="site-nav" class="desktop-nav" aria-label="Primary">
                 <ul>
                     <li><a href="#about" class="nav-link"><i data-lucide="user" width="18" height="18"></i> About</a></li>
                     <li><a href="#experience" class="nav-link"><i data-lucide="briefcase" width="18" height="18"></i> Experience</a></li>
                     <li><a href="#education" class="nav-link"><i data-lucide="graduation-cap" width="18" height="18"></i> Education</a></li>
-                    <li><a href="#projects" class="nav-link"><i data-lucide="code" width="18" height="18"></i> Projects</a></li>
+                    <li><a href="#projects" class="nav-link"><i data-lucide="sparkles" width="18" height="18"></i> Projects</a></li>
                     <li><a href="#skills" class="nav-link"><i data-lucide="cpu" width="18" height="18"></i> Skills</a></li>
                     <li><a href="#contact" class="nav-link"><i data-lucide="mail" width="18" height="18"></i> Contact</a></li>
                 </ul>
             </nav>
 
-            <button class="mobile-menu-btn" aria-label="Toggle Menu">
+            <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav">
                 <span class="bar"></span>
                 <span class="bar"></span>
             </button>
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <section id="hero" class="hero-section">
             <div class="container hero-container">
-                <div class="hero-content">
-
-                    <h1 class="hero-title">Adarsh S <br /><span class="text-gradient">B.Tech AI & Data Science</span>
-                    </h1>
+                <div class="hero-copy reveal-on-scroll">
+                    <span class="eyebrow">Applied AI | Financial Analytics | Intelligent Systems</span>
+                    <h1 class="hero-title">Turning AI, analytics, and data into practical real-world solutions</h1>
                     <p class="hero-subtitle">
-                        AI & Data Science Graduate | Finance & Market Analytics
+                        AI &amp; Data Science graduate focused on machine learning, trading systems, and real-world
+                        analytical thinking
                     </p>
-                    <p class="hero-description">
-                        I build practical, data-driven solutions by applying AI, machine learning, and analytical
-                        thinking to real-world problems, backed by experience in financial markets.
-                    </p>
+
+                    <div class="hero-highlights">
+                        <span class="highlight-pill">AI &amp; Data Science Graduate</span>
+                        <span class="highlight-pill">Exposure to Financial Markets</span>
+                    </div>
+
                     <div class="hero-actions">
-                        <a href="#projects" class="btn btn-primary">View Projects <i data-lucide="arrow-right" width="16" height="16"></i></a>
-                        <a href="#contact" class="btn btn-outline">Contact Me</a>
+                        <a href="#projects" class="btn btn-primary">Explore Projects <i data-lucide="arrow-right" width="16" height="16"></i></a>
+                        <a href="#contact" class="btn btn-outline">Let's Connect</a>
                     </div>
                 </div>
+
+                <aside class="hero-panel reveal-on-scroll">
+                    <p class="panel-label">Current Focus</p>
+                    <h2>Building intelligent systems across AI, analytics, and stock market applications</h2>
+                    <ul class="panel-list">
+                        <li>Focused on GenAI and machine learning systems designed for practical use and real-world impact</li>
+                        <li>Building Haugtun with a vision centered on market expertise, client trust, portfolio support, and trading participation</li>
+                        <li>Bringing together analytics, automation, and financial insight to create practical solutions with long-term value</li>
+                    </ul>
+                </aside>
             </div>
         </section>
 
         <section id="about" class="about-section">
             <div class="container">
-                <h2 class="section-title">About Me</h2>
+                <p class="section-kicker reveal-on-scroll">About Me</p>
+                <h2 class="section-title reveal-on-scroll">Bringing together artificial intelligence, data science, and financial market experience</h2>
+                <p class="section-subtitle reveal-on-scroll">
+                    I enjoy building practical solutions using machine learning, analytics, and structured
+                    problem-solving, with a strong interest in applying them to real-world and business-critical use
+                    cases
+                </p>
+
                 <div class="about-grid">
-                    <p>
-                        I’m an Artificial Intelligence & Data Science graduate with a strong foundation
-                        in Python, machine learning, and data analysis. Alongside my technical background, I have
-                        practical exposure to financial markets through my work as an Associate Trader and an Authorised
-                        Person with Angel One.
-                    </p>
-                    <p>
-                        My experience in trading and market analysis has strengthened my ability to work with
-                        uncertainty, manage risk, and make data-backed decisions — skills that translate naturally into
-                        AI, analytics, and system design. I enjoy solving complex problems, breaking them down
-                        systematically, and building efficient, real-world solutions.
-                    </p>
-                    <p>
-                        I am currently focused on deepening my expertise in applied machine learning, advanced AI
-                        concepts, and scalable data-driven systems.
-                    </p>
+                    <article class="info-card reveal-on-scroll">
+                        <h3>Core Technical Skills</h3>
+                        <p>
+                            Through my academic journey and project work, I have developed strong skills in Python,
+                            machine learning, data preprocessing, and model building
+                        </p>
+                    </article>
+                    <article class="info-card reveal-on-scroll">
+                        <h3>Analytical Mindset</h3>
+                        <p>
+                            Working in market-related environments has improved my ability to analyze changing
+                            conditions, manage risk, and stay confident in time-sensitive situations
+                        </p>
+                    </article>
+                    <article class="info-card reveal-on-scroll">
+                        <h3>Career Focus</h3>
+                        <p>
+                            I am especially interested in opportunities where I can apply AI, analytics, and
+                            problem-solving skills to build practical and impactful solutions
+                        </p>
+                    </article>
                 </div>
             </div>
         </section>
 
         <section id="experience" class="experience-section">
             <div class="container">
-                <h2 class="section-title">Experience</h2>
+                <p class="section-kicker reveal-on-scroll">Experience</p>
+                <h2 class="section-title reveal-on-scroll">Experience across machine learning, trading systems, and client-focused operations</h2>
 
-
-                <div class="projects-grid"> <!-- Reusing grid for experience cards -->
-                    <!-- Experience 1 -->
-                    <article class="project-card">
-                        <h3 class="project-title">Machine Learning Intern</h3>
-                        <p class="experience-role">Sona Comstar | Jan 2023 – March 2023</p>
+                <div class="projects-grid">
+                    <article class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Machine Learning Intern</p>
+                        <h3 class="project-title">Sona Comstar</h3>
+                        <p class="experience-role">Jan 2023 - Mar 2023</p>
                         <ul class="experience-list">
-                            <li>Developed and optimized machine learning models using regression and data-driven techniques to solve real-world analytical problems</li>
-                            <li>Performed data preprocessing, feature engineering, and outlier handling on diverse datasets to enhance model accuracy and reliability</li>
-                            <li>Applied model evaluation methods such as cross-validation and hyperparameter tuning to ensure robust and generalizable performance</li>
-                            <li>Built AI-driven pipelines integrating data extraction, transformation, and analysis to generate actionable insights</li>
-                            <li>Implemented end-to-end workflows and deployed user-centric solutions to support real-time decision-making and automation</li>
+                            <li>Built and optimized regression-based analytical models for real-world datasets.</li>
+                            <li>Handled preprocessing, feature engineering, outlier treatment, and evaluation loops.</li>
+                            <li>Worked on end-to-end workflows that turned raw data into usable insights.</li>
                         </ul>
                     </article>
 
-                    <!-- Experience 2 -->
-                    <article class="project-card">
-                        <h3 class="project-title">Associate Trader</h3>
-                        <p class="experience-role">Maxitome Management Services | May 2024 – Nov 2024</p>
+                    <article class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Associate Trader</p>
+                        <h3 class="project-title">Maxitome Management Services</h3>
+                        <p class="experience-role">May 2024 - Nov 2024</p>
                         <ul class="experience-list">
-                            <li>Built and maintained Python-based algorithmic trading systems for the F&O segment under
-                                supervision, translating market hypotheses into rule-based and data-driven strategies.
-                            </li>
-                            <li>Analyzed historical market data to backtest trading ideas, evaluate performance metrics,
-                                and refine alpha logic across varying market conditions.</li>
-                            <li>Integrated real-time market data and APIs to support automated order execution,
-                                portfolio monitoring, reporting workflows, and operational research through dataset
-                                validation and live strategy monitoring in time-sensitive environments.</li>
+                            <li>Developed Python-based rule-driven and data-driven trading workflows for F&amp;O.</li>
+                            <li>Backtested strategy ideas, analyzed market behavior, and refined performance logic.</li>
+                            <li>Worked with live data and API-integrated execution in time-sensitive environments.</li>
                         </ul>
                     </article>
 
-                    <!-- Experience 3 -->
-                    <article class="project-card">
-                        <h3 class="project-title">Authorised Person</h3>
-                        <p class="experience-role">Angel One</p>
+                    <article class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Authorised Person</p>
+                        <h3 class="project-title">Angel One</h3>
+                        <p class="experience-role">Client operations and portfolio support</p>
                         <ul class="experience-list">
-                            <li>Worked as a registered Authorised Person at Angel One, supporting clients across Equity
-                                and F&O segments through a data-driven, technology-enabled approach.</li>
-                            <li>Managed client onboarding, KYC verification, and trading operations, integrating
-                                structured processes with systematic execution and regulatory adherence.</li>
-                            <li>Applied market data analysis and Python-based tools to monitor client portfolios,
-                                evaluate trade performance, identify risk exposure, and support order execution,
-                                workflow automation, and audit-ready reporting.</li>
+                            <li>Supported clients across Equity and F&amp;O segments with structured execution.</li>
+                            <li>Handled onboarding, KYC workflows, and process-heavy operational tasks.</li>
+                            <li>Used market data and Python-based analysis to support risk-aware decision-making.</li>
                         </ul>
                     </article>
                 </div>
+
             </div>
         </section>
 
-        <section id="education" class="experience-section">
+        <section id="education" class="education-section">
             <div class="container">
-                <h2 class="section-title">Education</h2>
-                <div class="projects-grid">
+                <p class="section-kicker reveal-on-scroll">Education</p>
+                <h2 class="section-title reveal-on-scroll">Building a strong foundation through AI and data science</h2>
 
-                    <article class="project-card">
-                        <h3 class="project-title">B.Tech in Artificial Intelligence & Data Science</h3>
-                        <p class="experience-role">Easwari Engineering College | 2020 – 2024</p>
+                <div class="projects-grid">
+                    <article class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Undergraduate</p>
+                        <h3 class="project-title">B.Tech in Artificial Intelligence &amp; Data Science</h3>
+                        <p class="experience-role">Easwari Engineering College | 2020 - 2024</p>
                         <ul class="experience-list">
-                            <li><strong>CGPA:</strong> 8.23</li>
-                            <li>Built a strong foundation in artificial intelligence, machine learning, and data science, shaping my core understanding of intelligent systems.</li>
+                            <li>Graduated with a CGPA of 8.23.</li>
+                            <li>Built a strong foundation in machine learning, artificial intelligence, and data science.</li>
                         </ul>
                     </article>
 
-                    <article class="project-card">
+                    <article class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Postgraduate</p>
                         <h3 class="project-title">M.Tech in Artificial Intelligence</h3>
-                        <p class="experience-role">SRM University | 2026 – 2028 (Pursuing)</p>
+                        <p class="experience-role">SRM University | 2026 - 2028</p>
                         <ul class="experience-list">
-                            <li>Strengthening and expanding my AI expertise through advanced study in deep learning, generative AI, and real-world applications.</li>
+                            <li>Currently pursuing advanced study in artificial intelligence.</li>
+                            <li>Focused on deep learning, generative AI, and real-world AI applications.</li>
                         </ul>
                     </article>
                 </div>
@@ -164,13 +184,22 @@
 
         <section id="projects" class="projects-section">
             <div class="container">
-                <h2 class="section-title">Featured Projects</h2>
+                <p class="section-kicker reveal-on-scroll">Projects</p>
+                <h2 class="section-title reveal-on-scroll">Featured work in AI, analytics, and industry-standard solutions</h2>
+                <p class="section-subtitle reveal-on-scroll">
+                    A selection of work focused on automation, generative AI, analytics, and practical
+                    problem-solving
+                </p>
+
                 <div class="projects-grid">
-                    <!-- Project 0: RepoMind -->
-                    <a href="https://github.com/samadarsh/RepoMind" target="_blank" class="project-card">
+                    <a href="https://github.com/samadarsh/RepoMind" target="_blank" rel="noopener noreferrer"
+                        class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Featured Project</p>
                         <h3 class="project-title">RepoMind</h3>
                         <p class="project-desc">
-                            A context-aware AI tool that analyzes GitHub repositories by classifying project type and generating structured insights into file roles, architecture, and workflow using a multi-stage LLM pipeline with anti-bias guardrails.
+                            Context-aware repository analysis tool that classifies project type and generates
+                            structured architectural insights through a multi-stage LLM workflow with anti-bias
+                            guardrails.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Streamlit</span>
@@ -180,58 +209,29 @@
                         </div>
                     </a>
 
-                    <!-- Project 1: Cold Email Generator -->
-                    <a href="https://github.com/samadarsh/GenAI-Email-Generator" target="_blank" class="project-card">
-                        <h3 class="project-title">GenAI-Email-Generator</h3>
+                    <a href="https://github.com/samadarsh/GenAI-Email-Generator" target="_blank"
+                        rel="noopener noreferrer" class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Applied Generative AI</p>
+                        <h3 class="project-title">GenAI Email Generator</h3>
                         <p class="project-desc">
-                            A Streamlit-based application that scrapes job postings from career pages and automatically
-                            generates personalized cold emails using Llama 3 via Groq. This tool matches job
-                            requirements with your portfolio to craft compelling outreach messages.
+                            Job-posting scraper and personalized cold-email generator that matches opportunity context
+                            with portfolio data to automate outreach.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Streamlit</span>
                             <span class="project-tag">LangChain</span>
-                            <span class="project-tag">Llama-3.1</span>
+                            <span class="project-tag">Llama 3</span>
                             <span class="project-tag">Python</span>
                         </div>
                     </a>
 
-                    <!-- Project 2: LinkedIn Post Generator -->
-                    <a href="https://github.com/samadarsh/GenAI-Linkedin-Post-Generator" target="_blank"
-                        class="project-card">
-                        <h3 class="project-title">GenAI-Linkedin-Post-Generator</h3>
-                        <p class="project-desc">
-                            A Streamlit-based application that leverages the power of Llama 3 via Groq to generate
-                            engaging LinkedIn posts. This tool uses few-shot learning to tailor posts based on selected
-                            topics, length, and language.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag">Streamlit</span>
-                            <span class="project-tag">LangChain</span>
-                            <span class="project-tag">Llama-3</span>
-                            <span class="project-tag">Python</span>
-                        </div>
-                    </a>
-
-                    <!-- Project 3: Real Estate Price Prediction -->
-                    <a href="https://github.com/samadarsh/real-estate-price-prediction" target="_blank" class="project-card">
-                        <h3 class="project-title">Real Estate Price Prediction</h3>
-                        <p class="project-desc">
-                            Developed an end-to-end ML system for real estate price prediction using structured housing data. Built a complete machine learning pipeline covering data cleaning, feature engineering, model building, and hyperparameter tuning.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag">Machine Learning</span>
-                            <span class="project-tag">Scikit-Learn</span>
-                            <span class="project-tag">Pandas</span>
-                            <span class="project-tag">Python</span>
-                        </div>
-                    </a>
-
-                    <!-- Project 4: Simple AI Agent -->
-                    <a href="https://github.com/samadarsh/simple-ai-agent" target="_blank" class="project-card">
+                    <a href="https://github.com/samadarsh/simple-ai-agent" target="_blank" rel="noopener noreferrer"
+                        class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">LLM Workflow Design</p>
                         <h3 class="project-title">Simple AI Agent</h3>
                         <p class="project-desc">
-                            Built a modular AI agent using LangGraph and LangChain that orchestrates stateful workflows. Features include text classification, entity extraction, and summarization using LLaMA 3 via the Groq API.
+                            Modular LangGraph agent that orchestrates text classification, entity extraction, and
+                            summarization through a stateful workflow design.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">LangGraph</span>
@@ -241,43 +241,34 @@
                         </div>
                     </a>
 
-                    <!-- Project 5: IPO Performance Analysis -->
-                    <a href="https://github.com/samadarsh/IPO-Performance-Analysis" target="_blank" class="project-card">
-                        <h3 class="project-title">IPO Performance Analysis</h3>
+                    <a href="https://github.com/samadarsh/credit_risk_scoring_pipeline" target="_blank"
+                        rel="noopener noreferrer" class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Finance Analytics</p>
+                        <h3 class="project-title">Credit Risk Scoring Pipeline</h3>
                         <p class="project-desc">
-                            Analyzed Indian Stock Market IPO performance using Kaggle datasets. Computed listing gains, CMP gains, and absolute profitability, and visualized key insights using Pandas and Matplotlib to identify top-performing IPOs.
+                            End-to-end supervised learning pipeline for credit risk scoring with preprocessing,
+                            evaluation, persistence, and reusable modeling flow.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">Python</span>
+                            <span class="project-tag">Scikit-Learn</span>
+                            <span class="project-tag">Gradient Boosting</span>
                             <span class="project-tag">Pandas</span>
-                            <span class="project-tag">Matplotlib</span>
-                            <span class="project-tag">Data Analysis</span>
+                            <span class="project-tag">Python</span>
                         </div>
                     </a>
 
-                    <!-- Project 6: Credit Risk Scoring Pipeline -->
-                    <a href="https://github.com/samadarsh/credit_risk_scoring_pipeline" target="_blank" class="project-card">
-                        <h3 class="project-title">Credit Risk Scoring Pipeline</h3>
+                    <a href="https://github.com/samadarsh/IPO-Performance-Analysis" target="_blank"
+                        rel="noopener noreferrer" class="project-card reveal-on-scroll">
+                        <p class="card-eyebrow">Market Analysis</p>
+                        <h3 class="project-title">IPO Performance Analysis</h3>
                         <p class="project-desc">
-                            End-to-end credit risk scoring pipeline using scikit-learn. Includes data preprocessing, model training with Gradient Boosting, model evaluation (ROC-AUC, confusion matrix), and pipeline persistence with joblib.
+                            Data analysis project on Indian IPO performance using profitability measures and visual
+                            exploration to identify post-listing patterns.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">Machine Learning</span>
-                            <span class="project-tag">Scikit-Learn</span>
-                            <span class="project-tag">Python</span>
                             <span class="project-tag">Pandas</span>
-                        </div>
-                    </a>
-                    <!-- Project 7: Face Recognition using Machine Learning -->
-                    <a href="https://github.com/samadarsh/Face_Recognition" target="_blank" class="project-card">
-                        <h3 class="project-title">Face Recognition using Machine Learning</h3>
-                        <p class="project-desc">
-                            A face recognition project that preprocesses grayscale images, extracts raw pixel features, and uses a Logistic Regression model to classify individuals from a labeled dataset.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag">Logistic Regression</span>
-                            <span class="project-tag">Scikit-Learn</span>
-                            <span class="project-tag">Computer Vision</span>
+                            <span class="project-tag">Matplotlib</span>
+                            <span class="project-tag">Finance Data</span>
                             <span class="project-tag">Python</span>
                         </div>
                     </a>
@@ -287,62 +278,65 @@
 
         <section id="skills" class="skills-section">
             <div class="container">
-                <h2 class="section-title">Technical Skills</h2>
-                <!-- Programming & Data -->
-                <h3 class="skill-header">Programming & Data</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">SQL</span>
-                    <span class="skill-tag">Pandas</span>
-                    <span class="skill-tag">NumPy</span>
+                <p class="section-kicker reveal-on-scroll">Skills</p>
+                <h2 class="section-title reveal-on-scroll">Technical skills across programming, intelligent systems, and applied AI</h2>
+
+                <div class="skills-stack">
+                    <div class="skills-group reveal-on-scroll">
+                        <h3 class="skills-group-title">Core Stack</h3>
+                        <div class="skills-grid">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Pandas</span>
+                            <span class="skill-tag">NumPy</span>
+                            <span class="skill-tag">Git</span>
+                        </div>
+                    </div>
+
+                    <div class="skills-group reveal-on-scroll">
+                        <h3 class="skills-group-title">Machine Learning</h3>
+                        <div class="skills-grid">
+                            <span class="skill-tag">Supervised Learning</span>
+                            <span class="skill-tag">Unsupervised Learning</span>
+                            <span class="skill-tag">Model Evaluation</span>
+                            <span class="skill-tag">Feature Engineering</span>
+                            <span class="skill-tag">NLP</span>
+                        </div>
+                    </div>
+
+                    <div class="skills-group reveal-on-scroll">
+                        <h3 class="skills-group-title">Applied GenAI</h3>
+                        <div class="skills-grid">
+                            <span class="skill-tag">LLM Workflows</span>
+                            <span class="skill-tag">Prompt Engineering</span>
+                            <span class="skill-tag">Summarization</span>
+                            <span class="skill-tag">Embeddings</span>
+                            <span class="skill-tag">LangChain Ecosystem</span>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- ML & AI -->
-                <h3 class="skill-header">Machine Learning</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">Supervised Learning</span>
-                    <span class="skill-tag">Unsupervised Learning</span>
-                    <span class="skill-tag">Model Evaluation</span>
-                    <span class="skill-tag">NLP</span>
-                    <span class="skill-tag">Transformers</span>
-                </div>
-
-                <!-- Generative AI -->
-                <h3 class="skill-header">Generative AI</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">Large Language Models (LLMs)</span>
-                    <span class="skill-tag">Prompt Engineering</span>
-                    <span class="skill-tag">Text Summarization</span>
-                    <span class="skill-tag">Embeddings & Tokenization</span>
-                    <span class="skill-tag">Model Context Protocol (MCP)</span>
-                </div>
-
-                <!-- Tools & Platforms -->
-                <h3 class="skill-header">Tools & Platforms</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">Git</span>
-                    <span class="skill-tag">Jupyter Notebook</span>
-                    <span class="skill-tag">Excel</span>
-                    <span class="skill-tag">Notion</span>
-                </div>
-
-
             </div>
         </section>
 
         <section id="contact" class="contact-section">
             <div class="container">
-                <h2 class="section-title">Get In Touch</h2>
-                <div class="contact-content">
-                    <div class="contact-links">
-                        <a href="https://linkedin.com/in/samadarsh14" target="_blank"
-                            class="btn btn-primary"><i data-lucide="linkedin" width="18" height="18"></i> LinkedIn</a>
-                        <a href="https://github.com/samadarsh" target="_blank" class="btn btn-outline"><i data-lucide="github" width="18" height="18"></i> GitHub</a>
-                    </div>
+                <div class="contact-content reveal-on-scroll">
+                    <p class="section-kicker">Contact</p>
+                    <h2 class="section-title">Let's connect and build something impactful</h2>
+                    <p class="section-subtitle">
+                        This portfolio reflects my work in AI, analytics, and intelligent systems. Feel free to reach
+                        out to connect or collaborate
+                    </p>
 
-                    <div class="contact-info">
-                        <a href="mailto:samadarsh14@gmail.com" class="contact-item">samadarsh14@gmail.com</a>
-                        <a href="tel:+919791015292" class="contact-item">+91 9791015292</a>
+                    <div class="contact-links">
+                        <a href="https://linkedin.com/in/samadarsh14" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-primary"><i data-lucide="linkedin" width="18" height="18"></i> LinkedIn</a>
+                        <a href="https://github.com/samadarsh" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-outline"><i data-lucide="github" width="18" height="18"></i> GitHub</a>
+                        <a href="mailto:samadarsh14@gmail.com" class="btn btn-outline"><i data-lucide="mail" width="18"
+                                height="18"></i> Email</a>
+                        <a href="tel:+919791015292" class="btn btn-outline"><i data-lucide="phone" width="18"
+                                height="18"></i> Call</a>
                     </div>
                 </div>
             </div>
@@ -350,14 +344,14 @@
     </main>
 
     <footer class="site-footer">
-        <div class="container footer-container">
+        <div class="container">
             <p>&copy; <span id="year"></span> Adarsh S. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="main.js"></script>
     <script>
-      lucide.createIcons();
+        lucide.createIcons();
     </script>
 </body>
 
