@@ -146,6 +146,12 @@ ul {
     gap: 2rem;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .logo {
     font-family: var(--font-display);
     font-size: 1.35rem;
@@ -183,6 +189,27 @@ ul {
 .nav-link:hover,
 .nav-link.active {
     color: var(--color-text-main);
+}
+
+.feature-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), background var(--transition-smooth);
+}
+
+.feature-pill:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-border-strong);
+    background: rgba(255, 255, 255, 0.09);
 }
 
 .mobile-menu-btn {
@@ -600,6 +627,10 @@ body.js-ready .reveal-on-scroll.is-visible {
 
     .mobile-menu-btn {
         display: flex;
+    }
+
+    .feature-pill {
+        display: none;
     }
 
     .hero-section {
