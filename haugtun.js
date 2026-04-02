@@ -5,7 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeTargets = document.querySelectorAll('[data-close="true"]');
     const siteHeader = document.querySelector('.site-header');
     const navToggle = document.querySelector('.nav-toggle');
-    const navLinks = document.querySelectorAll('.page-nav a, .back-link');
+    const navLinks = document.querySelectorAll('.page-nav .nav-link');
+    const menuLinks = document.querySelectorAll('.page-nav a, .back-link');
+    const sections = document.querySelectorAll('section[id]');
     const enquiryForm = document.querySelector('[data-enquiry-form]');
     const submitButton = document.querySelector('[data-submit-button]');
     const feedback = document.querySelector('[data-form-feedback]');
@@ -22,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setMenuState(!isOpen);
         });
 
-        navLinks.forEach((link) => {
+        menuLinks.forEach((link) => {
             link.addEventListener('click', () => setMenuState(false));
         });
 
@@ -40,6 +42,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const scrollSpyObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach((link) => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.page-nav .nav-link[href="#${id}"]`);
+            if (activeLink) activeLink.classList.add('active');
+        });
+    }, {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0
+    });
+
+    sections.forEach((section) => {
+        scrollSpyObserver.observe(section);
+    });
 
     if (viewer && lightbox) {
         const openLightbox = () => {

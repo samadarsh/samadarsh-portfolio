@@ -143,6 +143,14 @@ img {
     padding: 0.65rem 0.95rem;
 }
 
+.nav-link:hover,
+.nav-link.active,
+.back-link:hover {
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.12);
+}
+
 .hero-section {
     padding: 3.5rem 0 2rem;
 }
