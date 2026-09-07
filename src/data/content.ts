@@ -62,7 +62,7 @@ export const heroContent = {
 };
 
 export const stats = [
-  { value: '6+', label: 'Shipped AI & data projects' },
+  { value: '7+', label: 'Shipped AI, data & client projects' },
   { value: '8.23', label: 'B.Tech CGPA · AI / DS' },
   { value: '3+', label: 'Years across markets & data' },
   { value: '∞', label: 'Curiosity about systems' },
@@ -198,6 +198,25 @@ export const projects: Project[] = [
       github: 'https://github.com/samadarsh/BiteWise',
     },
     cover: 'projects/bite-wise.webp',
+    accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
+  },
+  {
+    slug: 'bluemoon-studio',
+    title: 'Bluemoon Studio',
+    eyebrow: 'Client Work · Photography Studio',
+    year: '2026',
+    role: 'Design & Full-Stack',
+    summary:
+      'Website for a Chennai wedding photography studio — curated portfolio collections, service pages, a full Instagram-fed gallery, and an enquiry flow that lands directly in the studio owner’s WhatsApp.',
+    highlights: [
+      'Six routes with per-collection portfolio pages and service detail pages, plus a keyboard-navigable lightbox gallery served newest-first from the studio’s Instagram.',
+      'Zero-backend enquiry form: validated in-browser, then composed into a prefilled WhatsApp message or email draft — no form service, no lead sitting in an inbox nobody checks.',
+      'Local SEO built for a business that lives in Google Maps results — PhotographyBusiness JSON-LD with address, hours and offers, generated sitemap and robots, per-page OG metadata.',
+      'Hand-written CSS design system on tokenised type, colour and motion scales — editorial serif typography with no UI framework.',
+    ],
+    stack: ['React', 'React Router', 'Vite', 'Vanilla CSS', 'Schema.org', 'Vercel'],
+    links: { live: 'https://bluemoon-studio-tawny.vercel.app', github: null },
+    cover: 'projects/bluemoon-studio.webp',
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
