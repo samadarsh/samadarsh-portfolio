@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/Home';
@@ -8,6 +9,28 @@ import { AboutPage } from './pages/About';
 import { JournalPage } from './pages/Journal';
 
 const LOADER_KEY = 'portfolio-loaded';
+
+// sessionStorage can throw (e.g. storage blocked), so never let it break the app.
+const loaderAlreadySeen = () => {
+  try {
+    return sessionStorage.getItem(LOADER_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
+const markLoaderSeen = () => {
+  try {
+    sessionStorage.setItem(LOADER_KEY, '1');
+  } catch {
+    // ignore
+  }
+};
+
+const skipLoader = () =>
+  typeof window === 'undefined' ||
+  loaderAlreadySeen() ||
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function AppRoutes() {
   return (
@@ -24,27 +47,25 @@ function AppRoutes() {
 }
 
 export default function App() {
-  const [ready, setReady] = useState(
-    () => typeof window !== 'undefined' && sessionStorage.getItem(LOADER_KEY) === '1',
-  );
+  const [ready, setReady] = useState(skipLoader);
   const [showLoader, setShowLoader] = useState(!ready);
 
   const onLoaderComplete = useCallback(() => {
-    sessionStorage.setItem(LOADER_KEY, '1');
+    markLoaderSeen();
     setReady(true);
-    setShowLoader(false);
   }, []);
 
-  useEffect(() => {
-    if (ready) setShowLoader(false);
-  }, [ready]);
+  const onLoaderExited = useCallback(() => setShowLoader(false), []);
 
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 
   return (
     <BrowserRouter basename={basename}>
-      {showLoader ? <LoadingScreen onComplete={onLoaderComplete} /> : null}
+      {showLoader ? (
+        <LoadingScreen onComplete={onLoaderComplete} onExited={onLoaderExited} />
+      ) : null}
       {ready ? <AppRoutes /> : null}
+      <SpeedInsights />
     </BrowserRouter>
   );
 }

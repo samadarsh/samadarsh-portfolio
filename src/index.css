@@ -73,4 +73,10 @@ body {
   .animate-scroll-down {
     animation: none !important;
   }
+
+  /* The GSAP reveal is skipped under reduced motion, so show these statically. */
+  .blur-in {
+    filter: none;
+    opacity: 1;
+  }
 }

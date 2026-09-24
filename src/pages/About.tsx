@@ -4,8 +4,14 @@ import { Experience } from '../components/Experience';
 import { Skills } from '../components/Skills';
 import { Footer } from '../components/Footer';
 import { aboutNarrative, heroContent } from '../data/content';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 export function AboutPage() {
+  usePageMeta(
+    'About',
+    'About Adarsh S — AI engineer in Chennai, India, with experience across machine learning engineering and live financial markets.',
+  );
+
   return (
     <>
       <section className="pt-32 md:pt-40">

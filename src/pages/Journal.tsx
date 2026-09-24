@@ -2,8 +2,14 @@ import { motion } from 'framer-motion';
 import { journalEntries, writingMeta } from '../data/content';
 import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 export function JournalPage() {
+  usePageMeta(
+    'Haugtun Research',
+    'Haugtun Research by Adarsh S — notes on Indian markets, investing fundamentals, and how capital moves through cycles.',
+  );
+
   return (
     <>
       <section className="pt-32 md:pt-40">
