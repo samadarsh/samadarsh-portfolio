@@ -4,23 +4,20 @@ import { useEffect, useState } from 'react';
 const DURATION_MS = 1800;
 
 type LoadingScreenProps = {
+  /** Called when the count finishes — the page can start rendering underneath. */
   onComplete: () => void;
+  /** Called once the exit animation has finished and the loader can unmount. */
+  onExited: () => void;
 };
 
-export function LoadingScreen({ onComplete }: LoadingScreenProps) {
+export function LoadingScreen({ onComplete, onExited }: LoadingScreenProps) {
   const [count, setCount] = useState(0);
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) {
-      setVisible(false);
-      onComplete();
-      return;
-    }
-
     const start = performance.now();
     let frame = 0;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
 
     const tick = (now: number) => {
       const progress = Math.min((now - start) / DURATION_MS, 1);
@@ -30,7 +27,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       if (progress < 1) {
         frame = requestAnimationFrame(tick);
       } else {
-        setTimeout(() => {
+        timeout = setTimeout(() => {
           setVisible(false);
           onComplete();
         }, 240);
@@ -38,11 +35,14 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     };
 
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(timeout);
+    };
   }, [onComplete]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExited}>
       {visible ? (
         <motion.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg px-6"

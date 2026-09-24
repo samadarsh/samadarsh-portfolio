@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type ProjectPreviewProps = {
   src?: string;
@@ -34,12 +34,6 @@ export function ProjectPreview({
   const hostname = safeHostname(url);
   const resolvedSrc = src ? `${import.meta.env.BASE_URL}${src.replace(/^\//, '')}` : undefined;
   const showImage = resolvedSrc && !errored;
-
-  // Reset state if src changes
-  useEffect(() => {
-    setLoaded(false);
-    setErrored(false);
-  }, [resolvedSrc]);
 
   return (
     <div

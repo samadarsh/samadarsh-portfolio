@@ -6,8 +6,14 @@ import { SelectedWorks } from '../components/SelectedWorks';
 import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
 import { aboutNarrative } from '../data/content';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 export function HomePage() {
+  usePageMeta(
+    null,
+    'Adarsh S — building intelligent systems across AI and markets. Practical AI, data systems, and market research, shipped to production.',
+  );
+
   return (
     <>
       <Hero />
