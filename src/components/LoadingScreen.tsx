@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
-const DURATION_MS = 1800;
+const DURATION_MS = 1000;
 
 type LoadingScreenProps = {
   /** Called when the count finishes — the page can start rendering underneath. */
@@ -30,7 +30,7 @@ export function LoadingScreen({ onComplete, onExited }: LoadingScreenProps) {
         timeout = setTimeout(() => {
           setVisible(false);
           onComplete();
-        }, 240);
+        }, 120);
       }
     };
 

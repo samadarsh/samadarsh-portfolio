@@ -91,7 +91,8 @@ export function ProjectPreview({
             alt={`${title} preview`}
             loading={priority ? 'eager' : 'lazy'}
             decoding="async"
-            fetchPriority={priority ? 'high' : 'auto'}
+            // React 18 only knows the lowercase attribute; camelCase triggers a dev warning.
+            {...{ fetchpriority: priority ? 'high' : 'auto' }}
             className={`absolute inset-0 h-full w-full object-contain object-center transition-opacity duration-700 ${
               loaded ? 'opacity-100' : 'opacity-0'
             }`}
