@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const links = [
   { to: '/about', label: 'About' },
@@ -12,9 +12,35 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+
+  // Close the mobile menu on any navigation (including the logo link).
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Close on Escape or a tap outside the nav/menu.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    const onPointerDown = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [open]);
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
+    <header
+      ref={headerRef}
+      className="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
       <nav
         className="pointer-events-auto flex w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-white/[0.08] bg-bg/70 px-2 py-2 shadow-2xl backdrop-blur-2xl md:px-3"
         aria-label="Primary"
@@ -43,21 +69,24 @@ export function Navbar() {
           className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
+          aria-controls="mobile-menu"
           aria-label="Toggle menu"
         >
           <span className="relative flex h-3 w-4 flex-col justify-between">
             <span
-              className={`block h-px w-full bg-text-primary transition ${open ? 'translate-y-1.5 rotate-45' : ''}`}
+              className={`block h-px w-full bg-text-primary transition ${open ? 'translate-y-[5.5px] rotate-45' : ''}`}
             />
             <span
-              className={`block h-px w-full bg-text-primary transition ${open ? '-translate-y-1 -rotate-45' : ''}`}
+              className={`block h-px w-full bg-text-primary transition ${open ? '-translate-y-[5.5px] -rotate-45' : ''}`}
             />
           </span>
         </button>
       </nav>
 
       {open ? (
-        <div className="pointer-events-auto fixed inset-x-4 top-20 z-40 rounded-3xl border border-white/[0.08] bg-bg/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden">
+        <div
+          id="mobile-menu"
+          className="pointer-events-auto fixed inset-x-4 top-20 z-40 rounded-3xl border border-white/[0.08] bg-bg/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden">
           <ul className="flex flex-col gap-4">
             {links.map((link) => (
               <li key={link.to}>

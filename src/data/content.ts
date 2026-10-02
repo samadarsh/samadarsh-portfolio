@@ -26,7 +26,6 @@ export type JournalEntry = {
 };
 
 export type WritingMeta = {
-  pageName: string;
   pageUrl: string;
   description: string;
 };
@@ -54,7 +53,6 @@ export type SkillGroup = {
 
 export const heroContent = {
   eyebrow: 'AI · Systems · Capital',
-  name: 'Adarsh S',
   tagline:
     'Building AI and data systems for real-world products and financial markets.',
   location: 'Chennai, India',
@@ -314,7 +312,6 @@ export const projects: Project[] = [
 ];
 
 export const writingMeta: WritingMeta = {
-  pageName: 'Haugtun',
   pageUrl: 'https://www.linkedin.com/showcase/haugtun/',
   description:
     'A research page where I publish structured notes on Indian markets, investing fundamentals, and how capital actually behaves in the real world.',

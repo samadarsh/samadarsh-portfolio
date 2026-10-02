@@ -7,10 +7,6 @@ const EMAIL = 'samadarsh14@gmail.com';
 
 const elsewhereSocials = socialLinks.filter((s) => s.label !== 'Email');
 
-type FooterProps = {
-  compact?: boolean;
-};
-
 const MailIcon = () => (
   <svg
     width="14"
@@ -28,19 +24,17 @@ const MailIcon = () => (
   </svg>
 );
 
-export function Footer({ compact = false }: FooterProps) {
+export function Footer() {
   const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (compact) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion || !trackRef.current) return;
 
-    const track = trackRef.current;
-    const width = track.scrollWidth / 2;
-
-    const tween = gsap.to(track, {
-      x: -width,
+    // The track holds two identical halves, so shifting by -50% of its own width loops
+    // seamlessly — and stays correct after web fonts load or the viewport resizes.
+    const tween = gsap.to(trackRef.current, {
+      xPercent: -50,
       duration: 30,
       ease: 'none',
       repeat: -1,
@@ -49,31 +43,7 @@ export function Footer({ compact = false }: FooterProps) {
     return () => {
       tween.kill();
     };
-  }, [compact]);
-
-  if (compact) {
-    return (
-      <footer className="border-t border-white/[0.06] py-10">
-        <div className="container mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted md:flex-row">
-          <p>© {new Date().getFullYear()} Adarsh S</p>
-          <ul className="flex gap-6">
-            {socialLinks.map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  className="hover:text-text-primary"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </footer>
-    );
-  }
+  }, []);
 
   return (
     <footer className="relative mt-32 overflow-hidden border-t border-white/[0.06]">
