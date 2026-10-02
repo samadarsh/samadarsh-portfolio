@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { LoadingScreen } from './components/LoadingScreen';
@@ -60,12 +61,14 @@ export default function App() {
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 
   return (
-    <BrowserRouter basename={basename}>
-      {showLoader ? (
-        <LoadingScreen onComplete={onLoaderComplete} onExited={onLoaderExited} />
-      ) : null}
-      {ready ? <AppRoutes /> : null}
-      <SpeedInsights />
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter basename={basename}>
+        {showLoader ? (
+          <LoadingScreen onComplete={onLoaderComplete} onExited={onLoaderExited} />
+        ) : null}
+        {ready ? <AppRoutes /> : null}
+        <SpeedInsights />
+      </BrowserRouter>
+    </MotionConfig>
   );
 }
