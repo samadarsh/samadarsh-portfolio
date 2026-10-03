@@ -21,6 +21,8 @@ import {
 import { useGoTo } from '../hooks/useGoTo';
 import { copyText, downloadResume, isMac } from '../lib/contact';
 import { useToast } from './Toaster';
+import { lockScroll } from '../lib/smoothScroll';
+import { playSound } from '../lib/sound';
 
 type Command = {
   id: string;
@@ -303,10 +305,10 @@ function Palette({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     restoreFocus.current = document.activeElement as HTMLElement | null;
     inputRef.current?.focus();
-    const { overflow } = document.documentElement.style;
-    document.documentElement.style.overflow = 'hidden';
+    const unlock = lockScroll();
+    playSound('open');
     return () => {
-      document.documentElement.style.overflow = overflow;
+      unlock();
       const el = restoreFocus.current;
       if (el && el !== document.body && document.contains(el)) el.focus({ preventScroll: true });
     };
@@ -321,6 +323,7 @@ function Palette({ onClose }: { onClose: () => void }) {
     if (!command) return;
     onClose();
     // Let the dialog unmount (and focus restore) before navigating or opening a tab.
+    playSound('tick');
     window.setTimeout(() => command.run(), 0);
   };
 
@@ -392,7 +395,12 @@ function Palette({ onClose }: { onClose: () => void }) {
           </kbd>
         </div>
 
-        <ul id="cmdk-list" role="listbox" className="max-h-[min(52vh,420px)] overflow-y-auto p-2">
+        <ul
+          id="cmdk-list"
+          role="listbox"
+          data-lenis-prevent
+          className="max-h-[min(52vh,420px)] overflow-y-auto p-2"
+        >
           {results.length === 0 ? (
             <li className="px-3 py-8 text-center text-sm text-muted">
               No matches. Try <span className="font-mono text-text-primary">projects</span>,{' '}

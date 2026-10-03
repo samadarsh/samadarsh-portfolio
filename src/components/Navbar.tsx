@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useCommandPalette } from './CommandPalette';
 import { isMac } from '../lib/contact';
+import { playSound, setSoundOn } from '../lib/sound';
+import { useSoundOn } from '../hooks/useSound';
+import { useToast } from './Toaster';
 
 const links = [
   { to: '/about', label: 'About' },
@@ -17,6 +20,14 @@ export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const { pathname } = useLocation();
   const palette = useCommandPalette();
+  const soundOn = useSoundOn();
+  const toast = useToast();
+
+  const toggleSound = () => {
+    setSoundOn(!soundOn);
+    if (!soundOn) playSound('tick');
+    toast({ title: soundOn ? 'Sound off' : 'Sound on', description: 'Subtle interface sounds.' });
+  };
 
   // Close the mobile menu on any navigation (including the logo link).
   useEffect(() => {
@@ -69,6 +80,33 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleSound}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] text-muted transition-colors hover:border-accent/40 hover:text-text-primary"
+            aria-pressed={soundOn}
+            aria-label="Interface sounds"
+            title={soundOn ? 'Sound on' : 'Sound off'}
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M11 5 6 9H3v6h3l5 4z" />
+              {soundOn ? (
+                <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+              ) : (
+                <path d="m22 9-6 6M16 9l6 6" />
+              )}
+            </svg>
+          </button>
           <button
             type="button"
             onClick={palette.open}

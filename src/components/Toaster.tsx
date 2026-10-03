@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { playSound } from '../lib/sound';
 import {
   createContext,
   useCallback,
@@ -31,6 +32,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const show = useCallback((toast: ToastInput) => {
     const id = nextId.current++;
+    playSound('success');
     setToasts((list) => [...list, { ...toast, id }].slice(-MAX_TOASTS));
     window.setTimeout(() => setToasts((list) => list.filter((t) => t.id !== id)), DURATION_MS);
   }, []);

@@ -61,6 +61,7 @@ export function HomePage() {
         <div className="container mx-auto max-w-6xl px-6 text-center">
           <Link
             to="/work"
+            data-magnetic
             className="group inline-flex items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.02] px-6 py-3 text-sm font-medium text-text-primary backdrop-blur transition hover:border-accent/40"
           >
             View all projects

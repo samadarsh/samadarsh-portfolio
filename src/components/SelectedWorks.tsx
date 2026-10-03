@@ -106,6 +106,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                     {project.links.live ? (
                       <a
                         href={project.links.live}
+                        data-cursor="Live"
                         target="_blank"
                         rel="noreferrer"
                         className="group inline-flex items-center gap-2 text-sm font-medium text-text-primary"
@@ -119,6 +120,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                     {project.links.github ? (
                       <a
                         href={project.links.github}
+                        data-cursor="Code"
                         target="_blank"
                         rel="noreferrer"
                         className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-text-primary"

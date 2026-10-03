@@ -77,6 +77,7 @@ export function Footer() {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${contact.email}`}
+                data-magnetic
                 className="inline-flex items-center gap-3 rounded-full bg-text-primary px-6 py-3 text-sm font-medium text-bg transition hover:bg-text-primary/90"
               >
                 <MailIcon />

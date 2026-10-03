@@ -70,6 +70,7 @@ export function JournalPage() {
               >
                 <a
                   href={entry.href}
+                  data-cursor="Read"
                   target="_blank"
                   rel="noreferrer"
                   className="group grid gap-3 py-8 transition md:grid-cols-12 md:gap-8"

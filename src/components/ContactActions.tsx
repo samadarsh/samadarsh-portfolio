@@ -76,6 +76,8 @@ export function ResumeButton({ className = '' }: { className?: string }) {
     <a
       href={resumeHref}
       download={contact.resumeFile}
+      data-magnetic
+      data-cursor="PDF"
       className={`group inline-flex items-center gap-2 rounded-full border border-dashed border-white/[0.16] px-5 py-2.5 text-sm font-medium text-text-primary transition hover:border-accent/60 hover:bg-white/[0.03] ${className}`}
     >
       <span>Resume</span>

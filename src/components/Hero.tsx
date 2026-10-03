@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { Link } from 'react-router-dom';
 import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
+import { HeroNetwork } from './HeroNetwork';
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
@@ -37,6 +38,7 @@ export function Hero() {
       className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-20 pt-32 md:pb-28"
     >
       <div className="absolute inset-x-0 top-0 -z-10 h-[70vh] bg-gradient-to-b from-accent/[0.06] via-transparent to-transparent" />
+      <HeroNetwork />
 
       <div className="container relative z-10 mx-auto max-w-6xl px-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -72,6 +74,7 @@ export function Hero() {
             <div className="mt-8 flex flex-wrap gap-3 lg:justify-end">
               <Link
                 to="/work"
+                data-magnetic
                 className="group inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.02] px-5 py-2.5 text-sm font-medium text-text-primary backdrop-blur transition hover:border-accent/40 hover:bg-white/[0.04]"
               >
                 <span>See selected work</span>
@@ -79,6 +82,7 @@ export function Hero() {
               </Link>
               <a
                 href="#contact"
+                data-magnetic
                 className="group inline-flex items-center gap-2 rounded-full bg-text-primary px-5 py-2.5 text-sm font-medium text-bg transition hover:bg-text-primary/90"
               >
                 Get in touch
