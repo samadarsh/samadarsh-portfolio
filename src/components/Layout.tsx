@@ -1,22 +1,27 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { CustomCursor } from './CustomCursor';
+import { scrollToElement, scrollToTop, startSmoothScroll } from '../lib/smoothScroll';
 import { Navbar } from './Navbar';
 import { ToastProvider } from './Toaster';
 import { CommandPaletteProvider } from './CommandPalette';
 import { useEasterEggs } from '../hooks/useEasterEggs';
 
 function ScrollManager() {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, state } = useLocation();
+
+  useEffect(() => startSmoothScroll(), []);
 
   // On navigation, jump to the #section if there is one, otherwise to the top.
   useEffect(() => {
+    if ((state as { scrolled?: boolean } | null)?.scrolled) return;
     const target = hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
     if (target) {
-      target.scrollIntoView({ block: 'start' });
+      scrollToElement(target, { immediate: true });
     } else {
-      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+      scrollToTop();
     }
-  }, [pathname, hash]);
+  }, [pathname, hash, state]);
 
   return null;
 }
@@ -32,6 +37,7 @@ export function Layout() {
       <CommandPaletteProvider>
         <ScrollManager />
         <EasterEggs />
+        <CustomCursor />
         <Navbar />
         <main>
           <Outlet />
