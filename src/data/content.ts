@@ -377,8 +377,13 @@ export const journalEntries: JournalEntry[] = [
   },
 ];
 
+export const contact = {
+  email: 'samadarsh14@gmail.com',
+  resumeFile: 'Adarsh_S_Resume.pdf',
+} as const;
+
 export const socialLinks = [
   { label: 'LinkedIn', href: 'https://linkedin.com/in/samadarsh14' },
   { label: 'GitHub', href: 'https://github.com/samadarsh' },
-  { label: 'Email', href: 'mailto:samadarsh14@gmail.com' },
+  { label: 'Email', href: `mailto:${contact.email}` },
 ] as const;

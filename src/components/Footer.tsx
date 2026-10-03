@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { socialLinks } from '../data/content';
+import { contact, socialLinks } from '../data/content';
+import { CopyEmailButton, ResumeButton } from './ContactActions';
 
 const MARQUEE_TEXT = 'Built with intent · Engineered with discipline · Shipped to production';
-const EMAIL = 'samadarsh14@gmail.com';
 
 const elsewhereSocials = socialLinks.filter((s) => s.label !== 'Email');
 
@@ -74,16 +74,17 @@ export function Footer() {
               The fastest way to reach me — drop a note and I'll get back within a day.
             </p>
 
-            <a
-              href={`mailto:${EMAIL}`}
-              className="group mt-8 inline-flex items-center gap-3 rounded-full bg-text-primary px-6 py-3 text-sm font-medium text-bg transition hover:bg-text-primary/90"
-            >
-              <MailIcon />
-              <span>Email me</span>
-              <span className="hidden font-mono text-xs opacity-60 transition-opacity group-hover:opacity-100 md:inline">
-                {EMAIL}
-              </span>
-            </a>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${contact.email}`}
+                className="inline-flex items-center gap-3 rounded-full bg-text-primary px-6 py-3 text-sm font-medium text-bg transition hover:bg-text-primary/90"
+              >
+                <MailIcon />
+                <span>Email me</span>
+              </a>
+              <ResumeButton />
+            </div>
+            <CopyEmailButton className="mt-3" />
           </div>
 
           <div className="md:col-span-5 md:border-l md:border-white/[0.06] md:pl-12">
