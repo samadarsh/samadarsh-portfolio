@@ -6,6 +6,7 @@ import { playSound, setSoundOn } from '../lib/sound';
 import { useSoundOn } from '../hooks/useSound';
 import { useToast } from './Toaster';
 import { ResumeButton } from './ContactActions';
+import { AchievementsButton } from './Achievements';
 import { socialLinks } from '../data/content';
 import { useGoTo } from '../hooks/useGoTo';
 
@@ -84,6 +85,7 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <AchievementsButton className="h-11 w-11 md:h-9 md:w-9" />
           <button
             type="button"
             onClick={toggleSound}

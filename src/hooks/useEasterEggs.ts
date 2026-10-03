@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useToast } from '../components/Toaster';
 import { useGoTo } from './useGoTo';
+import { unlock } from '../lib/achievements';
 
 const KONAMI = [
   'arrowup',
@@ -58,6 +59,7 @@ export function useEasterEggs() {
       if (keys.join() === KONAMI.join()) {
         keys = [];
         burst();
+        unlock('konami');
         toast({
           title: '↑↑↓↓←→←→BA',
           description: 'Old school. You found the secret.',
@@ -69,6 +71,7 @@ export function useEasterEggs() {
         typed = (typed + key).slice(-HIRE.length);
         if (typed === HIRE) {
           typed = '';
+          unlock('hire');
           goTo(window.location.pathname, 'contact');
           toast({
             title: 'Great choice.',

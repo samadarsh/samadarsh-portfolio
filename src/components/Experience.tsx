@@ -1,7 +1,22 @@
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import { experience } from '../data/content';
+import { unlock } from '../lib/achievements';
 
 export function Experience() {
+  const endRef = useRef<HTMLDivElement>(null);
+
+  // Reaching the end of the list unlocks the "Background check" achievement.
+  useEffect(() => {
+    const el = endRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) unlock('background');
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="grid gap-12 md:grid-cols-12">
       <div className="md:col-span-4">
@@ -42,9 +57,7 @@ export function Experience() {
                 </span>
               ) : null}
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">
-              {item.summary}
-            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">{item.summary}</p>
             <ul className="mt-4 space-y-2 text-sm text-muted">
               {item.points.map((p) => (
                 <li key={p} className="flex items-start gap-2.5">
@@ -56,6 +69,7 @@ export function Experience() {
           </motion.li>
         ))}
       </ol>
+      <div ref={endRef} aria-hidden className="h-px md:col-span-12" />
     </div>
   );
 }

@@ -52,6 +52,7 @@ export function MobileActionBar() {
         >
           <a
             href={`mailto:${contact.email}`}
+            data-achievement="contact"
             className="flex h-12 items-center justify-center gap-2 rounded-xl bg-text-primary text-sm font-medium text-bg"
           >
             Email

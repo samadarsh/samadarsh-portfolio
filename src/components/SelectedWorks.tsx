@@ -135,6 +135,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                       <a
                         href={project.links.live}
                         data-cursor="Live"
+                        data-achievement="testdriver"
                         target="_blank"
                         rel="noreferrer"
                         className="group inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-text-primary"
