@@ -13,12 +13,12 @@ export function Stats() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.06, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="border-l border-white/[0.06] pl-6 first:border-l-0 first:pl-0 md:border-l md:first:border-l"
+              className="border-l border-white/[0.06] pl-6 odd:border-l-0 odd:pl-0 md:[&:nth-child(3)]:border-l md:[&:nth-child(3)]:pl-6"
             >
               <p className="font-display text-5xl leading-none tracking-tighter text-text-primary md:text-6xl">
                 {stat.value}
               </p>
-              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+              <p className="mt-3 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted">
                 {stat.label}
               </p>
             </motion.div>

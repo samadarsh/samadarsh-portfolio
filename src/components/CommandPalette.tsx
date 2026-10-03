@@ -348,7 +348,7 @@ function Palette({ onClose }: { onClose: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 px-4 pt-[12vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-sm sm:px-4 sm:pt-[12vh]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -380,7 +380,7 @@ function Palette({ onClose }: { onClose: () => void }) {
             }}
             onKeyDown={onKeyDown}
             placeholder="Search or run a command…"
-            className="min-w-0 flex-1 bg-transparent font-mono text-[15px] text-text-primary outline-none placeholder:text-muted/70"
+            className="min-w-0 flex-1 bg-transparent font-mono text-base text-text-primary sm:text-[15px] outline-none placeholder:text-muted/70"
             role="combobox"
             aria-expanded="true"
             aria-controls="cmdk-list"
@@ -390,7 +390,7 @@ function Palette({ onClose }: { onClose: () => void }) {
             autoComplete="off"
             spellCheck={false}
           />
-          <kbd className="rounded-md border border-white/[0.12] px-1.5 py-0.5 font-mono text-[10px] text-muted">
+          <kbd className="rounded-md border border-white/[0.12] px-1.5 py-0.5 font-mono text-[11px] md:text-[10px] text-muted">
             esc
           </kbd>
         </div>
@@ -399,7 +399,7 @@ function Palette({ onClose }: { onClose: () => void }) {
           id="cmdk-list"
           role="listbox"
           data-lenis-prevent
-          className="max-h-[min(52vh,420px)] overflow-y-auto p-2"
+          className="max-h-[min(calc(100dvh-9rem),420px)] overflow-y-auto overscroll-contain p-2 sm:max-h-[min(52vh,420px)]"
         >
           {results.length === 0 ? (
             <li className="px-3 py-8 text-center text-sm text-muted">
@@ -416,7 +416,7 @@ function Palette({ onClose }: { onClose: () => void }) {
                 <li key={c.id} role="presentation">
                   {heading ? (
                     <p
-                      className="px-3 pb-1.5 pt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted"
+                      className="px-3 pb-1.5 pt-3 font-mono text-[11px] md:text-[10px] uppercase tracking-[0.2em] text-muted"
                       role="presentation"
                     >
                       {heading}
@@ -428,7 +428,7 @@ function Palette({ onClose }: { onClose: () => void }) {
                     aria-selected={selected}
                     onMouseMove={() => !selected && setActive(i)}
                     onClick={() => run(c)}
-                    className={`grid cursor-pointer grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl px-3 py-2.5 text-sm ${
+                    className={`grid cursor-pointer grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl px-3 py-3 text-[15px] sm:py-2.5 sm:text-sm ${
                       selected ? 'bg-white/[0.06] text-text-primary' : 'text-text-primary/85'
                     }`}
                   >
@@ -439,7 +439,7 @@ function Palette({ onClose }: { onClose: () => void }) {
                       {c.icon}
                     </span>
                     <span className="truncate">{c.label}</span>
-                    <code className="font-mono text-[11px] text-muted">{c.hint}</code>
+                    <code className="font-mono text-xs md:text-[11px] text-muted">{c.hint}</code>
                   </div>
                 </li>
               );
@@ -447,7 +447,7 @@ function Palette({ onClose }: { onClose: () => void }) {
           )}
         </ul>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/[0.06] px-4 py-2.5 text-xs text-muted">
+        <div className="hidden flex-wrap items-center gap-x-4 gap-y-1 border-t [@media(hover:hover)_and_(pointer:fine)]:flex border-white/[0.06] px-4 py-2.5 text-xs text-muted">
           <span>
             <Kbd>↑</Kbd> <Kbd>↓</Kbd> move
           </span>
@@ -465,7 +465,7 @@ function Palette({ onClose }: { onClose: () => void }) {
 
 function Kbd({ children }: { children: ReactNode }) {
   return (
-    <kbd className="rounded-md border border-white/[0.12] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[10px] text-text-primary">
+    <kbd className="rounded-md border border-white/[0.12] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[11px] md:text-[10px] text-text-primary">
       {children}
     </kbd>
   );

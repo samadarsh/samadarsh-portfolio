@@ -43,7 +43,7 @@ export function HomePage() {
               ))}
               <Link
                 to="/about"
-                className="group inline-flex items-center gap-2 pt-2 text-sm font-medium text-text-primary"
+                className="group inline-flex items-center gap-2 py-3 text-sm font-medium text-text-primary"
               >
                 <span className="border-b border-accent/40 pb-0.5 transition-colors group-hover:border-accent">
                   More about me

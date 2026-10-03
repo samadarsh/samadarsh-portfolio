@@ -40,7 +40,7 @@ export function AboutPage() {
             </div>
 
             <aside className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 md:col-span-5">
-              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+              <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-muted">
                 Currently
               </p>
               <ul className="mt-4 space-y-4 text-sm text-text-primary md:text-base">

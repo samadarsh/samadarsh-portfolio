@@ -43,7 +43,7 @@ export function Hero() {
       <div className="container relative z-10 mx-auto max-w-6xl px-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex-1 min-w-0">
-            <p className="blur-in mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.22em] text-muted backdrop-blur">
+            <p className="blur-in mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 font-mono text-xs md:text-[11px] uppercase tracking-[0.22em] text-muted backdrop-blur">
               {heroContent.available ? (
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
@@ -53,7 +53,7 @@ export function Hero() {
               {heroContent.eyebrow}
             </p>
 
-            <h1 className="font-display text-6xl leading-[0.95] tracking-tightest text-text-primary sm:text-7xl md:text-8xl lg:text-[9.5rem]">
+            <h1 className="font-display text-[25vw] leading-[0.9] tracking-tightest text-text-primary sm:text-7xl sm:leading-[0.95] md:text-8xl lg:text-[9.5rem]">
               <span className="name-reveal block overflow-hidden">
                 <span className="block">Adarsh</span>
               </span>
@@ -64,10 +64,8 @@ export function Hero() {
           </div>
 
           <div className="blur-in max-w-md lg:text-right">
-            <p className="text-base leading-relaxed text-muted md:text-lg">
-              {heroContent.tagline}
-            </p>
-            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-muted/80">
+            <p className="text-base leading-relaxed text-muted md:text-lg">{heroContent.tagline}</p>
+            <p className="mt-4 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted/80">
               {heroContent.location}
             </p>
 
@@ -75,7 +73,7 @@ export function Hero() {
               <Link
                 to="/work"
                 data-magnetic
-                className="group inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.02] px-5 py-2.5 text-sm font-medium text-text-primary backdrop-blur transition hover:border-accent/40 hover:bg-white/[0.04]"
+                className="group inline-flex grow items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.02] px-5 py-3 text-sm sm:grow-0 sm:py-2.5 font-medium text-text-primary backdrop-blur transition hover:border-accent/40 hover:bg-white/[0.04]"
               >
                 <span>See selected work</span>
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -83,7 +81,7 @@ export function Hero() {
               <a
                 href="#contact"
                 data-magnetic
-                className="group inline-flex items-center gap-2 rounded-full bg-text-primary px-5 py-2.5 text-sm font-medium text-bg transition hover:bg-text-primary/90"
+                className="group inline-flex grow items-center justify-center gap-2 whitespace-nowrap rounded-full bg-text-primary px-5 py-3 text-sm sm:grow-0 sm:py-2.5 font-medium text-bg transition hover:bg-text-primary/90"
               >
                 Get in touch
               </a>
@@ -98,7 +96,9 @@ export function Hero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-muted lg:flex">
-        <span className="font-mono text-[10px] uppercase tracking-[0.25em]">Scroll</span>
+        <span className="font-mono text-[11px] md:text-[10px] uppercase tracking-[0.25em]">
+          Scroll
+        </span>
         <span className="h-10 w-px animate-scroll-down bg-gradient-to-b from-transparent via-accent/70 to-transparent" />
       </div>
     </section>

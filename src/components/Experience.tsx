@@ -5,7 +5,7 @@ export function Experience() {
   return (
     <div className="grid gap-12 md:grid-cols-12">
       <div className="md:col-span-4">
-        <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+        <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
           Experience
         </p>
         <h3 className="mt-3 font-display text-3xl leading-tight tracking-tighter text-text-primary md:text-4xl">
@@ -37,7 +37,7 @@ export function Experience() {
             <div className="mt-2 flex flex-wrap items-center gap-2.5">
               <span className="text-sm font-medium text-accent">{item.role}</span>
               {item.kind ? (
-                <span className="rounded-full border border-white/[0.08] bg-white/[0.02] px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.02] px-2.5 py-0.5 font-mono text-[11px] md:text-[10px] uppercase tracking-[0.18em] text-muted">
                   {item.kind}
                 </span>
               ) : null}

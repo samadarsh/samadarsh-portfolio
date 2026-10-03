@@ -26,7 +26,7 @@ export function SectionHeader({
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     >
       {kicker ? (
-        <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+        <p className="mb-4 font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
           {kicker}
         </p>
       ) : null}

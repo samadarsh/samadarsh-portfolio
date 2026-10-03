@@ -34,7 +34,7 @@ export function JournalPage() {
           >
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
               <div className="flex-1">
-                <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-accent">
+                <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.28em] text-accent">
                   Research Page · LinkedIn
                 </p>
                 <h3 className="mt-3 font-display text-2xl tracking-tight text-text-primary md:text-3xl">
@@ -76,10 +76,10 @@ export function JournalPage() {
                   className="group grid gap-3 py-8 transition md:grid-cols-12 md:gap-8"
                 >
                   <div className="flex items-center gap-4 md:col-span-3">
-                    <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
+                    <span className="font-mono text-xs md:text-[11px] uppercase tracking-[0.22em] text-accent">
                       {entry.tag}
                     </span>
-                    <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+                    <span className="font-mono text-xs md:text-[11px] uppercase tracking-[0.22em] text-muted">
                       {entry.date}
                     </span>
                   </div>
@@ -103,7 +103,7 @@ export function JournalPage() {
 
           {/* Bottom CTA */}
           <div className="mt-16 flex flex-col items-center gap-4 text-center">
-            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-muted">
+            <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.28em] text-muted">
               New posts published regularly
             </p>
             <a
