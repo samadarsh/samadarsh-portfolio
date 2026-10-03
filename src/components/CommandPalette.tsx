@@ -204,6 +204,15 @@ function useCommands(): Command[] {
         run: openAchievements,
       },
       {
+        id: 'chart-game',
+        group: 'Actions',
+        icon: '📈',
+        label: 'Play Read the chart',
+        hint: 'play',
+        keywords: 'game nifty market candles',
+        run: () => goTo('/journal', 'chart-game'),
+      },
+      {
         id: 'whoami',
         group: 'Fun',
         icon: '$',

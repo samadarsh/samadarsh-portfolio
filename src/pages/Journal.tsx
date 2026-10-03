@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { journalEntries, writingMeta } from '../data/content';
 import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
+import { ChartGame } from '../components/ChartGame';
 import { usePageMeta } from '../hooks/usePageMeta';
 
 export function JournalPage() {
@@ -57,6 +58,10 @@ export function JournalPage() {
               </div>
             </div>
           </motion.a>
+
+          <div className="mb-16">
+            <ChartGame />
+          </div>
 
           {/* Entries */}
           <ul className="flex flex-col">
