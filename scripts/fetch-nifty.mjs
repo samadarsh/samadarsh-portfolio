@@ -1,37 +1,37 @@
-// Downloads daily Nifty 50 OHLC history from Stooq and writes public/data/nifty50.json
+// Downloads daily Nifty 50 OHLC history from Yahoo Finance and writes public/data/nifty50.json
 // for the "Read the chart" game. Run with: npm run data:nifty
-import { writeFile } from 'node:fs/promises';
+// (Stooq's CSV download now sits behind a JavaScript bot check, so scripts can't use it.)
+import { writeFile, mkdir } from 'node:fs/promises';
 
-const SOURCE = 'https://stooq.com/q/d/l/?s=%5Ensei&i=d';
-const YEARS = 10;
-const OUT = new URL('../public/data/nifty50.json', import.meta.url);
+const SOURCE = 'https://query1.finance.yahoo.com/v8/finance/chart/%5ENSEI?range=10y&interval=1d';
+const OUT_DIR = new URL('../public/data/', import.meta.url);
+const OUT = new URL('nifty50.json', OUT_DIR);
 
-const res = await fetch(SOURCE);
-if (!res.ok) throw new Error(`Stooq responded ${res.status}`);
-const csv = (await res.text()).trim();
-const [header, ...lines] = csv.split(/\r?\n/);
-if (!/^Date,Open,High,Low,Close/i.test(header)) {
-  throw new Error(`Unexpected CSV header: ${header.slice(0, 80)}`);
-}
+const res = await fetch(SOURCE, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+if (!res.ok) throw new Error(`Yahoo Finance responded ${res.status}`);
+const json = await res.json();
+const result = json?.chart?.result?.[0];
+const quote = result?.indicators?.quote?.[0];
+if (!result?.timestamp || !quote) throw new Error('Unexpected response shape');
 
-const cutoff = new Date();
-cutoff.setFullYear(cutoff.getFullYear() - YEARS);
-const round = (v) => Math.round(Number(v) * 100) / 100;
+const round = (v) => Math.round(v * 100) / 100;
+// Timestamps are session opens in IST; shift by the exchange offset so the date is the IST date.
+const toDate = (ts) => new Date((ts + result.meta.gmtoffset) * 1000).toISOString().slice(0, 10);
 
-const candles = lines
-  .map((line) => line.split(','))
-  .filter(([date, o, h, l, c]) => date && [o, h, l, c].every((v) => Number.isFinite(Number(v))))
-  .filter(([date]) => new Date(date) >= cutoff)
+const candles = result.timestamp
+  .map((ts, i) => [toDate(ts), quote.open[i], quote.high[i], quote.low[i], quote.close[i]])
+  .filter(([, o, h, l, c]) => [o, h, l, c].every((v) => Number.isFinite(v) && v > 0))
   .map(([date, o, h, l, c]) => [date, round(o), round(h), round(l), round(c)]);
 
 if (candles.length < 500) throw new Error(`Only ${candles.length} rows; refusing to write`);
 
 const data = {
   symbol: 'NIFTY 50',
-  source: 'Stooq (stooq.com), daily OHLC',
+  source: 'Yahoo Finance (^NSEI), daily OHLC',
   updated: new Date().toISOString().slice(0, 10),
   fields: ['date', 'open', 'high', 'low', 'close'],
   candles,
 };
+await mkdir(OUT_DIR, { recursive: true });
 await writeFile(OUT, JSON.stringify(data));
 console.log(`Wrote ${candles.length} sessions (${candles[0][0]} → ${candles.at(-1)[0]})`);
