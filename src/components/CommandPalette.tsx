@@ -25,12 +25,13 @@ import { lockScroll } from '../lib/smoothScroll';
 import { unlock } from '../lib/achievements';
 import { useAchievementsPanel } from './Achievements';
 import { useAskAdarsh } from './AskAdarsh';
+import { AgentGlyph } from './AgentGlyph';
 import { playSound } from '../lib/sound';
 
 type Command = {
   id: string;
   group: string;
-  icon: string;
+  icon: ReactNode;
   label: string;
   /** Short command-style alias shown on the right, e.g. `resume`. */
   hint: string;
@@ -199,7 +200,7 @@ function useCommands(): Command[] {
       {
         id: 'ask',
         group: 'Actions',
-        icon: '✦',
+        icon: <AgentGlyph size={14} className="mx-auto" />,
         label: 'Ask Adarsh (AI)',
         hint: 'ask',
         keywords: 'ai chat question assistant',
@@ -339,7 +340,7 @@ function Palette({ onClose }: { onClose: () => void }) {
       {
         id: 'ask-fallback',
         group: 'Ask Adarsh',
-        icon: '✦',
+        icon: <AgentGlyph size={14} className="mx-auto" />,
         label: `Ask: “${q}”`,
         hint: 'ai',
         run: () => askAdarsh.open(q),
