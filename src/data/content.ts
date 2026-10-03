@@ -104,11 +104,11 @@ export const experience: ExperienceItem[] = [
     period: 'Jan 2025 — May 2026',
     kind: 'Proprietorship',
     summary:
-      'Independent proprietorship in equities and derivatives — a research-driven practice that sharpens the same analytical instincts I bring to AI and data systems.',
+      'Managed trading operations and client workflows while maintaining structured financial and transactional datasets.',
     points: [
-      'Built a structured market research workflow rooted in data-driven decisions and risk awareness.',
-      'Live exposure to time-sensitive data, execution, and portfolio monitoring under real conditions.',
-      'A complementary practice that strengthens the analytical and operational depth I bring to AI work.',
+      'Applied quantitative and time-series analysis to market and portfolio data for opportunity identification and decision support.',
+      'Developed algorithmic trading systems using OpenAlgo to automate execution and strategy management processes.',
+      'Generated performance analytics and maintained trading datasets for portfolio monitoring and risk evaluation.',
     ],
   },
   {
