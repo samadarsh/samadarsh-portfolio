@@ -14,6 +14,10 @@ export type Project = {
   stack: string[];
   links: ProjectLinks;
   cover?: string;
+  /** Optional muted preview clip (webm/mp4 in public/), played on hover or when scrolled into view. */
+  video?: string;
+  /** How the system fits together, in order, for the case-study page. */
+  architecture?: { label: string; detail?: string }[];
   accent: string;
 };
 
@@ -197,6 +201,12 @@ export const projects: Project[] = [
       github: 'https://github.com/samadarsh/BiteWise',
     },
     cover: 'projects/bite-wise.webp',
+    architecture: [
+      { label: 'Next.js app', detail: 'NutriOrder AI + SmartPantry AI interfaces' },
+      { label: 'FastAPI backend', detail: 'Meal ranking, pantry and cart logic' },
+      { label: 'OAuth 2.1 PKCE', detail: 'Per-user Swiggy auth, AES-256-GCM encrypted tokens' },
+      { label: 'Swiggy MCP', detail: 'Food and Instamart, with explicit confirmation before any order' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
@@ -216,6 +226,12 @@ export const projects: Project[] = [
     stack: ['React', 'React Router', 'Vite', 'Vanilla CSS', 'Schema.org', 'Vercel'],
     links: { live: 'https://bluemoon-studio-tawny.vercel.app', github: null },
     cover: 'projects/bluemoon-studio.webp',
+    architecture: [
+      { label: 'React + React Router', detail: 'Six routes: collections and service pages' },
+      { label: 'Instagram-fed gallery', detail: 'Keyboard-navigable lightbox, newest first' },
+      { label: 'Enquiry form', detail: 'Validated in the browser, no backend' },
+      { label: 'WhatsApp or email', detail: 'Prefilled message straight to the owner' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
@@ -234,6 +250,12 @@ export const projects: Project[] = [
     stack: ['Vite', 'Supabase', 'GSAP', 'Lenis', 'Vanilla JS'],
     links: { live: 'https://oor-snacks.vercel.app', github: null },
     cover: 'projects/oor-snacks.webp',
+    architecture: [
+      { label: 'Vite storefront', detail: 'GSAP + Lenis scroll storytelling' },
+      { label: 'Cart and checkout', detail: 'Live orders from day one' },
+      { label: 'Supabase', detail: 'Row-Level Security on orders' },
+      { label: 'Admin dashboard', detail: 'Live order management' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
@@ -251,6 +273,13 @@ export const projects: Project[] = [
     ],
     stack: ['FastAPI', 'ChromaDB', 'PyMuPDF', 'LangChain', 'Streamlit', 'Ollama'],
     links: { live: null, github: 'https://github.com/samadarsh/fin-sight' },
+    architecture: [
+      { label: 'Financial PDFs', detail: 'Annual reports, transcripts, SEBI filings' },
+      { label: 'PyMuPDF + LangChain', detail: 'Parsing and chunking' },
+      { label: 'BGE embeddings', detail: 'Stored in persistent ChromaDB' },
+      { label: 'Ollama or Gemini', detail: 'Grounded answers via FastAPI + Streamlit' },
+      { label: 'Cited answer', detail: 'Inline [filename p.N] references' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
@@ -271,6 +300,12 @@ export const projects: Project[] = [
       live: 'https://repomind14.streamlit.app/',
       github: 'https://github.com/samadarsh/RepoMind',
     },
+    architecture: [
+      { label: 'Repository', detail: 'File-level analysis' },
+      { label: 'Multi-stage LLM pipeline', detail: 'LangChain + Groq with bias control' },
+      { label: 'Classification', detail: 'Project type and architecture summary' },
+      { label: 'Structured JSON', detail: 'Exported from the Streamlit UI' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
@@ -291,6 +326,12 @@ export const projects: Project[] = [
       live: 'https://huggingface.co/spaces/samadarsh/voicenote-ai-transliteration',
       github: 'https://github.com/samadarsh/VoiceNote-AI',
     },
+    architecture: [
+      { label: 'Mic or upload', detail: 'Browser capture, pydub chunking' },
+      { label: 'Whisper-medium', detail: 'Tamil ASR (language=ta)' },
+      { label: 'Custom romanizer', detail: 'Grapheme-level Tamil → Latin script' },
+      { label: 'Readable text', detail: 'Gradio app on Hugging Face Spaces' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
@@ -308,6 +349,12 @@ export const projects: Project[] = [
     ],
     stack: ['Streamlit', 'LangChain', 'Groq', 'Llama 3', 'Python'],
     links: { live: null, github: 'https://github.com/samadarsh/GenAI-Email-Generator' },
+    architecture: [
+      { label: 'Job listing URL', detail: 'Scraped with LangChain WebBaseLoader' },
+      { label: 'Llama 3.3 70B on Groq', detail: 'Structured requirement extraction' },
+      { label: 'Portfolio match', detail: 'Relevant projects and links' },
+      { label: 'Email draft', detail: 'Ready to send from Streamlit' },
+    ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
 ];

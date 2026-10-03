@@ -116,7 +116,7 @@ function useCommands(): Command[] {
         label: p.title,
         hint: p.eyebrow.split(' · ')[0].toLowerCase(),
         keywords: `${p.eyebrow} ${p.stack.join(' ')} ${p.summary}`,
-        run: () => goTo('/work', p.slug),
+        run: () => goTo(`/work/${p.slug}`),
       })),
 
       ...experience.map<Command>((x) => ({

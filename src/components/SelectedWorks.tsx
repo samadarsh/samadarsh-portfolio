@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { projects } from '../data/content';
 import { SectionHeader } from './SectionHeader';
 import { ProjectPreview } from './ProjectPreview';
@@ -93,6 +94,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                 <div className={`lg:col-span-7 ${reverse ? 'lg:order-2' : ''}`}>
                   <ProjectPreview
                     src={project.cover}
+                    video={project.video}
                     title={project.title}
                     url={project.links.live ?? undefined}
                     accent={project.accent}
@@ -131,6 +133,21 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                   </div>
 
                   <div className="mt-5 flex flex-wrap items-center gap-x-6 lg:mt-7">
+                    <Link
+                      to={`/work/${project.slug}`}
+                      data-cursor="Read"
+                      className="group inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-accent"
+                    >
+                      <span className="border-b border-accent/40 pb-0.5 transition-colors group-hover:border-accent">
+                        Case study
+                      </span>
+                      <span
+                        className="transition-transform group-hover:translate-x-0.5"
+                        aria-hidden
+                      >
+                        →
+                      </span>
+                    </Link>
                     {project.links.live ? (
                       <a
                         href={project.links.live}
