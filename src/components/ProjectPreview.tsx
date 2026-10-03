@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type ProjectPreviewProps = {
   src?: string;
+  /** Optional muted clip; plays while the preview is active. */
+  video?: string;
   title: string;
   url?: string;
   accent: string;
@@ -19,8 +21,44 @@ const safeHostname = (url?: string) => {
   }
 };
 
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+
+/**
+ * "Active" while hovered on mouse devices, or while mostly on screen on touch devices,
+ * so phones get the same motion as desktop without needing hover.
+ */
+function usePreviewActive() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const on = () => setActive(true);
+      const off = () => setActive(false);
+      el.addEventListener('pointerenter', on);
+      el.addEventListener('pointerleave', off);
+      return () => {
+        el.removeEventListener('pointerenter', on);
+        el.removeEventListener('pointerleave', off);
+      };
+    }
+
+    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), {
+      threshold: 0.6,
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, active };
+}
+
 export function ProjectPreview({
   src,
+  video,
   title,
   url,
   accent,
@@ -30,13 +68,16 @@ export function ProjectPreview({
 }: ProjectPreviewProps) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const { ref, active } = usePreviewActive();
 
   const hostname = safeHostname(url);
-  const resolvedSrc = src ? `${import.meta.env.BASE_URL}${src.replace(/^\//, '')}` : undefined;
+  const resolvedSrc = src ? asset(src) : undefined;
   const showImage = resolvedSrc && !errored;
 
   return (
     <div
+      ref={ref}
       className={`group/preview relative overflow-hidden rounded-2xl border border-white/[0.06] bg-bg shadow-[0_25px_80px_-20px_rgba(0,0,0,0.7)] transition-transform duration-500 hover:-translate-y-1 ${className}`}
     >
       {/* Browser chrome */}
@@ -93,11 +134,30 @@ export function ProjectPreview({
             decoding="async"
             // React 18 only knows the lowercase attribute; camelCase triggers a dev warning.
             {...{ fetchpriority: priority ? 'high' : 'auto' }}
-            className={`absolute inset-0 h-full w-full object-contain object-center transition-opacity duration-700 ${
+            className={`absolute inset-0 h-full w-full object-contain object-center transition-[opacity,transform] ease-out ${
               loaded ? 'opacity-100' : 'opacity-0'
-            }`}
+            } ${active ? 'scale-[1.06] duration-[6000ms]' : 'scale-100 duration-700'}`}
             onLoad={() => setLoaded(true)}
             onError={() => setErrored(true)}
+          />
+        ) : null}
+
+        {/* Video layer: only mounted while active so it never downloads unless watched */}
+        {video && active ? (
+          <video
+            src={asset(video)}
+            poster={resolvedSrc}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="metadata"
+            aria-hidden
+            onPlaying={() => setVideoReady(true)}
+            onEmptied={() => setVideoReady(false)}
+            className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ${
+              videoReady ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         ) : null}
 

@@ -8,6 +8,7 @@ import { HomePage } from './pages/Home';
 import { WorkPage } from './pages/Work';
 import { AboutPage } from './pages/About';
 import { JournalPage } from './pages/Journal';
+import { CaseStudyPage } from './pages/CaseStudy';
 
 const LOADER_KEY = 'portfolio-loaded';
 
@@ -39,6 +40,7 @@ function AppRoutes() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="work" element={<WorkPage />} />
+        <Route path="work/:slug" element={<CaseStudyPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="journal" element={<JournalPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
