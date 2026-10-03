@@ -22,6 +22,8 @@ import { useGoTo } from '../hooks/useGoTo';
 import { copyText, downloadResume, isMac } from '../lib/contact';
 import { useToast } from './Toaster';
 import { lockScroll } from '../lib/smoothScroll';
+import { unlock } from '../lib/achievements';
+import { useAchievementsPanel } from './Achievements';
 import { playSound } from '../lib/sound';
 
 type Command = {
@@ -47,6 +49,7 @@ const openExternal = (href: string) => window.open(href, '_blank', 'noopener,nor
 function useCommands(): Command[] {
   const goTo = useGoTo();
   const toast = useToast();
+  const { open: openAchievements } = useAchievementsPanel();
 
   return useMemo(() => {
     const linkedIn = socialLinks.find((s) => s.label === 'LinkedIn')!.href;
@@ -144,6 +147,7 @@ function useCommands(): Command[] {
         hint: 'email',
         keywords: contact.email,
         run: async () => {
+          unlock('contact');
           const ok = await copyText(contact.email);
           toast(
             ok
@@ -191,6 +195,15 @@ function useCommands(): Command[] {
       },
 
       {
+        id: 'achievements',
+        group: 'Actions',
+        icon: '★',
+        label: 'Achievements',
+        hint: 'achievements',
+        keywords: 'progress badges',
+        run: openAchievements,
+      },
+      {
         id: 'whoami',
         group: 'Fun',
         icon: '$',
@@ -210,6 +223,7 @@ function useCommands(): Command[] {
         label: 'hire adarsh',
         hint: 'hire',
         run: () => {
+          unlock('hire');
           goTo(window.location.pathname, 'contact');
           toast({
             title: 'Great choice.',
@@ -219,7 +233,7 @@ function useCommands(): Command[] {
         },
       },
     ];
-  }, [goTo, toast]);
+  }, [goTo, toast, openAchievements]);
 }
 
 function matches(command: Command, tokens: string[]) {
@@ -305,10 +319,11 @@ function Palette({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     restoreFocus.current = document.activeElement as HTMLElement | null;
     inputRef.current?.focus();
-    const unlock = lockScroll();
+    const unlockScroll = lockScroll();
     playSound('open');
+    unlock('power');
     return () => {
-      unlock();
+      unlockScroll();
       const el = restoreFocus.current;
       if (el && el !== document.body && document.contains(el)) el.focus({ preventScroll: true });
     };

@@ -6,6 +6,7 @@ import { scrollToElement, scrollToTop, startSmoothScroll } from '../lib/smoothSc
 import { Navbar } from './Navbar';
 import { ToastProvider } from './Toaster';
 import { CommandPaletteProvider } from './CommandPalette';
+import { AchievementsProvider } from './Achievements';
 import { useEasterEggs } from '../hooks/useEasterEggs';
 
 function ScrollManager() {
@@ -35,16 +36,18 @@ function EasterEggs() {
 export function Layout() {
   return (
     <ToastProvider>
-      <CommandPaletteProvider>
-        <ScrollManager />
-        <EasterEggs />
-        <CustomCursor />
-        <Navbar />
-        <main>
-          <Outlet />
-        </main>
-        <MobileActionBar />
-      </CommandPaletteProvider>
+      <AchievementsProvider>
+        <CommandPaletteProvider>
+          <ScrollManager />
+          <EasterEggs />
+          <CustomCursor />
+          <Navbar />
+          <main>
+            <Outlet />
+          </main>
+          <MobileActionBar />
+        </CommandPaletteProvider>
+      </AchievementsProvider>
     </ToastProvider>
   );
 }

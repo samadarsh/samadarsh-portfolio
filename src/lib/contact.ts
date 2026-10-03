@@ -1,4 +1,5 @@
 import { contact } from '../data/content';
+import { unlock } from './achievements';
 
 export const resumeHref = `${import.meta.env.BASE_URL}${contact.resumeFile}`;
 
@@ -20,6 +21,7 @@ export function downloadResume() {
   document.body.appendChild(a);
   a.click();
   a.remove();
+  unlock('resume');
 }
 
 export const isMac =

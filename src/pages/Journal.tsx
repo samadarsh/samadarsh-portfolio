@@ -24,6 +24,7 @@ export function JournalPage() {
           {/* Haugtun intro card */}
           <motion.a
             href={writingMeta.pageUrl}
+            data-achievement="reader"
             target="_blank"
             rel="noreferrer"
             initial={{ opacity: 0, y: 16 }}
@@ -70,6 +71,7 @@ export function JournalPage() {
               >
                 <a
                   href={entry.href}
+                  data-achievement="reader"
                   data-cursor="Read"
                   target="_blank"
                   rel="noreferrer"
@@ -108,6 +110,7 @@ export function JournalPage() {
             </p>
             <a
               href={writingMeta.pageUrl}
+            data-achievement="reader"
               target="_blank"
               rel="noreferrer"
               className="group inline-flex items-center gap-3 rounded-full border border-white/[0.1] bg-surface/40 px-6 py-3 text-sm font-medium text-text-primary transition hover:border-accent/40 hover:bg-surface/60"
