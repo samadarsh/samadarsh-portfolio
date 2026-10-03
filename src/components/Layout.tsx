@@ -7,6 +7,7 @@ import { Navbar } from './Navbar';
 import { ToastProvider } from './Toaster';
 import { CommandPaletteProvider } from './CommandPalette';
 import { AchievementsProvider } from './Achievements';
+import { AskAdarshProvider } from './AskAdarsh';
 import { useEasterEggs } from '../hooks/useEasterEggs';
 
 function ScrollManager() {
@@ -37,16 +38,18 @@ export function Layout() {
   return (
     <ToastProvider>
       <AchievementsProvider>
-        <CommandPaletteProvider>
-          <ScrollManager />
-          <EasterEggs />
-          <CustomCursor />
-          <Navbar />
-          <main>
-            <Outlet />
-          </main>
-          <MobileActionBar />
-        </CommandPaletteProvider>
+        <AskAdarshProvider>
+          <CommandPaletteProvider>
+            <ScrollManager />
+            <EasterEggs />
+            <CustomCursor />
+            <Navbar />
+            <main>
+              <Outlet />
+            </main>
+            <MobileActionBar />
+          </CommandPaletteProvider>
+        </AskAdarshProvider>
       </AchievementsProvider>
     </ToastProvider>
   );

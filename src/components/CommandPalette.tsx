@@ -24,6 +24,7 @@ import { useToast } from './Toaster';
 import { lockScroll } from '../lib/smoothScroll';
 import { unlock } from '../lib/achievements';
 import { useAchievementsPanel } from './Achievements';
+import { useAskAdarsh } from './AskAdarsh';
 import { playSound } from '../lib/sound';
 
 type Command = {
@@ -50,6 +51,7 @@ function useCommands(): Command[] {
   const goTo = useGoTo();
   const toast = useToast();
   const { open: openAchievements } = useAchievementsPanel();
+  const askAdarsh = useAskAdarsh();
 
   return useMemo(() => {
     const linkedIn = socialLinks.find((s) => s.label === 'LinkedIn')!.href;
@@ -195,6 +197,15 @@ function useCommands(): Command[] {
       },
 
       {
+        id: 'ask',
+        group: 'Actions',
+        icon: '✦',
+        label: 'Ask Adarsh (AI)',
+        hint: 'ask',
+        keywords: 'ai chat question assistant',
+        run: () => askAdarsh.open(),
+      },
+      {
         id: 'achievements',
         group: 'Actions',
         icon: '★',
@@ -242,7 +253,7 @@ function useCommands(): Command[] {
         },
       },
     ];
-  }, [goTo, toast, openAchievements]);
+  }, [goTo, toast, openAchievements, askAdarsh]);
 }
 
 function matches(command: Command, tokens: string[]) {
@@ -319,7 +330,22 @@ function Palette({ onClose }: { onClose: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const restoreFocus = useRef<HTMLElement | null>(null);
 
-  const results = useMemo(() => search(commands, query), [commands, query]);
+  const askAdarsh = useAskAdarsh();
+  const results = useMemo(() => {
+    const found = search(commands, query);
+    const q = query.trim();
+    if (found.length || q.length < 3) return found;
+    return [
+      {
+        id: 'ask-fallback',
+        group: 'Ask Adarsh',
+        icon: '✦',
+        label: `Ask: “${q}”`,
+        hint: 'ai',
+        run: () => askAdarsh.open(q),
+      },
+    ];
+  }, [commands, query, askAdarsh]);
 
   const activeIndex = Math.min(active, Math.max(results.length - 1, 0));
   const activeCommand = results[activeIndex];

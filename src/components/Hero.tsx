@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 import { HeroNetwork } from './HeroNetwork';
+import { useAskAdarsh } from './AskAdarsh';
 
 export function Hero() {
+  const askAdarsh = useAskAdarsh();
   const rootRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -88,6 +90,17 @@ export function Hero() {
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-3 lg:justify-end">
+              <button
+                type="button"
+                onClick={() => askAdarsh.open()}
+                data-magnetic
+                className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/[0.06] px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:border-accent sm:py-2.5"
+              >
+                <span className="text-accent" aria-hidden>
+                  ✦
+                </span>
+                Ask Adarsh
+              </button>
               <ResumeButton />
               <CopyEmailButton />
             </div>

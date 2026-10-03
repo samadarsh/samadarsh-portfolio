@@ -2,6 +2,7 @@ export type AchievementId =
   | 'arrived'
   | 'explorer'
   | 'power'
+  | 'ask'
   | 'testdriver'
   | 'casestudy'
   | 'reader'
@@ -24,6 +25,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Visited Home, Work, About and Haugtun',
   },
   { id: 'power', icon: '⌘', name: 'Power user', description: 'Opened search' },
+  { id: 'ask', icon: '💬', name: 'Curious', description: 'Asked Adarsh a question' },
   { id: 'testdriver', icon: '🚀', name: 'Test driver', description: 'Opened a live project' },
   { id: 'casestudy', icon: '📐', name: 'Deep diver', description: 'Read a case study' },
   { id: 'reader', icon: '📖', name: 'Reader', description: 'Opened a Haugtun post' },
