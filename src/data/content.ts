@@ -223,8 +223,8 @@ export const projects: Project[] = [
       'Local SEO built for a business that lives in Google Maps results — PhotographyBusiness JSON-LD with address, hours and offers, generated sitemap and robots, per-page OG metadata.',
       'Hand-written CSS design system on tokenised type, colour and motion scales — editorial serif typography with no UI framework.',
     ],
-    stack: ['React', 'React Router', 'Vite', 'Vanilla CSS', 'Schema.org', 'Vercel'],
-    links: { live: 'https://bluemoon-studio-tawny.vercel.app', github: null },
+    stack: ['React', 'React Router', 'Vite', 'Vanilla CSS', 'Schema.org', 'Netlify'],
+    links: { live: 'https://bluemoon-studio.netlify.app', github: null },
     cover: 'projects/bluemoon-studio.webp',
     architecture: [
       { label: 'React + React Router', detail: 'Six routes: collections and service pages' },
