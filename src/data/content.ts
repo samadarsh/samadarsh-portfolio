@@ -201,6 +201,7 @@ export const projects: Project[] = [
       github: 'https://github.com/samadarsh/BiteWise',
     },
     cover: 'projects/bite-wise.webp',
+    video: 'projects/bite-wise.mp4',
     architecture: [
       { label: 'Next.js app', detail: 'NutriOrder AI + SmartPantry AI interfaces' },
       { label: 'FastAPI backend', detail: 'Meal ranking, pantry and cart logic' },
@@ -226,6 +227,7 @@ export const projects: Project[] = [
     stack: ['React', 'React Router', 'Vite', 'Vanilla CSS', 'Schema.org', 'Netlify'],
     links: { live: 'https://bluemoon-studio.netlify.app', github: null },
     cover: 'projects/bluemoon-studio.webp',
+    video: 'projects/bluemoon-studio.mp4',
     architecture: [
       { label: 'React + React Router', detail: 'Six routes: collections and service pages' },
       { label: 'Instagram-fed gallery', detail: 'Keyboard-navigable lightbox, newest first' },
@@ -250,6 +252,7 @@ export const projects: Project[] = [
     stack: ['Vite', 'Supabase', 'GSAP', 'Lenis', 'Vanilla JS'],
     links: { live: 'https://oor-snacks.vercel.app', github: null },
     cover: 'projects/oor-snacks.webp',
+    video: 'projects/oor-snacks.mp4',
     architecture: [
       { label: 'Vite storefront', detail: 'GSAP + Lenis scroll storytelling' },
       { label: 'Cart and checkout', detail: 'Live orders from day one' },
