@@ -5,7 +5,7 @@ export function Skills() {
   return (
     <div className="grid gap-16 md:grid-cols-12">
       <div className="md:col-span-4">
-        <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+        <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
           Skills & Education
         </p>
         <h3 className="mt-3 font-display text-3xl leading-tight tracking-tighter text-text-primary md:text-4xl">

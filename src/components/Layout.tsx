@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { CustomCursor } from './CustomCursor';
+import { MobileActionBar } from './MobileActionBar';
 import { scrollToElement, scrollToTop, startSmoothScroll } from '../lib/smoothScroll';
 import { Navbar } from './Navbar';
 import { ToastProvider } from './Toaster';
@@ -42,6 +43,7 @@ export function Layout() {
         <main>
           <Outlet />
         </main>
+        <MobileActionBar />
       </CommandPaletteProvider>
     </ToastProvider>
   );

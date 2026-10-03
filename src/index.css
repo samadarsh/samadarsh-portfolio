@@ -58,8 +58,19 @@ body {
   background: hsl(var(--text));
 }
 
+/* Phones: "Adarsh" and "S." on two large lines. Wider screens: one line with a space. */
 .name-reveal {
-  display: inline-block;
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .name-reveal {
+    display: inline-block;
+  }
+
+  .name-reveal + .name-reveal {
+    margin-left: 0.22em;
+  }
 }
 
 .blur-in {
@@ -169,5 +180,22 @@ html.lenis body {
 @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .custom-cursor {
     display: none;
+  }
+}
+
+/* Touch: no grey tap flash, no double-tap zoom delay, and a light pressed state instead. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) {
+  a,
+  button {
+    touch-action: manipulation;
+  }
+
+  a:active,
+  button:active {
+    opacity: 0.75;
   }
 }

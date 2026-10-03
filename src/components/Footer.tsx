@@ -64,7 +64,7 @@ export function Footer() {
       <div id="contact" className="container mx-auto max-w-6xl px-6 py-20 md:py-24 scroll-mt-24">
         <div className="grid gap-16 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-7">
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-accent">
+            <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
               Let's build
             </p>
             <h2 className="mt-5 font-display text-4xl leading-[1.08] tracking-tight text-text-primary md:text-5xl lg:text-6xl">
@@ -89,7 +89,7 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-5 md:border-l md:border-white/[0.06] md:pl-12">
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+            <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-muted">
               Find me elsewhere
             </p>
             <ul className="mt-5 space-y-3">

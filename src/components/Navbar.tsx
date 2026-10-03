@@ -5,6 +5,9 @@ import { isMac } from '../lib/contact';
 import { playSound, setSoundOn } from '../lib/sound';
 import { useSoundOn } from '../hooks/useSound';
 import { useToast } from './Toaster';
+import { ResumeButton } from './ContactActions';
+import { socialLinks } from '../data/content';
+import { useGoTo } from '../hooks/useGoTo';
 
 const links = [
   { to: '/about', label: 'About' },
@@ -22,6 +25,7 @@ export function Navbar() {
   const palette = useCommandPalette();
   const soundOn = useSoundOn();
   const toast = useToast();
+  const goTo = useGoTo();
 
   const toggleSound = () => {
     setSoundOn(!soundOn);
@@ -54,7 +58,7 @@ export function Navbar() {
   return (
     <header
       ref={headerRef}
-      className="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4"
+      className="pointer-events-none fixed inset-x-0 top-[max(1.25rem,env(safe-area-inset-top))] z-50 flex justify-center px-4"
     >
       <nav
         className="pointer-events-auto flex w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-white/[0.08] bg-bg/70 px-2 py-2 shadow-2xl backdrop-blur-2xl md:px-3"
@@ -62,7 +66,7 @@ export function Navbar() {
       >
         <NavLink
           to="/"
-          className="group relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] font-mono text-xs font-semibold tracking-tight"
+          className="group relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] font-mono text-xs font-semibold tracking-tight md:h-9 md:w-9"
           aria-label="Home"
         >
           <span className="relative z-10 transition-colors group-hover:text-bg">AS</span>
@@ -83,7 +87,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={toggleSound}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] text-muted transition-colors hover:border-accent/40 hover:text-text-primary"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] text-muted transition-colors hover:border-accent/40 hover:text-text-primary md:h-9 md:w-9"
             aria-pressed={soundOn}
             aria-label="Interface sounds"
             title={soundOn ? 'Sound on' : 'Sound off'}
@@ -114,14 +118,14 @@ export function Navbar() {
             aria-label="Open command palette"
           >
             <span>Search</span>
-            <kbd className="rounded border border-white/[0.12] px-1.5 font-mono text-[10px] text-text-primary">
+            <kbd className="rounded border border-white/[0.12] px-1.5 font-mono text-[11px] md:text-[10px] text-text-primary">
               {isMac ? '⌘K' : 'Ctrl K'}
             </kbd>
           </button>
           <button
             type="button"
             onClick={palette.open}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] text-muted md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] text-muted md:hidden"
             aria-label="Open command palette"
           >
             <svg
@@ -140,7 +144,7 @@ export function Navbar() {
           </button>
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] md:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -161,21 +165,68 @@ export function Navbar() {
       {open ? (
         <div
           id="mobile-menu"
-          className="pointer-events-auto fixed inset-x-4 top-20 z-40 rounded-3xl border border-white/[0.08] bg-bg/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden"
+          className="pointer-events-auto fixed inset-x-4 top-[calc(max(1.25rem,env(safe-area-inset-top))+4.25rem)] z-40 max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-3xl border border-white/[0.08] bg-bg/95 p-3 shadow-2xl backdrop-blur-2xl md:hidden"
+          data-lenis-prevent
         >
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col">
             {links.map((link) => (
               <li key={link.to}>
                 <NavLink
                   to={link.to}
                   onClick={() => setOpen(false)}
-                  className="block text-lg text-text-primary"
+                  className={({ isActive }) =>
+                    `flex min-h-[52px] items-center justify-between rounded-2xl px-4 font-display text-2xl tracking-tight active:bg-white/[0.05] ${
+                      isActive ? 'text-text-primary' : 'text-text-primary/80'
+                    }`
+                  }
                 >
-                  {link.label}
+                  {({ isActive }) => (
+                    <>
+                      <span>{link.label}</span>
+                      {isActive ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+                      ) : null}
+                    </>
+                  )}
                 </NavLink>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  goTo(pathname, 'contact');
+                }}
+                className="flex min-h-[52px] w-full items-center rounded-2xl px-4 text-left font-display text-2xl tracking-tight text-text-primary/80 active:bg-white/[0.05]"
+              >
+                Contact
+              </button>
+            </li>
           </ul>
+
+          <div className="mt-2 flex flex-wrap gap-2 border-t border-white/[0.06] px-1 pt-4">
+            <ResumeButton />
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                palette.open();
+              }}
+              className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-3 text-sm text-text-primary"
+            >
+              Search
+            </button>
+          </div>
+          <div className="flex gap-6 px-4 pb-2 pt-4 text-sm text-muted">
+            {socialLinks
+              .filter((l) => l.label !== 'Email')
+              .map((l) => (
+                <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="py-2">
+                  {l.label} ↗
+                </a>
+              ))}
+          </div>
         </div>
       ) : null}
     </header>

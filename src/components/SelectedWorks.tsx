@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { projects } from '../data/content';
 import { SectionHeader } from './SectionHeader';
 import { ProjectPreview } from './ProjectPreview';
@@ -26,6 +27,40 @@ const ArrowIcon = () => (
     />
   </svg>
 );
+
+/** Highlights are always shown on large screens; on phones they fold behind a toggle to keep cards short. */
+function Highlights({ id, items }: { id: string; items: string[] }) {
+  const [open, setOpen] = useState(false);
+  const listId = `${id}-highlights`;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={listId}
+        className="mt-5 inline-flex min-h-[44px] items-center gap-2 rounded-full border border-white/[0.08] px-4 text-sm text-text-primary active:bg-white/[0.05] lg:hidden"
+      >
+        {open ? 'Hide highlights' : `Show highlights (${items.length})`}
+        <span className={`text-muted transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden>
+          ↓
+        </span>
+      </button>
+      <ul
+        id={listId}
+        className={`mt-4 space-y-2.5 text-sm leading-relaxed text-muted lg:mt-6 lg:block ${open ? 'block' : 'hidden'}`}
+      >
+        {items.map((h) => (
+          <li key={h} className="flex items-start gap-3">
+            <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
+            <span>{h}</span>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
 
 export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) {
   const items = limit ? projects.slice(0, limit) : projects;
@@ -67,7 +102,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                 </div>
 
                 <div className={`lg:col-span-5 ${reverse ? 'lg:order-1' : ''}`}>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs md:text-[11px] uppercase tracking-[0.22em] text-accent">
                     <span>{project.eyebrow}</span>
                     <span className="text-muted">·</span>
                     <span className="text-muted">{project.year}</span>
@@ -82,34 +117,27 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                     {project.summary}
                   </p>
 
-                  <ul className="mt-6 space-y-2.5 text-sm leading-relaxed text-muted">
-                    {project.highlights.map((h) => (
-                      <li key={h} className="flex items-start gap-3">
-                        <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <Highlights id={project.slug} items={project.highlights} />
 
                   <div className="mt-6 flex flex-wrap gap-2">
                     {project.stack.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-muted"
+                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-xs md:text-[11px] text-muted"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  <div className="mt-8 flex flex-wrap items-center gap-6">
+                  <div className="mt-5 flex flex-wrap items-center gap-x-6 lg:mt-7">
                     {project.links.live ? (
                       <a
                         href={project.links.live}
                         data-cursor="Live"
                         target="_blank"
                         rel="noreferrer"
-                        className="group inline-flex items-center gap-2 text-sm font-medium text-text-primary"
+                        className="group inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-text-primary"
                       >
                         <span className="border-b border-accent/40 pb-0.5 transition-colors group-hover:border-accent">
                           View live
@@ -123,7 +151,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                         data-cursor="Code"
                         target="_blank"
                         rel="noreferrer"
-                        className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-text-primary"
+                        className="group inline-flex min-h-[44px] items-center gap-2 text-sm text-muted transition-colors hover:text-text-primary"
                       >
                         <span>GitHub</span>
                         <ArrowIcon />

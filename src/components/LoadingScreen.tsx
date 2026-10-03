@@ -49,7 +49,7 @@ export function LoadingScreen({ onComplete, onExited }: LoadingScreenProps) {
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="mb-10 font-mono text-[10px] uppercase tracking-[0.4em] text-muted">
+          <p className="mb-10 font-mono text-[11px] md:text-[10px] uppercase tracking-[0.4em] text-muted">
             Adarsh S
           </p>
 
