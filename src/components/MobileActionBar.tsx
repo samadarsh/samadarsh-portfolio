@@ -6,6 +6,7 @@ import { downloadResume } from '../lib/contact';
 import { useCommandPalette } from './CommandPalette';
 import { useToast } from './Toaster';
 import { useAskAdarsh } from './AskAdarsh';
+import { AgentGlyph } from './AgentGlyph';
 
 /**
  * Phone-only quick actions pinned to the bottom of the screen. Appears once the visitor has
@@ -74,9 +75,7 @@ export function MobileActionBar() {
             onClick={() => askAdarsh.open()}
             className="flex h-12 items-center justify-center gap-1.5 rounded-xl text-sm text-text-primary active:bg-white/[0.06]"
           >
-            <span className="text-accent" aria-hidden>
-              ✦
-            </span>
+            <AgentGlyph size={16} className="text-accent" />
             Ask
           </button>
           <button
