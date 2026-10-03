@@ -78,3 +78,20 @@ body {
     opacity: 1;
   }
 }
+
+/* Konami easter egg */
+.konami-burst {
+  position: fixed;
+  z-index: 150;
+  pointer-events: none;
+  color: hsl(var(--accent));
+  font-size: 18px;
+  animation: konami-fly 1.6s ease-out forwards;
+}
+
+@keyframes konami-fly {
+  to {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--r));
+    opacity: 0;
+  }
+}

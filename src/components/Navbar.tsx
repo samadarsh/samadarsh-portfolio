@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useCommandPalette } from './CommandPalette';
+import { isMac } from '../lib/contact';
 
 const links = [
   { to: '/about', label: 'About' },
@@ -14,6 +16,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const { pathname } = useLocation();
+  const palette = useCommandPalette();
 
   // Close the mobile menu on any navigation (including the logo link).
   useEffect(() => {
@@ -40,7 +43,8 @@ export function Navbar() {
   return (
     <header
       ref={headerRef}
-      className="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
+      className="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4"
+    >
       <nav
         className="pointer-events-auto flex w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-white/[0.08] bg-bg/70 px-2 py-2 shadow-2xl backdrop-blur-2xl md:px-3"
         aria-label="Primary"
@@ -54,7 +58,7 @@ export function Navbar() {
           <span className="accent-gradient absolute inset-0 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100" />
         </NavLink>
 
-        <ul className="hidden items-center gap-8 pr-3 md:flex">
+        <ul className="hidden items-center gap-8 md:flex">
           {links.map((link) => (
             <li key={link.to}>
               <NavLink to={link.to} className={linkClass}>
@@ -64,29 +68,63 @@ export function Navbar() {
           ))}
         </ul>
 
-        <button
-          type="button"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label="Toggle menu"
-        >
-          <span className="relative flex h-3 w-4 flex-col justify-between">
-            <span
-              className={`block h-px w-full bg-text-primary transition ${open ? 'translate-y-[5.5px] rotate-45' : ''}`}
-            />
-            <span
-              className={`block h-px w-full bg-text-primary transition ${open ? '-translate-y-[5.5px] -rotate-45' : ''}`}
-            />
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={palette.open}
+            className="hidden h-9 items-center gap-2 rounded-full border border-white/[0.08] px-3 text-sm text-muted transition-colors hover:border-accent/40 hover:text-text-primary md:inline-flex"
+            aria-label="Open command palette"
+          >
+            <span>Search</span>
+            <kbd className="rounded border border-white/[0.12] px-1.5 font-mono text-[10px] text-text-primary">
+              {isMac ? '⌘K' : 'Ctrl K'}
+            </kbd>
+          </button>
+          <button
+            type="button"
+            onClick={palette.open}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] text-muted md:hidden"
+            aria-label="Open command palette"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.08] md:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label="Toggle menu"
+          >
+            <span className="relative flex h-3 w-4 flex-col justify-between">
+              <span
+                className={`block h-px w-full bg-text-primary transition ${open ? 'translate-y-[5.5px] rotate-45' : ''}`}
+              />
+              <span
+                className={`block h-px w-full bg-text-primary transition ${open ? '-translate-y-[5.5px] -rotate-45' : ''}`}
+              />
+            </span>
+          </button>
+        </div>
       </nav>
 
       {open ? (
         <div
           id="mobile-menu"
-          className="pointer-events-auto fixed inset-x-4 top-20 z-40 rounded-3xl border border-white/[0.08] bg-bg/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden">
+          className="pointer-events-auto fixed inset-x-4 top-20 z-40 rounded-3xl border border-white/[0.08] bg-bg/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden"
+        >
           <ul className="flex flex-col gap-4">
             {links.map((link) => (
               <li key={link.to}>
