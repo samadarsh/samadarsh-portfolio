@@ -78,11 +78,12 @@ export const experience: ExperienceItem[] = [
     company: 'Neeroma Technologies',
     period: 'Jun 2026 — Present',
     summary:
-      'Led the architecture and development of the AI Classroom module for QLearn, building an intelligent learning environment that combines AI tutoring, adaptive learning, contextual content delivery, and interactive educational experiences.',
+      'Worked on Yantra, a multi-agent software engineering platform covering design, development, deployment, ticketing, and marketing.',
     points: [
-      'Developed AI-powered learning workflows and educational features by integrating LLM capabilities, intelligent content generation, adaptive practice systems, and real-time user interactions across the platform.',
-      'Built scalable full-stack applications using React, TypeScript, Node.js, Express.js, MongoDB, Tailwind CSS, and AI technologies, focusing on modular architecture, high performance, and enterprise-grade security.',
-      'Provided technical leadership throughout the development lifecycle by coordinating implementation efforts, reviewing solutions, resolving complex technical issues, and ensuring high-quality engineering standards across the QLearn modules.',
+      'Implemented and enhanced the L5 Deploy Agent for automated deployment workflows and engineering operations.',
+      'Developed the L6 Tickets Agent with ticket triage, support workflows, permissions, SLA handling, and engineering hand-off.',
+      'Built and enhanced QLearn AI Classroom features for AI tutoring, contextual Q&A, content generation, and adaptive learning.',
+      'Resolved platform issues across browser automation, audio infrastructure, UI workflows, observability, and testing.',
     ],
   },
   {
@@ -90,24 +91,24 @@ export const experience: ExperienceItem[] = [
     company: 'Bae AI',
     period: 'May 2026 — Jun 2026',
     summary:
-      'Built the BAExt Intent Engine — a deterministic pipeline that turns shopping queries into structured intent, ranked product blocks, and validated JSON across a 1,200-SKU catalog.',
+      'Built an AI-powered intent engine that transformed natural language shopping queries into structured recommendations.',
     points: [
-      'Implemented the full MERN stack (Node/Express, React, MongoDB, TypeScript) across query parsing, 11-signal ranking, answer generation, and end-to-end orchestration.',
-      'Delivered production hardening with query caching, Docker Compose, and 250+ automated tests.',
-      'Ran 300-query stress testing with output grounding and performance benchmarks.',
+      'Developed recommendation and response orchestration pipelines using TypeScript, Node.js, React, MongoDB, and Express.js.',
+      'Implemented ranking algorithms and retrieval workflows to enhance recommendation accuracy and relevance.',
+      'Executed 250+ automated tests and managed performance benchmarking and Docker-based deployments.',
     ],
   },
   {
     role: 'Authorised Person',
     company: 'Angel One',
-    period: 'Jan 2025 — Present',
+    period: 'Jan 2025 — May 2026',
     kind: 'Proprietorship',
     summary:
-      'Independent proprietorship in equities and derivatives — a research-driven practice that sharpens the same analytical instincts I bring to AI and data systems.',
+      'Managed trading operations and client workflows while maintaining structured financial and transactional datasets.',
     points: [
-      'Built a structured market research workflow rooted in data-driven decisions and risk awareness.',
-      'Live exposure to time-sensitive data, execution, and portfolio monitoring under real conditions.',
-      'A complementary practice that strengthens the analytical and operational depth I bring to AI work.',
+      'Applied quantitative and time-series analysis to market and portfolio data for opportunity identification and decision support.',
+      'Developed algorithmic trading systems using OpenAlgo to automate execution and strategy management processes.',
+      'Generated performance analytics and maintained trading datasets for portfolio monitoring and risk evaluation.',
     ],
   },
   {
