@@ -8,6 +8,8 @@ export type AchievementId =
   | 'background'
   | 'resume'
   | 'contact'
+  | 'chart'
+  | 'streak'
   | 'konami'
   | 'hire';
 
@@ -33,6 +35,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   { id: 'resume', icon: '📄', name: 'Paper trail', description: 'Downloaded the resume' },
   { id: 'contact', icon: '✉️', name: 'Let’s talk', description: 'Copied or opened the email' },
+  { id: 'chart', icon: '📈', name: 'Market watcher', description: 'Played Read the chart' },
+  { id: 'streak', icon: '🔥', name: 'Hot hand', description: 'Three correct calls in a row' },
   { id: 'konami', icon: '🕹️', name: 'Old school', description: 'Entered the Konami code' },
   { id: 'hire', icon: '🤝', name: 'Good taste', description: 'Typed “hire”' },
 ];
