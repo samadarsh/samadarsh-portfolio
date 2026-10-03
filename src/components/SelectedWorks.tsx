@@ -48,11 +48,12 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
             return (
               <motion.article
                 key={project.slug}
+                id={project.slug}
                 initial={{ opacity: 0, y: 36 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-100px' }}
                 transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-                className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14"
+                className="grid scroll-mt-28 grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14"
               >
                 <div className={`lg:col-span-7 ${reverse ? 'lg:order-2' : ''}`}>
                   <ProjectPreview

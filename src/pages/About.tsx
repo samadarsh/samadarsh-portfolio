@@ -62,7 +62,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="py-24 md:py-32">
+      <section id="experience" className="scroll-mt-20 py-24 md:py-32">
         <div className="container mx-auto max-w-6xl px-6">
           <Experience />
         </div>
