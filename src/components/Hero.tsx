@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { Link } from 'react-router-dom';
 import { heroContent } from '../data/content';
+import { CopyEmailButton, ResumeButton } from './ContactActions';
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
@@ -82,6 +83,11 @@ export function Hero() {
               >
                 Get in touch
               </a>
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-center gap-3 lg:justify-end">
+              <ResumeButton />
+              <CopyEmailButton />
             </div>
           </div>
         </div>
