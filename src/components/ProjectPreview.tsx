@@ -1,9 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import type { DemoKind } from '../data/content';
+
+// Loaded on demand so the Home bundle stays small.
+const ProjectDemo = lazy(() => import('./ProjectDemo'));
 
 type ProjectPreviewProps = {
   src?: string;
   /** Optional muted clip; plays while the preview is active. */
   video?: string;
+  /** Animated demo used when there's no screenshot. */
+  demo?: DemoKind;
   title: string;
   url?: string;
   accent: string;
@@ -59,6 +65,7 @@ function usePreviewActive() {
 export function ProjectPreview({
   src,
   video,
+  demo,
   title,
   url,
   accent,
@@ -124,6 +131,13 @@ export function ProjectPreview({
             </p>
           </div>
         </div>
+
+        {/* Demo layer: covers the gradient once loaded, for projects without a screenshot */}
+        {demo && !showImage ? (
+          <Suspense fallback={null}>
+            <ProjectDemo kind={demo} active={active} />
+          </Suspense>
+        ) : null}
 
         {/* Image layer */}
         {showImage ? (

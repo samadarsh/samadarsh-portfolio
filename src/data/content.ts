@@ -3,6 +3,9 @@ export type ProjectLinks = {
   github: string | null;
 };
 
+/** Animated cover for a project without a screenshot; see components/ProjectDemo.tsx. */
+export type DemoKind = 'rag' | 'repo' | 'voice' | 'email';
+
 export type Project = {
   slug: string;
   title: string;
@@ -16,6 +19,8 @@ export type Project = {
   cover?: string;
   /** Optional muted preview clip (webm/mp4 in public/), played on hover or when scrolled into view. */
   video?: string;
+  /** Animated demo shown in place of a cover. */
+  demo?: DemoKind;
   /** How the system fits together, in order, for the case-study page. */
   architecture?: { label: string; detail?: string }[];
   accent: string;
@@ -309,6 +314,7 @@ export const projects: Project[] = [
     ],
     stack: ['FastAPI', 'ChromaDB', 'PyMuPDF', 'LangChain', 'Streamlit', 'Ollama'],
     links: { live: null, github: 'https://github.com/samadarsh/fin-sight' },
+    demo: 'rag',
     architecture: [
       { label: 'Financial PDFs', detail: 'Annual reports, transcripts, SEBI filings' },
       { label: 'PyMuPDF + LangChain', detail: 'Parsing and chunking' },
@@ -336,6 +342,7 @@ export const projects: Project[] = [
       live: 'https://repomind14.streamlit.app/',
       github: 'https://github.com/samadarsh/RepoMind',
     },
+    demo: 'repo',
     architecture: [
       { label: 'Repository', detail: 'File-level analysis' },
       { label: 'Multi-stage LLM pipeline', detail: 'LangChain + Groq with bias control' },
@@ -362,6 +369,7 @@ export const projects: Project[] = [
       live: 'https://huggingface.co/spaces/samadarsh/voicenote-ai-transliteration',
       github: 'https://github.com/samadarsh/VoiceNote-AI',
     },
+    demo: 'voice',
     architecture: [
       { label: 'Mic or upload', detail: 'Browser capture, pydub chunking' },
       { label: 'Whisper-medium', detail: 'Tamil ASR (language=ta)' },
@@ -385,6 +393,7 @@ export const projects: Project[] = [
     ],
     stack: ['Streamlit', 'LangChain', 'Groq', 'Llama 3', 'Python'],
     links: { live: null, github: 'https://github.com/samadarsh/GenAI-Email-Generator' },
+    demo: 'email',
     architecture: [
       { label: 'Job listing URL', detail: 'Scraped with LangChain WebBaseLoader' },
       { label: 'Llama 3.3 70B on Groq', detail: 'Structured requirement extraction' },
