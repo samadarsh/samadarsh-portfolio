@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useBackToClose } from '../hooks/useBackToClose';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useCommandPalette } from './CommandPalette';
 import { isMac } from '../lib/contact';
@@ -20,6 +21,8 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const closeMenu = useCallback(() => setOpen(false), []);
+  useBackToClose(open, closeMenu);
   const headerRef = useRef<HTMLElement>(null);
   const { pathname } = useLocation();
   const palette = useCommandPalette();

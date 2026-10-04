@@ -16,6 +16,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react';
+import { useBackToClose } from '../hooks/useBackToClose';
 import { Link, useLocation } from 'react-router-dom';
 import { contact, projects } from '../data/content';
 import { unlock } from '../lib/achievements';
@@ -162,6 +163,8 @@ export function AskAdarshProvider({ children }: { children: ReactNode }) {
     setIsOpen(true);
   }, []);
   const close = useCallback(() => setIsOpen(false), []);
+  // The desktop window stays open while browsing; only the phone sheet closes on back.
+  useBackToClose(isOpen && isPhone, close);
   const toggle = useCallback(() => setIsOpen((v) => !v), []);
   const clear = useCallback(() => setMessages([]), []);
   const value = useMemo(() => ({ open }), [open]);
