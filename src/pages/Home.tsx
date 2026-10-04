@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Hero } from '../components/Hero';
 import { Stats } from '../components/Stats';
@@ -7,12 +7,10 @@ import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
 import { aboutNarrative } from '../data/content';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { pages } from '../data/seo';
 
 export function HomePage() {
-  usePageMeta(
-    null,
-    'Adarsh S — building intelligent systems across AI and markets. Practical AI, data systems, and market research, shipped to production.',
-  );
+  usePageMeta(pages.home.title, pages.home.description);
 
   return (
     <>
@@ -31,7 +29,7 @@ export function HomePage() {
             </div>
             <div className="space-y-6 text-base leading-relaxed text-muted md:col-span-7 md:text-lg">
               {aboutNarrative.slice(0, 2).map((p, i) => (
-                <motion.p
+                <m.p
                   key={i}
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +37,7 @@ export function HomePage() {
                   transition={{ delay: i * 0.06, duration: 0.6 }}
                 >
                   {p}
-                </motion.p>
+                </m.p>
               ))}
               <Link
                 to="/about"

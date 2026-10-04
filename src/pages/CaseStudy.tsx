@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { projects } from '../data/content';
 import { ProjectPreview } from '../components/ProjectPreview';
 import { Footer } from '../components/Footer';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { caseStudyMeta, pages } from '../data/seo';
 import { unlock } from '../lib/achievements';
 
 const fadeUp = {
@@ -27,10 +28,8 @@ export function CaseStudyPage() {
   const index = projects.findIndex((p) => p.slug === slug);
   const project = index >= 0 ? projects[index] : undefined;
 
-  usePageMeta(
-    project ? `${project.title} case study` : 'Work',
-    project ? project.summary : 'Selected projects by Adarsh S.',
-  );
+  const meta = project ? caseStudyMeta(project) : pages.work;
+  usePageMeta(meta.title, meta.description);
 
   useEffect(() => {
     if (project) unlock('casestudy');
@@ -108,7 +107,7 @@ export function CaseStudyPage() {
           </div>
 
           {project.architecture?.length ? (
-            <motion.section {...fadeUp} className="mt-20" aria-labelledby="how-it-works">
+            <m.section {...fadeUp} className="mt-20" aria-labelledby="how-it-works">
               <SectionLabel>How it works</SectionLabel>
               <ol
                 id="how-it-works"
@@ -139,10 +138,10 @@ export function CaseStudyPage() {
                   </li>
                 ))}
               </ol>
-            </motion.section>
+            </m.section>
           ) : null}
 
-          <motion.section {...fadeUp} className="mt-16" aria-label="Highlights">
+          <m.section {...fadeUp} className="mt-16" aria-label="Highlights">
             <SectionLabel>Highlights</SectionLabel>
             <ul className="mt-6 grid gap-4 md:grid-cols-2">
               {project.highlights.map((h) => (
@@ -154,9 +153,9 @@ export function CaseStudyPage() {
                 </li>
               ))}
             </ul>
-          </motion.section>
+          </m.section>
 
-          <motion.section {...fadeUp} className="mt-16" aria-label="Stack">
+          <m.section {...fadeUp} className="mt-16" aria-label="Stack">
             <SectionLabel>Stack</SectionLabel>
             <div className="mt-6 flex flex-wrap gap-2">
               {project.stack.map((tag) => (
@@ -168,7 +167,7 @@ export function CaseStudyPage() {
                 </span>
               ))}
             </div>
-          </motion.section>
+          </m.section>
 
           <nav
             aria-label="More projects"
