@@ -50,6 +50,15 @@ export type EducationItem = {
   note: string;
 };
 
+export type Publication = {
+  title: string;
+  /** Where it appeared, journal first. */
+  venues: { kind: 'Journal' | 'Conference'; name: string }[];
+  topics: string[];
+  /** Optional link to the paper, if one is public. */
+  href?: string;
+};
+
 export type SkillGroup = {
   title: string;
   items: string[];
@@ -147,6 +156,30 @@ export const education: EducationItem[] = [
     school: 'Easwari Engineering College',
     period: '2020 — 2024',
     note: 'Graduated with CGPA 8.23. Foundation in machine learning, AI, and data-driven problem solving.',
+  },
+];
+
+export const publications: Publication[] = [
+  {
+    title: 'An Integrated Framework for Food Recognition, Nutritional Insights, and Meal Recording',
+    venues: [
+      { kind: 'Journal', name: 'Journal of Jilin University (Engineering and Technology Edition)' },
+      {
+        kind: 'Conference',
+        name: '3rd International Conference on Deep Sciences for Computing and Communications',
+      },
+    ],
+    topics: ['Computer vision', 'Nutrition', 'Deep learning'],
+  },
+  {
+    title: 'Music Genre Classification by Deep Learning Techniques',
+    venues: [
+      {
+        kind: 'Conference',
+        name: 'ISTE-sponsored International Conference on Latest Trends in Science, Engineering, and Technology',
+      },
+    ],
+    topics: ['Audio', 'Deep learning', 'Classification'],
   },
 ];
 
