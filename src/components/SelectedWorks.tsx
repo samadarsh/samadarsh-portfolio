@@ -95,6 +95,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                   <ProjectPreview
                     src={project.cover}
                     video={project.video}
+                    demo={project.demo}
                     title={project.title}
                     url={project.links.live ?? undefined}
                     accent={project.accent}

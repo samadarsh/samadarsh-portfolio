@@ -98,6 +98,7 @@ export function CaseStudyPage() {
             <ProjectPreview
               src={project.cover}
               video={project.video}
+              demo={project.demo}
               title={project.title}
               url={project.links.live ?? project.links.github ?? undefined}
               accent={project.accent}
