@@ -24,8 +24,8 @@ export const resumeOnly = {
     'Cybersecurity Infrastructure Configuration (Palo Alto Networks)',
   ],
   achievements: [
-    'Selected member of the Swiggy Builders Club.',
-    'Event Management Head, Student Council of the Artificial Intelligence & Data Science Department (2023–2024).',
+    'Selected member of the Swiggy Builders Club (2026, after graduating; BiteWise is the approved project).',
+    'Event Management Head, Student Council of the Artificial Intelligence & Data Science Department, Easwari Engineering College (2023–2024, during the B.Tech).',
   ],
   skills: {
     'Machine Learning & Generative AI': [

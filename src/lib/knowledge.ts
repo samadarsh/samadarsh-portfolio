@@ -68,7 +68,7 @@ export function buildKnowledge() {
     `# Achievements`,
     list(resumeOnly.achievements),
 
-    `# Writing: Haugtun Research (${writingMeta.pageUrl})`,
+    `# Writing: Haugtun Research (${writingMeta.pageUrl}), his market research page, posts from 2026`,
     writingMeta.description,
     ...journalEntries.map((j) => `- ${j.title} (${j.tag}, ${j.date})`),
   ].join('\n\n');

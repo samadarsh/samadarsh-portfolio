@@ -21,6 +21,7 @@ import { contact, projects } from '../data/content';
 import { unlock } from '../lib/achievements';
 import { lockScroll } from '../lib/smoothScroll';
 import { playSound } from '../lib/sound';
+import { AgentGlyph } from './AgentGlyph';
 
 type Message = { id: number; role: 'user' | 'assistant'; content: string; error?: boolean };
 
@@ -186,7 +187,7 @@ export function AskAdarshProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/** Desktop launcher: a glowing ✦ that turns into ✕ while the chat is open. */
+/** Desktop launcher: an animated agent-network mark that turns into ✕ while the chat is open. */
 function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
   const [teaser, setTeaser] = useState(false);
 
@@ -256,10 +257,10 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
             animate={{ rotate: 0, opacity: 1, scale: 1 }}
             exit={{ rotate: 90, opacity: 0, scale: 0.6 }}
             transition={{ duration: 0.18 }}
-            className="text-xl leading-none"
+            className="flex items-center justify-center text-xl leading-none"
             aria-hidden
           >
-            {open ? '✕' : '✦'}
+            {open ? '✕' : <AgentGlyph size={30} animated pulseColor="#b8862f" />}
           </motion.span>
         </AnimatePresence>
       </motion.button>
@@ -354,9 +355,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           <h2 id="ask-title" className="text-[15px] font-medium leading-tight text-text-primary">
             Ask Adarsh
           </h2>
-          <p className="text-xs text-muted">
-            {loading ? 'Typing…' : 'AI assistant · online'}
-          </p>
+          <p className="text-xs text-muted">{loading ? 'Typing…' : 'AI assistant · online'}</p>
         </div>
         {messages.length ? (
           <button
@@ -523,7 +522,7 @@ function Welcome({ onPick }: { onPick: (q: string) => void }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/[0.09] to-transparent p-4">
-        <p className="text-[15px] font-medium text-text-primary">Hi, I’m Adarsh’s AI assistant ✦</p>
+        <p className="text-[15px] font-medium text-text-primary">Hi, I’m Adarsh’s AI assistant</p>
         <p className="mt-1.5 text-sm leading-relaxed text-muted">
           Ask about his work, projects, skills or background. I answer from his resume and this
           site, and link you to the details.
