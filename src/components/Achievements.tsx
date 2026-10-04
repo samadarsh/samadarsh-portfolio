@@ -85,12 +85,31 @@ export function AchievementsButton({ className = '' }: { className?: string }) {
   const total = ACHIEVEMENTS.length;
   const r = 19;
   const circumference = 2 * Math.PI * r;
+  const [pulse, setPulse] = useState(false);
+
+  // A brief glow on unlock: the quiet cue on phones, where unlock pop-ups are switched off.
+  useEffect(() => {
+    let timer = 0;
+    const stop = onAchievementUnlocked(() => {
+      setPulse(true);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setPulse(false), 1600);
+    });
+    return () => {
+      stop();
+      window.clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <button
       type="button"
       onClick={open}
-      className={`relative flex items-center justify-center rounded-full border border-white/[0.08] font-mono text-xs text-text-primary transition-colors hover:border-accent/40 ${className}`}
+      className={`relative flex items-center justify-center rounded-full border font-mono text-xs text-text-primary transition-[border-color,box-shadow,transform] duration-500 hover:border-accent/40 ${
+        pulse
+          ? 'border-accent/70 shadow-[0_0_0_4px_hsl(var(--accent)/0.18),0_0_18px_hsl(var(--accent)/0.35)] motion-safe:scale-110'
+          : 'border-white/[0.08]'
+      } ${className}`}
       aria-label={`Achievements: ${done} of ${total} unlocked`}
       title="Achievements"
     >
