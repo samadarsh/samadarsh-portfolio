@@ -1,9 +1,9 @@
 // Titles, descriptions and share images for every page. Used by the pages themselves
 // (usePageMeta) and by the build, which writes a static HTML file per route so link previews
 // on LinkedIn, WhatsApp, X and search engines show the right page (see vite.config.ts).
-import { projects, type Project } from './content';
+import { projects, SITE_URL, type Project } from './content';
 
-export const SITE_URL = 'https://samadarsh.vercel.app';
+export { SITE_URL };
 export const SITE_NAME = 'Adarsh S';
 export const DEFAULT_TITLE = 'Adarsh S — Building intelligent systems across AI and markets';
 

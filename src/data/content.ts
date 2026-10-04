@@ -460,6 +460,9 @@ export const journalEntries: JournalEntry[] = [
   },
 ];
 
+/** The site's public address. Change it here when moving to a custom domain. */
+export const SITE_URL = 'https://samadarsh.vercel.app';
+
 export const contact = {
   email: 'samadarsh14@gmail.com',
   resumeFile: 'Adarsh_S_Resume.pdf',

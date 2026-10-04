@@ -55,6 +55,20 @@ function prerenderMeta(): Plugin {
         return html.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`);
       };
 
+      // Sitemap and robots.txt come from the same page list, so new projects are included
+      // automatically and a domain change only touches SITE_URL.
+      const urls = allPages().map((page) => `${SITE_URL}${page.path === '/' ? '/' : page.path}`);
+      await writeFile(
+        path.join(outDir, 'sitemap.xml'),
+        `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
+          .map((loc) => `  <url><loc>${loc}</loc></url>`)
+          .join('\n')}\n</urlset>\n`,
+      );
+      await writeFile(
+        path.join(outDir, 'robots.txt'),
+        `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,
+      );
+
       for (const page of allPages()) {
         const file =
           page.path === '/'

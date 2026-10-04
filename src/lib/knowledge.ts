@@ -10,6 +10,7 @@ import {
   journalEntries,
   projects,
   publications,
+  SITE_URL as SITE,
   skillGroups,
   socialLinks,
   writingMeta,
@@ -31,7 +32,6 @@ import {
   strengths,
 } from '../data/profile.js';
 
-const SITE = 'https://samadarsh.vercel.app';
 const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
 
 export function buildKnowledge() {
