@@ -27,6 +27,11 @@ const safeHostname = (url?: string) => {
   }
 };
 
+// Data saver on: keep the still cover (the video's first frame) instead of streaming the clip.
+const saveData = () =>
+  typeof navigator !== 'undefined' &&
+  (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
 
 /**
@@ -157,7 +162,7 @@ export function ProjectPreview({
         ) : null}
 
         {/* Video layer: only mounted while active so it never downloads unless watched */}
-        {video && active ? (
+        {video && active && !saveData() ? (
           <video
             src={asset(video)}
             poster={resolvedSrc}

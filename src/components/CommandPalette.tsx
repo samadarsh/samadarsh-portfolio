@@ -10,6 +10,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react';
+import { useBackToClose } from '../hooks/useBackToClose';
 import {
   contact,
   publications,
@@ -303,6 +304,7 @@ export function CommandPaletteProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
+  useBackToClose(isOpen, close);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -442,9 +444,17 @@ function Palette({ onClose }: { onClose: () => void }) {
             autoComplete="off"
             spellCheck={false}
           />
-          <kbd className="rounded-md border border-white/[0.12] px-1.5 py-0.5 font-mono text-[11px] md:text-[10px] text-muted">
+          <kbd className="hidden rounded-md border border-white/[0.12] px-1.5 py-0.5 font-mono text-[10px] text-muted md:inline">
             esc
           </kbd>
+          {/* Phones have no Esc key */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="-my-2 -mr-2 flex h-10 items-center rounded-lg px-2.5 text-sm text-muted active:bg-white/[0.06] md:hidden"
+          >
+            Cancel
+          </button>
         </div>
 
         <ul

@@ -10,6 +10,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from 'react';
+import { useBackToClose } from '../hooks/useBackToClose';
 import { useLocation } from 'react-router-dom';
 import {
   ACHIEVEMENTS,
@@ -36,6 +37,8 @@ const useUnlocked = () => useSyncExternalStore(subscribeAchievements, getUnlocke
  */
 export function AchievementsProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const closePanel = useCallback(() => setIsOpen(false), []);
+  useBackToClose(isOpen, closePanel);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -61,7 +64,7 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
     <AchievementsContext.Provider value={value}>
       {children}
       <AnimatePresence>
-        {isOpen ? <AchievementsPanel onClose={() => setIsOpen(false)} /> : null}
+        {isOpen ? <AchievementsPanel onClose={closePanel} /> : null}
       </AnimatePresence>
     </AchievementsContext.Provider>
   );
