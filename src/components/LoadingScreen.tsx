@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const DURATION_MS = 1000;
@@ -44,7 +44,7 @@ export function LoadingScreen({ onComplete, onExited }: LoadingScreenProps) {
   return (
     <AnimatePresence onExitComplete={onExited}>
       {visible ? (
-        <motion.div
+        <m.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg px-6"
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -58,12 +58,12 @@ export function LoadingScreen({ onComplete, onExited }: LoadingScreenProps) {
           </p>
 
           <div className="h-px w-full max-w-xs overflow-hidden bg-stroke">
-            <motion.div
+            <m.div
               className="h-full origin-left bg-text-primary"
               style={{ scaleX: count / 100 }}
             />
           </div>
-        </motion.div>
+        </m.div>
       ) : null}
     </AnimatePresence>
   );

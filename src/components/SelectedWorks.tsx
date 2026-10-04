@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { projects } from '../data/content';
@@ -82,7 +82,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
           {items.map((project, index) => {
             const reverse = index % 2 === 1;
             return (
-              <motion.article
+              <m.article
                 key={project.slug}
                 id={project.slug}
                 initial={{ opacity: 0, y: 36 }}
@@ -177,7 +177,7 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
                     ) : null}
                   </div>
                 </div>
-              </motion.article>
+              </m.article>
             );
           })}
         </div>

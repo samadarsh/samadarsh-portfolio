@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { experience } from '../data/content';
 import { unlock } from '../lib/achievements';
@@ -33,7 +33,7 @@ export function Experience() {
 
       <ol className="md:col-span-8">
         {experience.map((item, index) => (
-          <motion.li
+          <m.li
             key={item.company + item.period}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -66,7 +66,7 @@ export function Experience() {
                 </li>
               ))}
             </ul>
-          </motion.li>
+          </m.li>
         ))}
       </ol>
       <div ref={endRef} aria-hidden className="h-px md:col-span-12" />

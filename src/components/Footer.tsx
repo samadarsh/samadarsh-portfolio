@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
 import { contact, socialLinks } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 
@@ -25,30 +23,11 @@ const MailIcon = () => (
 );
 
 export function Footer() {
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion || !trackRef.current) return;
-
-    // The track holds two identical halves, so shifting by -50% of its own width loops
-    // seamlessly — and stays correct after web fonts load or the viewport resizes.
-    const tween = gsap.to(trackRef.current, {
-      xPercent: -50,
-      duration: 30,
-      ease: 'none',
-      repeat: -1,
-    });
-
-    return () => {
-      tween.kill();
-    };
-  }, []);
 
   return (
     <footer className="relative mt-32 overflow-hidden border-t border-white/[0.06]">
       <div className="overflow-hidden border-b border-white/[0.06] py-8">
-        <div ref={trackRef} className="flex w-max whitespace-nowrap">
+        <div className="marquee-track flex w-max whitespace-nowrap">
           {Array.from({ length: 8 }).map((_, i) => (
             <span
               key={i}

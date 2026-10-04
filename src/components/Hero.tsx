@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
 import { Link } from 'react-router-dom';
 import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
@@ -9,35 +7,9 @@ import { AgentGlyph } from './AgentGlyph';
 
 export function Hero() {
   const askAdarsh = useAskAdarsh();
-  const rootRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion || !rootRef.current) return;
-
-    const ctx = gsap.context(() => {
-      gsap.from('.name-reveal > span', {
-        yPercent: 110,
-        duration: 1.15,
-        ease: 'power4.out',
-        stagger: 0.06,
-      });
-      gsap.to('.blur-in', {
-        filter: 'blur(0px)',
-        opacity: 1,
-        duration: 1,
-        delay: 0.35,
-        stagger: 0.08,
-        ease: 'power2.out',
-      });
-    }, rootRef);
-
-    return () => ctx.revert();
-  }, []);
 
   return (
     <section
-      ref={rootRef}
       className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-20 pt-32 md:pb-28"
     >
       <div className="absolute inset-x-0 top-0 -z-10 h-[70vh] bg-gradient-to-b from-accent/[0.06] via-transparent to-transparent" />
@@ -66,7 +38,7 @@ export function Hero() {
             </h1>
           </div>
 
-          <div className="blur-in max-w-md lg:text-right">
+          <div className="blur-in max-w-md lg:text-right" style={{ animationDelay: '0.43s' }}>
             <p className="text-base leading-relaxed text-muted md:text-lg">{heroContent.tagline}</p>
             <p className="mt-4 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted/80">
               {heroContent.location}

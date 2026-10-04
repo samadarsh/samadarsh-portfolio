@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
+import { waitForElement } from '../lib/waitForElement';
 import { CustomCursor } from './CustomCursor';
 import { MobileActionBar } from './MobileActionBar';
 import { scrollToElement, scrollToTop, startSmoothScroll } from '../lib/smoothScroll';
@@ -18,12 +19,12 @@ function ScrollManager() {
   // On navigation, jump to the #section if there is one, otherwise to the top.
   useEffect(() => {
     if ((state as { scrolled?: boolean } | null)?.scrolled) return;
-    const target = hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
-    if (target) {
-      scrollToElement(target, { immediate: true });
-    } else {
-      scrollToTop();
-    }
+    scrollToTop();
+    if (!hash) return;
+    // The page may still be loading, so wait for the section before jumping to it.
+    const wait = waitForElement(decodeURIComponent(hash.slice(1)));
+    wait.promise.then((target) => target && scrollToElement(target, { immediate: true }));
+    return wait.cancel;
   }, [pathname, hash, state]);
 
   return null;
@@ -45,7 +46,10 @@ export function Layout() {
             <CustomCursor />
             <Navbar />
             <main>
-              <Outlet />
+              {/* Pages other than Home load on demand; hold their space while they arrive. */}
+              <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
+                <Outlet />
+              </Suspense>
             </main>
             <MobileActionBar />
           </CommandPaletteProvider>

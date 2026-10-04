@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { playSound } from '../lib/sound';
 import {
   createContext,
@@ -52,7 +52,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       >
         <AnimatePresence initial={false}>
           {toasts.map((t) => (
-            <motion.div
+            <m.div
               key={t.id}
               layout
               initial={{ opacity: 0, y: 14, scale: 0.97 }}
@@ -73,7 +73,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 <p className="text-sm font-medium text-text-primary">{t.title}</p>
                 {t.description ? <p className="text-[13px] text-muted">{t.description}</p> : null}
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </AnimatePresence>
       </div>

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { education, skillGroups } from '../data/content';
 
 export function Skills() {
@@ -19,7 +19,7 @@ export function Skills() {
       <div className="md:col-span-8">
         <div className="grid gap-8 md:grid-cols-2">
           {skillGroups.map((group, index) => (
-            <motion.div
+            <m.div
               key={group.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +39,7 @@ export function Skills() {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 

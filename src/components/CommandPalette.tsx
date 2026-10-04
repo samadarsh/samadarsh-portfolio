@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   createContext,
   useCallback,
@@ -399,7 +399,7 @@ function Palette({ onClose }: { onClose: () => void }) {
   let lastGroup = '';
 
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-sm sm:px-4 sm:pt-[12vh]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -409,7 +409,7 @@ function Palette({ onClose }: { onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <motion.div
+      <m.div
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
@@ -510,8 +510,8 @@ function Palette({ onClose }: { onClose: () => void }) {
             <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd> <Kbd>K</Kbd> anywhere
           </span>
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   createContext,
   useCallback,
@@ -149,7 +149,7 @@ function AchievementsPanel({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0 z-[95] flex items-end justify-center bg-black/60 backdrop-blur-sm md:items-start md:pt-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -159,7 +159,7 @@ function AchievementsPanel({ onClose }: { onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <motion.section
+      <m.section
         role="dialog"
         aria-modal="true"
         aria-labelledby="achievements-title"
@@ -270,7 +270,7 @@ function AchievementsPanel({ onClose }: { onClose: () => void }) {
             </button>
           )}
         </div>
-      </motion.section>
-    </motion.div>
+      </m.section>
+    </m.div>
   );
 }

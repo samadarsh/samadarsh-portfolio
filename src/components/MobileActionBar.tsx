@@ -1,7 +1,8 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { contact } from '../data/content';
+import { waitForElement } from '../lib/waitForElement';
 import { downloadResume } from '../lib/contact';
 import { useCommandPalette } from './CommandPalette';
 import { useToast } from './Toaster';
@@ -28,16 +29,19 @@ export function MobileActionBar() {
   }, [pathname]);
 
   useEffect(() => {
-    const target = document.getElementById('contact');
-    if (!target) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setContactVisible(entry.isIntersecting),
-      {
+    let observer: IntersectionObserver | undefined;
+    const wait = waitForElement('contact');
+    wait.promise.then((target) => {
+      if (!target) return;
+      observer = new IntersectionObserver(([entry]) => setContactVisible(entry.isIntersecting), {
         rootMargin: '0px 0px -20% 0px',
-      },
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
+      });
+      observer.observe(target);
+    });
+    return () => {
+      wait.cancel();
+      observer?.disconnect();
+    };
   }, [pathname]);
 
   const show = scrolledPast && !contactVisible;
@@ -45,7 +49,7 @@ export function MobileActionBar() {
   return (
     <AnimatePresence>
       {show ? (
-        <motion.nav
+        <m.nav
           aria-label="Quick actions"
           initial={{ y: 96, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -85,7 +89,7 @@ export function MobileActionBar() {
           >
             Search
           </button>
-        </motion.nav>
+        </m.nav>
       ) : null}
     </AnimatePresence>
   );

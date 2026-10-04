@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { publications } from '../data/content';
 
 export function Publications() {
@@ -19,7 +19,7 @@ export function Publications() {
 
       <ol className="grid gap-4 md:col-span-8">
         {publications.map((pub, index) => (
-          <motion.li
+          <m.li
             key={pub.title}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -79,7 +79,7 @@ export function Publications() {
                 </span>
               ))}
             </div>
-          </motion.li>
+          </m.li>
         ))}
       </ol>
     </div>
