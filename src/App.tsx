@@ -2,6 +2,7 @@ import { lazy, useCallback, useEffect, useState } from 'react';
 import { LazyMotion, MotionConfig } from 'framer-motion';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/Home';
@@ -95,6 +96,8 @@ export default function App() {
           ) : null}
           {ready ? <AppRoutes /> : null}
           <SpeedInsights />
+          {/* Page views, cookie-less. Needs Web Analytics enabled in the Vercel project. */}
+          <Analytics />
         </BrowserRouter>
       </MotionConfig>
     </LazyMotion>
