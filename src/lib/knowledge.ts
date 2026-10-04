@@ -14,7 +14,22 @@ import {
   socialLinks,
   writingMeta,
 } from '../data/content.js';
-import { resumeOnly } from '../data/profile.js';
+import {
+  achievements,
+  certifications,
+  finalYearProject,
+  haugtunAbout,
+  interests,
+  marketsBackground,
+  openSource,
+  projectDetails,
+  proudOf,
+  roleDetails,
+  schooling,
+  skills,
+  story,
+  strengths,
+} from '../data/profile.js';
 
 const SITE = 'https://samadarsh.vercel.app';
 const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
@@ -22,28 +37,36 @@ const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
 export function buildKnowledge() {
   return [
     `# Adarsh S`,
-    `${heroContent.tagline} Based in ${heroContent.location}. Open to roles, freelance and research collaborations.`,
+    `${heroContent.tagline} Based in ${heroContent.location}.`,
     aboutNarrative.join(' '),
+    `His story: ${story}`,
     `Contact: ${contact.email}. ${socialLinks
       .filter((l) => l.label !== 'Email')
       .map((l) => `${l.label}: ${l.href}`)
       .join('. ')}. Resume: ${SITE}/${contact.resumeFile}`,
 
-    `# Experience`,
-    ...experience.map(
-      (x) =>
-        `## ${x.role}, ${x.company} (${x.period}${x.kind ? `, ${x.kind}` : ''})\n${x.summary}\n${list(x.points)}`,
+    `# Experience (most recent first)`,
+    ...experience.map((x) =>
+      [
+        `## ${x.role}, ${x.company} (${x.period}${x.kind ? `, ${x.kind}` : ''})`,
+        x.summary,
+        list(x.points),
+        list(roleDetails[x.company] ?? []),
+      ]
+        .filter(Boolean)
+        .join('\n'),
     ),
-    `Also at Neeroma: ${resumeOnly.neeromaExtra}`,
 
     `# Projects (case studies at ${SITE}/work/<slug>)`,
     ...projects.map((p) =>
       [
-        `## ${p.title} (${p.eyebrow}, ${p.year}) — slug: ${p.slug}`,
+        `## ${p.title} (${p.eyebrow}, ${p.year}), slug: ${p.slug}`,
         `Role: ${p.role}. ${p.summary}`,
+        list(p.highlights),
         p.architecture?.length
           ? `How it works: ${p.architecture.map((s) => (s.detail ? `${s.label} (${s.detail})` : s.label)).join(' → ')}.`
-          : list(p.highlights),
+          : '',
+        list(projectDetails[p.slug] ?? []),
         `Stack: ${p.stack.join(', ')}.`,
         p.links.live ? `Live: ${p.links.live}` : '',
         p.links.github ? `GitHub: ${p.links.github}` : '',
@@ -54,14 +77,9 @@ export function buildKnowledge() {
 
     `# Education`,
     ...education.map((e) => `- ${e.degree}, ${e.school} (${e.period}). ${e.note}`),
-    list(resumeOnly.schooling),
+    `- ${finalYearProject}`,
+    list(schooling),
 
-    `# Skills`,
-    ...skillGroups.map((g) => `- ${g.title}: ${g.items.join(', ')}`),
-    ...Object.entries(resumeOnly.skills).map(([k, v]) => `- ${k}: ${v.join(', ')}`),
-
-    `# Open source contributions`,
-    list(resumeOnly.openSource),
     `# Publications`,
     list(
       publications.map(
@@ -69,13 +87,33 @@ export function buildKnowledge() {
           `${p.title}. ${p.venues.map((v) => `${v.kind === 'Journal' ? 'Published in' : 'Presented at'} ${v.name}`).join('; ')}.`,
       ),
     ),
-    `# Certifications`,
-    list(resumeOnly.certifications),
-    `# Achievements`,
-    list(resumeOnly.achievements),
 
-    `# Writing: Haugtun Research (${writingMeta.pageUrl}), his market research page, posts from 2026`,
+    `# Skills`,
+    ...skillGroups.map((g) => `- ${g.title}: ${g.items.join(', ')}`),
+    ...Object.entries(skills).map(([k, v]) => `- ${k}: ${v.join('; ')}`),
+
+    `# Open-source contributions`,
+    list(openSource),
+
+    `# Markets and trading`,
+    marketsBackground,
+
+    `# Writing: Haugtun Research (${writingMeta.pageUrl})`,
+    haugtunAbout,
     writingMeta.description,
+    `Recent posts (2026):`,
     ...journalEntries.map((j) => `- ${j.title} (${j.tag}, ${j.date})`),
+
+    `# Certifications`,
+    list(certifications),
+    `# Achievements`,
+    list(achievements),
+
+    `# What he is most proud of`,
+    list(proudOf),
+    `# Strengths`,
+    list(strengths),
+    `# Interests`,
+    list(interests),
   ].join('\n\n');
 }
