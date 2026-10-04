@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { stats } from '../data/content';
 
 export function Stats() {
@@ -7,7 +7,7 @@ export function Stats() {
       <div className="container mx-auto max-w-6xl px-6">
         <div className="grid grid-cols-2 gap-y-12 md:grid-cols-4 md:gap-y-0">
           {stats.map((stat, index) => (
-            <motion.div
+            <m.div
               key={stat.label}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -21,7 +21,7 @@ export function Stats() {
               <p className="mt-3 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted">
                 {stat.label}
               </p>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

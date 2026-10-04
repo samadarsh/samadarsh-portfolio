@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { SectionHeader } from '../components/SectionHeader';
 import { Experience } from '../components/Experience';
 import { Skills } from '../components/Skills';
@@ -6,12 +6,10 @@ import { Publications } from '../components/Publications';
 import { Footer } from '../components/Footer';
 import { aboutNarrative, heroContent } from '../data/content';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { pages } from '../data/seo';
 
 export function AboutPage() {
-  usePageMeta(
-    'About',
-    'About Adarsh S — AI engineer in Chennai, India, with experience across machine learning engineering and live financial markets.',
-  );
+  usePageMeta(pages.about.title, pages.about.description);
 
   return (
     <>
@@ -27,7 +25,7 @@ export function AboutPage() {
             <div className="md:col-span-7">
               <div className="space-y-6 text-base leading-relaxed text-muted md:pt-6 md:text-lg">
                 {aboutNarrative.map((p, i) => (
-                  <motion.p
+                  <m.p
                     key={i}
                     initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -35,7 +33,7 @@ export function AboutPage() {
                     transition={{ delay: i * 0.06, duration: 0.6 }}
                   >
                     {p}
-                  </motion.p>
+                  </m.p>
                 ))}
               </div>
             </div>

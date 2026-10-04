@@ -1,15 +1,13 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { journalEntries, writingMeta } from '../data/content';
 import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
 import { ChartGame } from '../components/ChartGame';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { pages } from '../data/seo';
 
 export function JournalPage() {
-  usePageMeta(
-    'Haugtun Research',
-    'Haugtun Research by Adarsh S — notes on Indian markets, investing fundamentals, and how capital moves through cycles.',
-  );
+  usePageMeta(pages.journal.title, pages.journal.description);
 
   return (
     <>
@@ -23,7 +21,7 @@ export function JournalPage() {
           />
 
           {/* Haugtun intro card */}
-          <motion.a
+          <m.a
             href={writingMeta.pageUrl}
             data-achievement="reader"
             target="_blank"
@@ -57,7 +55,7 @@ export function JournalPage() {
                 </span>
               </div>
             </div>
-          </motion.a>
+          </m.a>
 
           <div className="mb-16">
             <ChartGame />
@@ -66,7 +64,7 @@ export function JournalPage() {
           {/* Entries */}
           <ul className="flex flex-col">
             {journalEntries.map((entry, index) => (
-              <motion.li
+              <m.li
                 key={entry.title}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -104,7 +102,7 @@ export function JournalPage() {
                     </span>
                   </div>
                 </a>
-              </motion.li>
+              </m.li>
             ))}
           </ul>
 

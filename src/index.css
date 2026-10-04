@@ -73,9 +73,41 @@ body {
   }
 }
 
+/* Hero entrance (CSS, so no animation library is needed on first load) */
+.name-reveal > span {
+  animation: name-rise 1.15s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+
+.name-reveal + .name-reveal > span {
+  animation-delay: 0.06s;
+}
+
 .blur-in {
-  filter: blur(12px);
-  opacity: 0;
+  animation: blur-in 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s both;
+}
+
+@keyframes name-rise {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+@keyframes blur-in {
+  from {
+    filter: blur(12px);
+    opacity: 0;
+  }
+}
+
+/* Footer marquee: the track holds two identical halves, so -50% loops seamlessly. */
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -83,10 +115,11 @@ body {
     animation: none !important;
   }
 
-  /* The GSAP reveal is skipped under reduced motion, so show these statically. */
-  .blur-in {
-    filter: none;
-    opacity: 1;
+  /* Entrance animations are skipped under reduced motion; content shows immediately. */
+  .blur-in,
+  .name-reveal > span,
+  .marquee-track {
+    animation: none;
   }
 }
 

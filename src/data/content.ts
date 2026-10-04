@@ -76,7 +76,7 @@ export const stats = [
   { value: '7+', label: 'Shipped AI, data & client projects' },
   { value: '8.23', label: 'B.Tech CGPA · AI / DS' },
   { value: '3+', label: 'Years across markets & data' },
-  { value: '∞', label: 'Curiosity about systems' },
+  { value: '2', label: 'Research papers' },
 ] as const;
 
 export const aboutNarrative = [
@@ -459,6 +459,9 @@ export const journalEntries: JournalEntry[] = [
     href: 'https://www.linkedin.com/feed/update/urn:li:activity:7442307088829095936',
   },
 ];
+
+/** The site's public address. Change it here when moving to a custom domain. */
+export const SITE_URL = 'https://samadarsh.vercel.app';
 
 export const contact = {
   email: 'samadarsh14@gmail.com',

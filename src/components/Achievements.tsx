@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   createContext,
   useCallback,
@@ -22,7 +22,6 @@ import {
   type AchievementId,
 } from '../lib/achievements';
 import { lockScroll } from '../lib/smoothScroll';
-import { useToast } from './Toaster';
 
 const AchievementsContext = createContext<{ open: () => void }>({ open: () => {} });
 
@@ -32,21 +31,12 @@ export const useAchievementsPanel = () => useContext(AchievementsContext);
 const useUnlocked = () => useSyncExternalStore(subscribeAchievements, getUnlocked, getUnlocked);
 
 /**
- * Tracks progress (page visits, `[data-achievement]` clicks), announces unlocks with a toast,
+ * Tracks progress (page visits, `[data-achievement]` clicks), (the navbar ring glows on each unlock),
  * and renders the achievements panel.
  */
 export function AchievementsProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
-  const toast = useToast();
-
-  useEffect(
-    () =>
-      onAchievementUnlocked((a) =>
-        toast({ title: `Achievement: ${a.name}`, description: a.description, icon: a.icon }),
-      ),
-    [toast],
-  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => unlock('arrived'), 2500);
@@ -159,7 +149,7 @@ function AchievementsPanel({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0 z-[95] flex items-end justify-center bg-black/60 backdrop-blur-sm md:items-start md:pt-24"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -169,7 +159,7 @@ function AchievementsPanel({ onClose }: { onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <motion.section
+      <m.section
         role="dialog"
         aria-modal="true"
         aria-labelledby="achievements-title"
@@ -280,7 +270,7 @@ function AchievementsPanel({ onClose }: { onClose: () => void }) {
             </button>
           )}
         </div>
-      </motion.section>
-    </motion.div>
+      </m.section>
+    </m.div>
   );
 }

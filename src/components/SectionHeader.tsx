@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 type SectionHeaderProps = {
   kicker?: string;
@@ -18,7 +18,7 @@ export function SectionHeader({
   const centered = align === 'center';
 
   return (
-    <motion.header
+    <m.header
       className={`mb-14 max-w-3xl ${centered ? 'mx-auto text-center' : ''}`}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -41,6 +41,6 @@ export function SectionHeader({
           {subtitle}
         </p>
       ) : null}
-    </motion.header>
+    </m.header>
   );
 }

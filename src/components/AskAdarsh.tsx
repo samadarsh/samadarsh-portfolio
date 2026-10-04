@@ -1,6 +1,6 @@
 import {
   AnimatePresence,
-  motion,
+  m,
   useDragControls,
   useReducedMotion,
   type PanInfo,
@@ -21,7 +21,7 @@ import { contact, projects } from '../data/content';
 import { unlock } from '../lib/achievements';
 import { lockScroll } from '../lib/smoothScroll';
 import { playSound } from '../lib/sound';
-import { AgentGlyph } from './AgentGlyph';
+import { AssistantGlyph } from './AssistantGlyph';
 
 type Message = { id: number; role: 'user' | 'assistant'; content: string; error?: boolean };
 
@@ -226,7 +226,7 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
     <div className="fixed bottom-6 right-6 z-[94] flex items-center gap-3">
       <AnimatePresence>
         {teaser && !open ? (
-          <motion.button
+          <m.button
             type="button"
             onClick={click}
             initial={{ opacity: 0, x: 10, scale: 0.96 }}
@@ -236,11 +236,11 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
           >
             <span className="block font-medium">Questions about Adarsh?</span>
             <span className="text-[13px] text-muted">Ask the AI. It knows his work.</span>
-          </motion.button>
+          </m.button>
         ) : null}
       </AnimatePresence>
 
-      <motion.button
+      <m.button
         type="button"
         onClick={click}
         whileHover={{ scale: 1.06 }}
@@ -251,7 +251,7 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
       >
         {!open ? <span className="ask-launcher-ring" aria-hidden /> : null}
         <AnimatePresence initial={false} mode="wait">
-          <motion.span
+          <m.span
             key={open ? 'x' : 'spark'}
             initial={{ rotate: -90, opacity: 0, scale: 0.6 }}
             animate={{ rotate: 0, opacity: 1, scale: 1 }}
@@ -260,10 +260,10 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
             className="flex items-center justify-center text-xl leading-none"
             aria-hidden
           >
-            {open ? '✕' : <AgentGlyph size={30} animated pulseColor="#b8862f" />}
-          </motion.span>
+            {open ? '✕' : <AssistantGlyph size={30} animated smileColor="#b8862f" />}
+          </m.span>
         </AnimatePresence>
-      </motion.button>
+      </m.button>
     </div>
   );
 }
@@ -470,7 +470,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
       ? Math.min(visibleHeight - 12, window.innerHeight * 0.9)
       : undefined;
     return (
-      <motion.div
+      <m.div
         className="fixed inset-x-0 top-0 z-[96] flex flex-col justify-end"
         // Pin the overlay to the visible area so the sheet sits right above the keyboard.
         style={{ height: visibleHeight ?? '100dvh' }}
@@ -479,7 +479,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         exit={{ opacity: 0, transition: { delay: 0.15 } }}
       >
         <div className="absolute inset-0 bg-black/55" onClick={onClose} aria-hidden />
-        <motion.section
+        <m.section
           role="dialog"
           aria-modal="true"
           aria-labelledby="ask-title"
@@ -497,13 +497,13 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           transition={{ type: 'spring', damping: 34, stiffness: 340 }}
         >
           {body}
-        </motion.section>
-      </motion.div>
+        </m.section>
+      </m.div>
     );
   }
 
   return (
-    <motion.section
+    <m.section
       role="dialog"
       aria-labelledby="ask-title"
       className="fixed bottom-24 right-6 z-[95] flex h-[min(620px,calc(100dvh-8rem))] w-[392px] flex-col overflow-hidden rounded-[26px] border border-white/[0.1] bg-surface/95 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.95),0_0_0_1px_hsl(var(--accent)/0.06)] backdrop-blur-xl"
@@ -514,7 +514,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
       transition={{ type: 'spring', damping: 26, stiffness: 320 }}
     >
       {body}
-    </motion.section>
+    </m.section>
   );
 }
 
@@ -534,7 +534,7 @@ function Welcome({ onPick }: { onPick: (q: string) => void }) {
         </p>
         <div className="grid grid-cols-1 gap-2">
           {SUGGESTIONS.map((s, i) => (
-            <motion.button
+            <m.button
               key={s}
               type="button"
               onClick={() => onPick(s)}
@@ -550,7 +550,7 @@ function Welcome({ onPick }: { onPick: (q: string) => void }) {
               >
                 →
               </span>
-            </motion.button>
+            </m.button>
           ))}
         </div>
       </div>
@@ -563,7 +563,7 @@ function TypingDots() {
     <div className="flex" aria-label="The assistant is typing">
       <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-white/[0.06] bg-white/[0.04] px-4 py-3.5">
         {[0, 1, 2].map((d) => (
-          <motion.span
+          <m.span
             key={d}
             className="h-1.5 w-1.5 rounded-full bg-accent"
             animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
@@ -646,7 +646,7 @@ function Bubble({
       : [];
 
   return (
-    <motion.div
+    <m.div
       className={`flex ${mine ? 'justify-end' : 'justify-start'}`}
       initial={{ opacity: 0, y: 8, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -676,6 +676,6 @@ function Bubble({
           </div>
         ) : null}
       </div>
-    </motion.div>
+    </m.div>
   );
 }

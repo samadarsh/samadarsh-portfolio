@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import {
   createContext,
   useCallback,
@@ -26,7 +26,7 @@ import { lockScroll } from '../lib/smoothScroll';
 import { unlock } from '../lib/achievements';
 import { useAchievementsPanel } from './Achievements';
 import { useAskAdarsh } from './AskAdarsh';
-import { AgentGlyph } from './AgentGlyph';
+import { AssistantGlyph } from './AssistantGlyph';
 import { playSound } from '../lib/sound';
 
 type Command = {
@@ -211,7 +211,7 @@ function useCommands(): Command[] {
       {
         id: 'ask',
         group: 'Actions',
-        icon: <AgentGlyph size={14} className="mx-auto" />,
+        icon: <AssistantGlyph size={14} className="mx-auto" />,
         label: 'Ask Adarsh (AI)',
         hint: 'ask',
         keywords: 'ai chat question assistant',
@@ -241,12 +241,7 @@ function useCommands(): Command[] {
         icon: '$',
         label: 'whoami',
         hint: 'whoami',
-        run: () =>
-          toast({
-            title: 'Adarsh S',
-            description: 'AI engineer building agents, RAG and market systems. Chennai, India.',
-            icon: '👋',
-          }),
+        run: () => askAdarsh.open('Who is Adarsh?'),
       },
       {
         id: 'hire',
@@ -257,11 +252,6 @@ function useCommands(): Command[] {
         run: () => {
           unlock('hire');
           goTo(window.location.pathname, 'contact');
-          toast({
-            title: 'Great choice.',
-            description: 'Email and resume are right here.',
-            icon: '🤝',
-          });
         },
       },
     ];
@@ -351,7 +341,7 @@ function Palette({ onClose }: { onClose: () => void }) {
       {
         id: 'ask-fallback',
         group: 'Ask Adarsh',
-        icon: <AgentGlyph size={14} className="mx-auto" />,
+        icon: <AssistantGlyph size={14} className="mx-auto" />,
         label: `Ask: “${q}”`,
         hint: 'ai',
         run: () => askAdarsh.open(q),
@@ -409,7 +399,7 @@ function Palette({ onClose }: { onClose: () => void }) {
   let lastGroup = '';
 
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0 z-[100] flex items-start justify-center bg-black/60 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-sm sm:px-4 sm:pt-[12vh]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -419,7 +409,7 @@ function Palette({ onClose }: { onClose: () => void }) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <motion.div
+      <m.div
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
@@ -520,8 +510,8 @@ function Palette({ onClose }: { onClose: () => void }) {
             <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd> <Kbd>K</Kbd> anywhere
           </span>
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }
 

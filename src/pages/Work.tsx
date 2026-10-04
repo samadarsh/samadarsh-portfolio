@@ -1,12 +1,10 @@
 import { SelectedWorks } from '../components/SelectedWorks';
 import { Footer } from '../components/Footer';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { pages } from '../data/seo';
 
 export function WorkPage() {
-  usePageMeta(
-    'Work',
-    'Selected projects by Adarsh S across AI, product, and markets — RAG systems, developer tools, speech AI, and client work shipped to production.',
-  );
+  usePageMeta(pages.work.title, pages.work.description);
 
   return (
     <>
