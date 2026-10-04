@@ -24,6 +24,16 @@ Other projects (FinSight, RepoMind, VoiceNote AI, GenAI Email Generator) intenti
 3. Save as `<slug>.webp` in this folder (slug must match `src/data/content.ts`).
 4. Add `cover: 'projects/<slug>.webp'` to the project entry in `content.ts`.
 
+## Preview videos
+
+A project with a `video` plays it on hover (desktop) or when scrolled into view (touch), fading in over the cover. The cover must be the video's first frame, or the preview visibly jumps when the video starts:
+
+```bash
+ffmpeg -i <slug>.mp4 -frames:v 1 frame.png   # then convert frame.png to <slug>.webp
+```
+
+If the recording opens on a loading state, trim it first (`ffmpeg -ss 0.6 -i in.mp4 -an -c:v libx264 -crf 26 -movflags +faststart <slug>.mp4`).
+
 ## Recommended specs
 
 - **Aspect ratio:** 16:10 (e.g. 1920×1200, 2560×1600) — fits the preview frame natively

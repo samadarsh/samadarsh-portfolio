@@ -8,6 +8,9 @@ import { allPages, fullTitle, pages, SITE_URL, type PageMeta } from './src/data/
 const escapeAttr = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+// WhatsApp in particular is picky about share images; it gets the type alongside the URL.
+const imageType = (file: string) => (/\.png$/i.test(file) ? 'image/png' : 'image/jpeg');
+
 /** Replaces the content of one meta tag, failing the build if the tag is missing from index.html. */
 function setMeta(html: string, attr: 'name' | 'property', key: string, value: string) {
   const pattern = new RegExp(`(<meta\\s+${attr}="${key}"\\s+content=")[^"]*(")`, 's');
@@ -48,6 +51,8 @@ function prerenderMeta(): Plugin {
         html = setMeta(html, 'property', 'og:description', page.description);
         html = setMeta(html, 'property', 'og:url', url);
         html = setMeta(html, 'property', 'og:image', `${SITE_URL}${image}`);
+        html = setMeta(html, 'property', 'og:image:secure_url', `${SITE_URL}${image}`);
+        html = setMeta(html, 'property', 'og:image:type', imageType(image));
         html = setMeta(html, 'property', 'og:image:alt', page.imageAlt);
         html = setMeta(html, 'name', 'twitter:title', title);
         html = setMeta(html, 'name', 'twitter:description', page.description);
