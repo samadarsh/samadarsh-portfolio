@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useToast } from '../components/Toaster';
 import { useGoTo } from './useGoTo';
 import { unlock } from '../lib/achievements';
 
@@ -44,7 +43,6 @@ function burst() {
 
 /** Konami code and typing "hire" anywhere on the page. */
 export function useEasterEggs() {
-  const toast = useToast();
   const goTo = useGoTo();
 
   useEffect(() => {
@@ -60,11 +58,6 @@ export function useEasterEggs() {
         keys = [];
         burst();
         unlock('konami');
-        toast({
-          title: '↑↑↓↓←→←→BA',
-          description: 'Old school. You found the secret.',
-          icon: '🕹️',
-        });
       }
 
       if (key.length === 1) {
@@ -73,16 +66,11 @@ export function useEasterEggs() {
           typed = '';
           unlock('hire');
           goTo(window.location.pathname, 'contact');
-          toast({
-            title: 'Great choice.',
-            description: 'Email and resume are right here.',
-            icon: '🤝',
-          });
         }
       }
     };
 
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [goTo, toast]);
+  }, [goTo]);
 }

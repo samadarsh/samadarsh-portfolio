@@ -22,7 +22,6 @@ import {
   type AchievementId,
 } from '../lib/achievements';
 import { lockScroll } from '../lib/smoothScroll';
-import { useToast } from './Toaster';
 
 const AchievementsContext = createContext<{ open: () => void }>({ open: () => {} });
 
@@ -32,21 +31,12 @@ export const useAchievementsPanel = () => useContext(AchievementsContext);
 const useUnlocked = () => useSyncExternalStore(subscribeAchievements, getUnlocked, getUnlocked);
 
 /**
- * Tracks progress (page visits, `[data-achievement]` clicks), announces unlocks with a toast,
+ * Tracks progress (page visits, `[data-achievement]` clicks), (the navbar ring glows on each unlock),
  * and renders the achievements panel.
  */
 export function AchievementsProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
-  const toast = useToast();
-
-  useEffect(
-    () =>
-      onAchievementUnlocked((a) =>
-        toast({ title: `Achievement: ${a.name}`, description: a.description, icon: a.icon }),
-      ),
-    [toast],
-  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => unlock('arrived'), 2500);

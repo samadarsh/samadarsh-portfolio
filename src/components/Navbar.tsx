@@ -4,7 +4,6 @@ import { useCommandPalette } from './CommandPalette';
 import { isMac } from '../lib/contact';
 import { playSound, setSoundOn } from '../lib/sound';
 import { useSoundOn } from '../hooks/useSound';
-import { useToast } from './Toaster';
 import { ResumeButton } from './ContactActions';
 import { AchievementsButton } from './Achievements';
 import { socialLinks } from '../data/content';
@@ -25,13 +24,11 @@ export function Navbar() {
   const { pathname } = useLocation();
   const palette = useCommandPalette();
   const soundOn = useSoundOn();
-  const toast = useToast();
   const goTo = useGoTo();
 
   const toggleSound = () => {
     setSoundOn(!soundOn);
     if (!soundOn) playSound('tick');
-    toast({ title: soundOn ? 'Sound off' : 'Sound on', description: 'Subtle interface sounds.' });
   };
 
   // Close the mobile menu on any navigation (including the logo link).

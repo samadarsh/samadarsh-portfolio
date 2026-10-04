@@ -241,12 +241,7 @@ function useCommands(): Command[] {
         icon: '$',
         label: 'whoami',
         hint: 'whoami',
-        run: () =>
-          toast({
-            title: 'Adarsh S',
-            description: 'AI engineer building agents, RAG and market systems. Chennai, India.',
-            icon: '👋',
-          }),
+        run: () => askAdarsh.open('Who is Adarsh?'),
       },
       {
         id: 'hire',
@@ -257,11 +252,6 @@ function useCommands(): Command[] {
         run: () => {
           unlock('hire');
           goTo(window.location.pathname, 'contact');
-          toast({
-            title: 'Great choice.',
-            description: 'Email and resume are right here.',
-            icon: '🤝',
-          });
         },
       },
     ];
