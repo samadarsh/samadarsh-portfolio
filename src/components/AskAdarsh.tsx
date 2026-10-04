@@ -21,7 +21,7 @@ import { contact, projects } from '../data/content';
 import { unlock } from '../lib/achievements';
 import { lockScroll } from '../lib/smoothScroll';
 import { playSound } from '../lib/sound';
-import { AgentGlyph } from './AgentGlyph';
+import { AssistantGlyph } from './AssistantGlyph';
 
 type Message = { id: number; role: 'user' | 'assistant'; content: string; error?: boolean };
 
@@ -260,7 +260,7 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
             className="flex items-center justify-center text-xl leading-none"
             aria-hidden
           >
-            {open ? '✕' : <AgentGlyph size={30} animated pulseColor="#b8862f" />}
+            {open ? '✕' : <AssistantGlyph size={30} animated smileColor="#b8862f" />}
           </m.span>
         </AnimatePresence>
       </m.button>
