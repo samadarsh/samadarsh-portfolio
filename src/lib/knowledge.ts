@@ -9,6 +9,7 @@ import {
   heroContent,
   journalEntries,
   projects,
+  publications,
   skillGroups,
   socialLinks,
   writingMeta,
@@ -62,7 +63,12 @@ export function buildKnowledge() {
     `# Open source contributions`,
     list(resumeOnly.openSource),
     `# Publications`,
-    list(resumeOnly.publications),
+    list(
+      publications.map(
+        (p) =>
+          `${p.title}. ${p.venues.map((v) => `${v.kind === 'Journal' ? 'Published in' : 'Presented at'} ${v.name}`).join('; ')}.`,
+      ),
+    ),
     `# Certifications`,
     list(resumeOnly.certifications),
     `# Achievements`,

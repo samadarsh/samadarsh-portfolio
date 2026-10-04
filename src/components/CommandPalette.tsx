@@ -12,6 +12,7 @@ import {
 } from 'react';
 import {
   contact,
+  publications,
   experience,
   journalEntries,
   projects,
@@ -130,6 +131,16 @@ function useCommands(): Command[] {
         hint: x.period.split(' — ')[0].toLowerCase(),
         keywords: `${x.role} ${x.summary}`,
         run: () => goTo('/about', 'experience'),
+      })),
+
+      ...publications.map<Command>((pub) => ({
+        id: `pub-${pub.title}`,
+        group: 'Publications',
+        icon: '§',
+        label: pub.title,
+        hint: pub.venues[0].kind === 'Journal' ? 'journal' : 'conference',
+        keywords: `publication paper research ${pub.venues.map((v) => v.name).join(' ')} ${pub.topics.join(' ')}`,
+        run: () => goTo('/about', 'publications'),
       })),
 
       ...journalEntries.map<Command>((j) => ({

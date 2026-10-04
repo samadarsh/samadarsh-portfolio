@@ -11,11 +11,6 @@ export const resumeOnly = {
     'OpenClaw: fixed the macOS VM installation guide to provision Node.js before OpenClaw, resolving installation failures on fresh VMs; improved the guide’s Gateway setup and host-browser dashboard access using SSH tunnelling and the dashboard pairing flow.',
     'OpenAlgo: fixed WebSocket market-data timestamps for Upstox and Zerodha so exchange trade time is exposed correctly across quote and depth feeds; resolved a master-contract race condition during concurrent login/download operations and added regression tests.',
   ],
-  publications: [
-    'An Integrated Framework for Food Recognition, Nutritional Insights, and Meal Recording — Journal of Jilin University (Engineering and Technology Edition), journal publication.',
-    'The same paper presented at the 3rd International Conference on Deep Sciences for Computing and Communications.',
-    'Music Genre Classification by Deep Learning Techniques — presented at the ISTE-sponsored International Conference on Latest Trends in Science, Engineering, and Technology.',
-  ],
   certifications: [
     'Google Data Analytics (Coursera)',
     'Python Masterclass (Udemy)',

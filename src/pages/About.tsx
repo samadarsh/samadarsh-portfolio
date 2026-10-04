@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { SectionHeader } from '../components/SectionHeader';
 import { Experience } from '../components/Experience';
 import { Skills } from '../components/Skills';
+import { Publications } from '../components/Publications';
 import { Footer } from '../components/Footer';
 import { aboutNarrative, heroContent } from '../data/content';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -65,6 +66,12 @@ export function AboutPage() {
       <section id="experience" className="scroll-mt-20 py-24 md:py-32">
         <div className="container mx-auto max-w-6xl px-6">
           <Experience />
+        </div>
+      </section>
+
+      <section id="publications" className="scroll-mt-20 pb-24 md:pb-32">
+        <div className="container mx-auto max-w-6xl px-6">
+          <Publications />
         </div>
       </section>
 
