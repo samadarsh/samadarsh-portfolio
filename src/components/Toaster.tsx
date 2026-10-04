@@ -24,6 +24,8 @@ const ToastContext = createContext<(toast: ToastInput) => void>(() => {});
 export const useToast = () => useContext(ToastContext);
 
 const MAX_TOASTS = 3;
+// Phones get no pop-ups: on a small screen they cover content and interrupt taps.
+const PHONE_QUERY = '(max-width: 767px)';
 const DURATION_MS = 3800;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -31,6 +33,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const nextId = useRef(0);
 
   const show = useCallback((toast: ToastInput) => {
+    if (window.matchMedia(PHONE_QUERY).matches) return;
     const id = nextId.current++;
     playSound('success');
     setToasts((list) => [...list, { ...toast, id }].slice(-MAX_TOASTS));
@@ -43,7 +46,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={value}>
       {children}
       <div
-        className="pointer-events-none fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-4 z-[90] md:bottom-5 flex w-[min(340px,calc(100vw-2rem))] flex-col gap-2.5"
+        className="pointer-events-none fixed bottom-5 left-4 z-[90] flex w-[min(340px,calc(100vw-2rem))] flex-col gap-2.5"
         aria-live="polite"
         role="status"
       >
