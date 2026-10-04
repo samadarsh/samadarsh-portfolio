@@ -76,7 +76,7 @@ export const stats = [
   { value: '7+', label: 'Shipped AI, data & client projects' },
   { value: '8.23', label: 'B.Tech CGPA · AI / DS' },
   { value: '3+', label: 'Years across markets & data' },
-  { value: '∞', label: 'Curiosity about systems' },
+  { value: '2', label: 'Research papers' },
 ] as const;
 
 export const aboutNarrative = [
