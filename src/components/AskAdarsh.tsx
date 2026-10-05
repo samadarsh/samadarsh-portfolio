@@ -16,6 +16,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react';
+import { askAssistant, askErrorMessage } from '../lib/askApi';
 import { useBackToClose } from '../hooks/useBackToClose';
 import { Link, useLocation } from 'react-router-dom';
 import { contact, projects } from '../data/content';
@@ -35,11 +36,6 @@ const SUGGESTIONS = [
   'Any publications?',
 ];
 
-const ERRORS: Record<string, string> = {
-  rate_limited: 'Lots of questions right now. Please try again in a minute.',
-  not_configured: `The assistant is offline right now. You can email Adarsh at ${contact.email}.`,
-  default: `Something went wrong. Please try again, or email Adarsh at ${contact.email}.`,
-};
 
 const STORE_KEY = 'ask-adarsh-chat';
 const TEASER_KEY = 'ask-adarsh-teased';
@@ -119,27 +115,19 @@ export function AskAdarshProvider({ children }: { children: ReactNode }) {
       setMessages((list) => [...list, { id: nextId.current++, role: 'user', content: question }]);
       setLoading(true);
       try {
-        const res = await fetch('/api/ask', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question, history }),
-        });
-        const data = (await res.json().catch(() => ({}))) as { answer?: string; error?: string };
-        if (!res.ok || !data.answer) throw new Error(data.error || 'default');
+        const answer = await askAssistant(question, history);
         playSound('success');
-        const answer = data.answer;
         setMessages((list) => [
           ...list,
           { id: nextId.current++, role: 'assistant', content: answer },
         ]);
       } catch (error) {
-        const code = error instanceof Error ? error.message : 'default';
         setMessages((list) => [
           ...list,
           {
             id: nextId.current++,
             role: 'assistant',
-            content: ERRORS[code] ?? ERRORS.default,
+            content: askErrorMessage(error),
             error: true,
           },
         ]);
