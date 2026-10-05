@@ -1,14 +1,14 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { whenIntroDone } from '../lib/intro';
 
 /**
  * Text that resolves out of scrambled glyphs, left to right, the first time the hero is seen in a
- * visit. Each character keeps the width of its final letter while it scrambles, so nothing around
- * it moves; once settled it becomes plain text again. Screen readers get the real text throughout.
+ * visit. The finished text is laid out invisibly to hold the space, and the scrambling copy is
+ * drawn over it, so the page around it never moves. Screen readers get the real text throughout.
  */
 
 const SEEN_KEY = 'hero-decoded';
-const GLYPHS = '01<>/{}[]#$%*+=?';
+const GLYPHS = '01<>/{}[]#$%&*+=?ΔΣλ';
 const randomGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
 
 // Read once per page load, so every DecodeText on the page agrees on whether to animate.
@@ -37,7 +37,7 @@ type Props = {
   glyphClassName?: string;
 };
 
-export function DecodeText({ text, delay = 0, step = 60, className, glyphClassName }: Props) {
+export function DecodeText({ text, delay = 0, step = 60, className = '', glyphClassName }: Props) {
   // Number of characters settled so far; null once finished (or when not animating).
   const [settled, setSettled] = useState<number | null>(() => (shouldAnimate() ? 0 : null));
   const [, setTick] = useState(0);
@@ -55,8 +55,8 @@ export function DecodeText({ text, delay = 0, step = 60, className, glyphClassNa
         setSettled(null);
         return;
       }
-      // Re-roll the glyphs about 20 times a second; faster reads as noise.
-      if (now - last > 50) {
+      // Re-roll the glyphs about 25 times a second.
+      if (now - last > 40) {
         last = now;
         setSettled(Math.max(0, done));
         setTick((t) => t + 1);
@@ -78,36 +78,22 @@ export function DecodeText({ text, delay = 0, step = 60, className, glyphClassNa
 
   if (settled === null) return <span className={className}>{text}</span>;
 
-  // Words stay unbreakable so the scrambling text wraps exactly like the final text.
-  let index = 0;
-  const words = text.split(' ');
   return (
-    <span className={className}>
+    <span className={`relative inline-block max-w-full ${className}`}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden>
-        {words.map((word, w) => {
-          const chars = [...word].map((ch) => {
-            const i = index++;
-            if (i < settled) return <span key={i}>{ch}</span>;
-            return (
-              <span key={i} className="relative inline-block">
-                <span className="invisible">{ch}</span>
-                <span
-                  className={`absolute inset-0 overflow-hidden text-center ${glyphClassName ?? ''}`}
-                >
-                  {randomGlyph()}
-                </span>
-              </span>
-            );
-          });
-          index++; // the space
-          return (
-            <Fragment key={w}>
-              <span className="whitespace-nowrap">{chars}</span>
-              {w < words.length - 1 ? ' ' : null}
-            </Fragment>
-          );
-        })}
+      <span className="invisible" aria-hidden>
+        {text}
+      </span>
+      <span className="absolute inset-0 overflow-hidden" aria-hidden>
+        {[...text].map((ch, i) =>
+          i < settled || ch === ' ' ? (
+            ch
+          ) : (
+            <span key={i} className={glyphClassName}>
+              {randomGlyph()}
+            </span>
+          ),
+        )}
       </span>
     </span>
   );
