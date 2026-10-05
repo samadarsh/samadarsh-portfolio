@@ -27,6 +27,7 @@ import { lockScroll } from '../lib/smoothScroll';
 import { unlock } from '../lib/achievements';
 import { useAchievementsPanel } from './Achievements';
 import { useAskAdarsh } from './AskAdarsh';
+import { useTerminal } from './Terminal';
 import { AssistantGlyph } from './AssistantGlyph';
 import { playSound } from '../lib/sound';
 
@@ -55,6 +56,7 @@ function useCommands(): Command[] {
   const toast = useToast();
   const { open: openAchievements } = useAchievementsPanel();
   const askAdarsh = useAskAdarsh();
+  const terminal = useTerminal();
 
   return useMemo(() => {
     const linkedIn = socialLinks.find((s) => s.label === 'LinkedIn')!.href;
@@ -237,12 +239,13 @@ function useCommands(): Command[] {
         run: () => goTo('/journal', 'chart-game'),
       },
       {
-        id: 'whoami',
+        id: 'terminal',
         group: 'Fun',
-        icon: '$',
-        label: 'whoami',
-        hint: 'whoami',
-        run: () => askAdarsh.open('Who is Adarsh?'),
+        icon: '>_',
+        label: 'Open terminal',
+        hint: 'terminal',
+        keywords: 'shell console zsh bash cli command line',
+        run: terminal.open,
       },
       {
         id: 'hire',
@@ -256,7 +259,7 @@ function useCommands(): Command[] {
         },
       },
     ];
-  }, [goTo, toast, openAchievements, askAdarsh]);
+  }, [goTo, toast, openAchievements, askAdarsh, terminal]);
 }
 
 function matches(command: Command, tokens: string[]) {

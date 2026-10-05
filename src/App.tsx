@@ -1,6 +1,6 @@
 import { lazy, useCallback, useEffect, useState } from 'react';
 import { LazyMotion, MotionConfig } from 'framer-motion';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
 import { LoadingScreen } from './components/LoadingScreen';
@@ -12,6 +12,9 @@ const loadWork = () => import('./pages/Work').then((m) => ({ default: m.WorkPage
 const loadAbout = () => import('./pages/About').then((m) => ({ default: m.AboutPage }));
 const loadJournal = () => import('./pages/Journal').then((m) => ({ default: m.JournalPage }));
 const loadCaseStudy = () => import('./pages/CaseStudy').then((m) => ({ default: m.CaseStudyPage }));
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFound').then((m) => ({ default: m.NotFoundPage })),
+);
 const WorkPage = lazy(loadWork);
 const AboutPage = lazy(loadAbout);
 const JournalPage = lazy(loadJournal);
@@ -67,7 +70,7 @@ function AppRoutes() {
         <Route path="work/:slug" element={<CaseStudyPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="journal" element={<JournalPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );
