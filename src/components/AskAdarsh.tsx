@@ -191,6 +191,20 @@ export function AskAdarshProvider({ children }: { children: ReactNode }) {
 }
 
 /** Desktop launcher: an animated agent-network mark that turns into ✕ while the chat is open. */
+/** Whether a visible button or link sits where the teaser bubble would appear (left of the launcher). */
+function teaserSpotIsBusy() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  // The bubble: about 240×64px, ending 92px from the right edge, centred on the 56px launcher.
+  const spot = { left: w - 92 - 250, right: w - 92, top: h - 24 - 28 - 40, bottom: h - 24 - 28 + 40 };
+  return [...document.querySelectorAll<HTMLElement>('a[href], button, input, textarea')].some((el) => {
+    if (el.closest('[data-ask-launcher]')) return false;
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return false;
+    return r.left < spot.right && r.right > spot.left && r.top < spot.bottom && r.bottom > spot.top;
+  });
+}
+
 function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
   const [teaser, setTeaser] = useState(false);
 
@@ -203,11 +217,27 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
       // ignore
     }
     if (seen) return;
-    const show = window.setTimeout(() => setTeaser(true), 6000);
-    const hide = window.setTimeout(() => setTeaser(false), 14000);
+    let hide = 0;
+    let retry = 0;
+    // Only show it where it won't cover a button or link (e.g. the hero's email button on short
+    // laptop screens); otherwise wait until the visitor scrolls somewhere clear.
+    const tryShow = () => {
+      if (teaserSpotIsBusy()) {
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return;
+      }
+      window.removeEventListener('scroll', onScroll);
+      setTeaser(true);
+      hide = window.setTimeout(() => setTeaser(false), 8000);
+    };
+    const onScroll = () => {
+      window.clearTimeout(retry);
+      retry = window.setTimeout(tryShow, 400);
+    };
+    const show = window.setTimeout(tryShow, 6000);
     return () => {
-      window.clearTimeout(show);
-      window.clearTimeout(hide);
+      window.removeEventListener('scroll', onScroll);
+      [show, hide, retry].forEach((t) => window.clearTimeout(t));
     };
   }, []);
 
@@ -226,7 +256,7 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[94] flex items-center gap-3">
+    <div data-ask-launcher className="fixed bottom-6 right-6 z-[94] flex items-center gap-3">
       <AnimatePresence>
         {teaser && !open ? (
           <m.button
