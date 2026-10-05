@@ -1,4 +1,4 @@
-// Facts about Adarsh that the site doesn't show elsewhere, used only by the "Ask Adarsh"
+// Facts about Adarsh that the site doesn't show elsewhere, used only by the "Ask Ash"
 // assistant (see src/lib/knowledge.ts). Sources: his resume and his own knowledge-profile notes.
 // Where those notes disagreed with the site (dates, project details), the site wins.
 // Keep everything here factual and public-safe: no internal company metrics or client details.

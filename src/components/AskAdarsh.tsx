@@ -1,10 +1,4 @@
-import {
-  AnimatePresence,
-  m,
-  useDragControls,
-  useReducedMotion,
-  type PanInfo,
-} from 'framer-motion';
+import { AnimatePresence, m, useDragControls, useReducedMotion, type PanInfo } from 'framer-motion';
 import {
   createContext,
   useCallback,
@@ -196,13 +190,22 @@ function teaserSpotIsBusy() {
   const w = window.innerWidth;
   const h = window.innerHeight;
   // The bubble: about 240×64px, ending 92px from the right edge, centred on the 56px launcher.
-  const spot = { left: w - 92 - 250, right: w - 92, top: h - 24 - 28 - 40, bottom: h - 24 - 28 + 40 };
-  return [...document.querySelectorAll<HTMLElement>('a[href], button, input, textarea')].some((el) => {
-    if (el.closest('[data-ask-launcher]')) return false;
-    const r = el.getBoundingClientRect();
-    if (!r.width || !r.height) return false;
-    return r.left < spot.right && r.right > spot.left && r.top < spot.bottom && r.bottom > spot.top;
-  });
+  const spot = {
+    left: w - 92 - 250,
+    right: w - 92,
+    top: h - 24 - 28 - 40,
+    bottom: h - 24 - 28 + 40,
+  };
+  return [...document.querySelectorAll<HTMLElement>('a[href], button, input, textarea')].some(
+    (el) => {
+      if (el.closest('[data-ask-launcher]')) return false;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return false;
+      return (
+        r.left < spot.right && r.right > spot.left && r.top < spot.bottom && r.bottom > spot.top
+      );
+    },
+  );
 }
 
 function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
@@ -268,7 +271,7 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
             className="rounded-2xl rounded-br-md border border-white/[0.1] bg-surface/95 px-4 py-2.5 text-left text-sm text-text-primary shadow-[0_20px_50px_-15px_rgba(0,0,0,0.9)] backdrop-blur-xl"
           >
             <span className="block font-medium">Questions about Adarsh?</span>
-            <span className="text-[13px] text-muted">Ask the AI. It knows his work.</span>
+            <span className="text-[13px] text-muted">Ask Ash, his AI assistant.</span>
           </m.button>
         ) : null}
       </AnimatePresence>
@@ -279,7 +282,7 @@ function Launcher({ open, onToggle }: { open: boolean; onToggle: () => void }) {
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
         className="relative flex h-14 w-14 items-center justify-center rounded-full bg-text-primary text-bg shadow-[0_18px_45px_-12px_rgba(0,0,0,0.9)]"
-        aria-label={open ? 'Close Ask Adarsh' : 'Open Ask Adarsh, an AI assistant'}
+        aria-label={open ? 'Close Ash' : 'Open Ash, Adarsh’s AI assistant'}
         aria-expanded={open}
       >
         {!open ? <span className="ask-launcher-ring" aria-hidden /> : null}
@@ -386,9 +389,11 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         </span>
         <div className="min-w-0 flex-1">
           <h2 id="ask-title" className="text-[15px] font-medium leading-tight text-text-primary">
-            Ask Adarsh
+            Ash
           </h2>
-          <p className="text-xs text-muted">{loading ? 'Typing…' : 'AI assistant · online'}</p>
+          <p className="text-xs text-muted">
+            {loading ? 'Typing…' : 'Adarsh’s AI assistant · online'}
+          </p>
         </div>
         {messages.length ? (
           <button
@@ -405,7 +410,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           onClick={onClose}
           onPointerDown={(e) => e.stopPropagation()}
           className="flex h-10 w-10 items-center justify-center rounded-full text-muted transition-colors hover:bg-white/[0.06] hover:text-text-primary"
-          aria-label="Close Ask Adarsh"
+          aria-label="Close Ash"
         >
           {phone ? (
             <svg
@@ -552,15 +557,39 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
 }
 
 function Welcome({ onPick }: { onPick: (q: string) => void }) {
+  // Ash greets each new conversation like a person would: a moment of "typing", then hello.
+  // The greeting is local only; it never goes to the AI or counts against its quota.
+  const [greeted, setGreeted] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  useEffect(() => {
+    if (greeted) return;
+    const id = window.setTimeout(() => setGreeted(true), 750);
+    return () => window.clearTimeout(id);
+  }, [greeted]);
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/[0.09] to-transparent p-4">
-        <p className="text-[15px] font-medium text-text-primary">Hi, I’m Adarsh’s AI assistant</p>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted">
-          Ask about his work, projects, skills or background. I answer from his resume and this
-          site, and link you to the details.
-        </p>
-      </div>
+      {greeted ? (
+        <m.div
+          className="flex justify-start"
+          initial={{ opacity: 0, y: 8, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="max-w-[86%] rounded-2xl rounded-bl-md border border-white/[0.06] bg-white/[0.04] px-3.5 py-2.5 text-[15px] leading-relaxed text-text-primary/90">
+            <p className="font-medium text-text-primary">
+              Hi, I’m Ash, Adarsh’s personal assistant.
+            </p>
+            <p className="mt-1 text-text-primary/80">
+              Ask me anything about his work, projects or background, and I’ll point you to the
+              details.
+            </p>
+          </div>
+        </m.div>
+      ) : (
+        <TypingDots />
+      )}
       <div>
         <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
           Try asking

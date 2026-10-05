@@ -215,9 +215,9 @@ function useCommands(): Command[] {
         id: 'ask',
         group: 'Actions',
         icon: <AssistantGlyph size={14} className="mx-auto" />,
-        label: 'Ask Adarsh (AI)',
+        label: 'Ask Ash (AI assistant)',
         hint: 'ask',
-        keywords: 'ai chat question assistant',
+        keywords: 'ash ai chat question assistant',
         run: () => askAdarsh.open(),
       },
       {
@@ -273,6 +273,8 @@ function rank(command: Command, query: string) {
   const label = command.label.toLowerCase();
   if (command.hint === query || label === query) return 0;
   if (command.hint.startsWith(query) || label.startsWith(query)) return 1;
+  // A whole word in the title (e.g. "ash" in "Ask Ash") beats a match inside a word ("crashes").
+  if (label.split(/[^a-z0-9]+/).some((word) => word.startsWith(query))) return 1;
   return 2;
 }
 
@@ -345,7 +347,7 @@ function Palette({ onClose }: { onClose: () => void }) {
     return [
       {
         id: 'ask-fallback',
-        group: 'Ask Adarsh',
+        group: 'Ask Ash',
         icon: <AssistantGlyph size={14} className="mx-auto" />,
         label: `Ask: “${q}”`,
         hint: 'ai',

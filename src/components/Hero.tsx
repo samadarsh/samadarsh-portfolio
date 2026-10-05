@@ -76,7 +76,7 @@ export function Hero() {
                 className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/[0.06] px-5 py-3 text-sm font-medium text-text-primary transition-colors hover:border-accent sm:py-2.5"
               >
                 <AssistantGlyph size={16} className="text-accent" />
-                Ask Adarsh
+                Ask Ash
               </button>
               <ResumeButton />
               <CopyEmailButton />
