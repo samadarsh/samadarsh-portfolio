@@ -44,7 +44,7 @@ const PAGES: Record<string, string> = {
   writing: '/journal',
 };
 
-const DEFAULT_SUGGESTIONS = ['help', 'whoami', 'ls projects', 'git log', 'cat bite-wise'];
+const DEFAULT_SUGGESTIONS = ['whoisadarsh', 'ls projects', 'cat bite-wise', 'git log', 'help'];
 
 const pathToCwd = (pathname: string) => (pathname === '/' ? '~' : `~${pathname}`);
 
@@ -70,7 +70,7 @@ const findProject = (arg: string) => {
 
 const COMMANDS = [
   'help',
-  'whoami',
+  'whoisadarsh',
   'ls',
   'cat',
   'open',
@@ -158,7 +158,7 @@ function run(raw: string, fx: Effects): Result {
         out: (
           <>
             {[
-              ['whoami', 'who is Adarsh'],
+              ['whoisadarsh', 'who is Adarsh'],
               ['ls [dir]', 'list projects/, experience/, papers/'],
               ['cat <project>', 'read a project, e.g. cat finsight'],
               ['open <project>', 'open its case study'],
@@ -178,10 +178,11 @@ function run(raw: string, fx: Effects): Result {
             ))}
           </>
         ),
-        suggest: ['whoami', 'ls projects', 'git log'],
+        suggest: ['whoisadarsh', 'ls projects', 'git log'],
       };
 
-    case 'whoami':
+    case 'whoisadarsh':
+    case 'whoami': // what developers type out of habit
       return {
         out: (
           <>

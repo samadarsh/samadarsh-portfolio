@@ -248,14 +248,6 @@ function useCommands(): Command[] {
         run: terminal.open,
       },
       {
-        id: 'whoami',
-        group: 'Fun',
-        icon: '$',
-        label: 'whoami',
-        hint: 'whoami',
-        run: () => askAdarsh.open('Who is Adarsh?'),
-      },
-      {
         id: 'hire',
         group: 'Fun',
         icon: '$',
