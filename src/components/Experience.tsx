@@ -18,7 +18,7 @@ export function Experience() {
   }, []);
 
   return (
-    <div className="grid gap-12 md:grid-cols-12">
+    <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
       <div className="md:col-span-4">
         <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
           Experience

@@ -22,7 +22,7 @@ export function AboutPage() {
             italic="systems, software, and markets."
           />
 
-          <div className="grid items-start gap-12 md:grid-cols-12">
+          <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-12">
             <div className="md:col-span-7">
               <div className="space-y-6 text-base leading-relaxed text-muted md:pt-6 md:text-lg">
                 {aboutNarrative.map((p, i) => (

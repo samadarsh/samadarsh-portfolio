@@ -36,9 +36,9 @@ export function TerminalPlaceholder() {
       className="flex h-full min-h-0 w-full min-w-0 flex-col font-mono text-[13px] leading-relaxed text-text-primary md:text-sm"
       aria-busy="true"
     >
-      <div className="min-h-0 flex-1 overflow-hidden px-4 pb-3 pt-4 md:px-5">
+      <div className="min-h-0 flex-1 overflow-hidden px-4 pb-3 pt-4 [container-type:inline-size] md:px-5">
         <pre
-          className="m-0 select-none overflow-hidden text-[13px] leading-[1.15] text-accent"
+          className="m-0 select-none overflow-hidden text-[min(13px,4.4cqi)] leading-[1.15] text-accent"
           aria-label="Adarsh"
         >
           {BANNER}
@@ -53,7 +53,7 @@ export function TerminalPlaceholder() {
           {DEFAULT_SUGGESTIONS.map((s) => (
             <span
               key={s}
-              className="flex h-9 shrink-0 items-center rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 text-xs text-text-primary/60"
+              className="flex h-11 shrink-0 items-center rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 text-xs text-text-primary/60 md:h-9"
             >
               {s}
             </span>
@@ -62,7 +62,9 @@ export function TerminalPlaceholder() {
         <div className="flex items-center gap-2 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 md:px-5">
           <span className="text-emerald-300/90">~</span>
           <span className="text-muted">$</span>
-          <span className="text-base text-muted/60 md:text-sm">type a command…</span>
+          <span className="flex h-11 items-center text-base text-muted/60 md:h-auto md:text-sm">
+            type a command…
+          </span>
         </div>
       </div>
     </div>

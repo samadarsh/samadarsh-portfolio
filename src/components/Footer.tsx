@@ -41,7 +41,7 @@ export function Footer() {
       </div>
 
       <div id="contact" className="container mx-auto max-w-6xl px-6 py-20 md:py-24 scroll-mt-24">
-        <div className="grid gap-16 md:grid-cols-12 md:gap-12">
+        <div className="grid grid-cols-1 gap-16 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-7">
             <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
               Let's build

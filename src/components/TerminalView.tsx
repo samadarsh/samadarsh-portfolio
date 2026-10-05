@@ -552,7 +552,7 @@ export default function TerminalView({
       <div
         ref={scrollRef}
         data-lenis-prevent
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3 pt-4 md:px-5"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3 pt-4 [container-type:inline-size] md:px-5"
         onClick={(e) => {
           // Clicking empty space focuses the prompt on keyboards; on touch it would pop the keyboard.
           if (window.matchMedia('(pointer: fine)').matches && e.target === e.currentTarget)
@@ -561,7 +561,7 @@ export default function TerminalView({
       >
         {intro ? <div className="mb-4 whitespace-pre-wrap break-words">{intro}</div> : null}
         <pre
-          className="m-0 select-none overflow-hidden text-[13px] leading-[1.15] text-accent"
+          className="m-0 select-none overflow-hidden text-[min(13px,4.4cqi)] leading-[1.15] text-accent"
           aria-label="Adarsh"
         >
           {BANNER}
@@ -591,7 +591,7 @@ export default function TerminalView({
               key={s}
               type="button"
               onClick={() => exec(s)}
-              className="flex h-9 shrink-0 items-center rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 text-xs text-text-primary/90 transition-colors hover:border-accent/40 active:bg-white/[0.08]"
+              className="flex h-11 shrink-0 items-center rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 text-xs md:h-9 text-text-primary/90 transition-colors hover:border-accent/40 active:bg-white/[0.08]"
             >
               {s}
             </button>
@@ -614,12 +614,12 @@ export default function TerminalView({
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="go"
-            className="min-w-0 flex-1 bg-transparent text-base text-text-primary caret-accent outline-none placeholder:text-muted/60 md:text-sm"
+            className="h-11 min-w-0 flex-1 bg-transparent text-base text-text-primary caret-accent md:h-auto outline-none placeholder:text-muted/60 md:text-sm"
           />
           <button
             type="button"
             onClick={() => exec(value)}
-            className="flex h-9 shrink-0 items-center rounded-lg px-2.5 text-xs text-muted active:bg-white/[0.08] md:hidden"
+            className="flex h-11 shrink-0 items-center rounded-lg px-3 text-xs text-muted active:bg-white/[0.08] md:hidden"
           >
             run ↵
           </button>

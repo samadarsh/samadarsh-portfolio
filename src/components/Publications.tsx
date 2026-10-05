@@ -3,7 +3,7 @@ import { publications } from '../data/content';
 
 export function Publications() {
   return (
-    <div className="grid gap-12 md:grid-cols-12">
+    <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
       <div className="md:col-span-4">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent md:text-[11px]">
           Publications
@@ -17,7 +17,7 @@ export function Publications() {
         </p>
       </div>
 
-      <ol className="grid gap-4 md:col-span-8">
+      <ol className="grid grid-cols-1 gap-4 md:col-span-8">
         {publications.map((pub, index) => (
           <m.li
             key={pub.title}
