@@ -117,15 +117,6 @@ export function Navbar() {
           </button>
           <button
             type="button"
-            onClick={terminal.open}
-            className="hidden h-9 items-center rounded-full border border-white/[0.08] px-3 font-mono text-xs text-muted transition-colors hover:border-accent/40 hover:text-text-primary md:inline-flex"
-            aria-label="Open terminal"
-            title="Terminal (press `)"
-          >
-            &gt;_
-          </button>
-          <button
-            type="button"
             onClick={palette.open}
             className="hidden h-9 items-center gap-2 rounded-full border border-white/[0.08] px-3 text-sm text-muted transition-colors hover:border-accent/40 hover:text-text-primary md:inline-flex"
             aria-label="Open command palette"

@@ -4,10 +4,12 @@ import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 import { HeroNetwork } from './HeroNetwork';
 import { useAskAdarsh } from './AskAdarsh';
+import { useTerminal } from './Terminal';
 import { AssistantGlyph } from './AssistantGlyph';
 
 export function Hero() {
   const askAdarsh = useAskAdarsh();
+  const terminal = useTerminal();
 
   return (
     <section
@@ -72,6 +74,17 @@ export function Hero() {
               >
                 <AssistantGlyph size={16} className="text-accent" />
                 Ask Adarsh
+              </button>
+              <button
+                type="button"
+                onClick={terminal.open}
+                data-magnetic
+                className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.02] px-5 py-3 font-mono text-sm text-text-primary transition-colors hover:border-accent/40 sm:py-2.5"
+              >
+                <span className="text-accent" aria-hidden>
+                  &gt;_
+                </span>
+                Terminal
               </button>
               <ResumeButton />
               <CopyEmailButton />
