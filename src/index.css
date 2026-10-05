@@ -469,3 +469,30 @@ html {
 .terminal-line { animation: terminal-in 0.18s ease-out; }
 @keyframes terminal-in { from { opacity: 0; transform: translateY(3px); } }
 @media (prefers-reduced-motion: reduce) { .terminal-line { animation: none; } }
+
+/* ---------- GitHub activity heatmap (GitHubActivity.tsx) ---------- */
+.gh-grid {
+  display: grid;
+  grid-template-columns: repeat(53, minmax(10px, 1fr));
+  grid-template-rows: auto;
+  gap: 3px;
+  min-width: 100%;
+}
+.gh-month { grid-row: 1; height: 1rem; white-space: nowrap; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: hsl(var(--muted)); }
+.gh-cell { display: block; aspect-ratio: 1; border-radius: 2px; background: rgb(255 255 255 / 0.05); }
+.gh-grid .gh-cell { transition: opacity 0.35s ease, transform 0.35s ease; }
+.gh-grid:not(.gh-seen):not(.gh-skeleton) .gh-cell { opacity: 0; transform: scale(0.6); }
+.gh-grid .gh-cell:hover { outline: 1px solid hsl(var(--text) / 0.6); outline-offset: 1px; }
+.gh-l1 { background: hsl(var(--accent) / 0.28); }
+.gh-l2 { background: hsl(var(--accent) / 0.48); }
+.gh-l3 { background: hsl(var(--accent) / 0.72); }
+.gh-l4 { background: hsl(var(--accent)); }
+.gh-key { width: 10px; height: 10px; }
+.gh-skeleton .gh-cell { animation: gh-pulse 1.4s ease-in-out infinite; }
+@keyframes gh-pulse { 50% { opacity: 0.4; } }
+.gh-scroll { scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / 0.15) transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .gh-grid .gh-cell { transition: none; }
+  .gh-grid:not(.gh-seen) .gh-cell { opacity: 1; transform: none; }
+  .gh-skeleton .gh-cell { animation: none; }
+}
