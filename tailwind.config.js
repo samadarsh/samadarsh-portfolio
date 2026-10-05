@@ -26,7 +26,7 @@ export default {
       keyframes: {
         'scroll-down': {
           '0%, 100%': { transform: 'translateY(0)', opacity: '0.4' },
-          '50%': { transform: 'translateY(8px)', opacity: '1' },
+          '50%': { transform: 'translateY(4px)', opacity: '1' },
         },
       },
     },

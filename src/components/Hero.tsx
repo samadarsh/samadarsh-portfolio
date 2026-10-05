@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { scrollToElement } from '../lib/smoothScroll';
 import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 import { HeroNetwork } from './HeroNetwork';
@@ -79,12 +80,30 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-muted lg:flex">
-        <span className="font-mono text-[11px] md:text-[10px] uppercase tracking-[0.25em]">
-          Scroll
-        </span>
-        <span className="h-10 w-px animate-scroll-down bg-gradient-to-b from-transparent via-accent/70 to-transparent" />
-      </div>
+      <button
+        type="button"
+        aria-label="Scroll to content"
+        onClick={(e) => {
+          const next = e.currentTarget.closest('section')?.nextElementSibling;
+          if (next instanceof HTMLElement) scrollToElement(next);
+        }}
+        className="absolute bottom-8 left-1/2 z-10 hidden h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/[0.14] text-text-primary/70 transition-colors hover:border-accent/50 hover:text-text-primary lg:flex"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="animate-scroll-down"
+          aria-hidden
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
     </section>
   );
 }
