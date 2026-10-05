@@ -1,4 +1,12 @@
-import { Fragment, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   contact,
@@ -12,7 +20,7 @@ import {
 } from '../data/content';
 import { copyText, downloadResume } from '../lib/contact';
 import { unlock } from '../lib/achievements';
-import { useAskAdarsh } from './AskAdarsh';
+import { askAssistant, askErrorMessage, type AskTurn } from '../lib/askApi';
 
 /**
  * A small shell over the portfolio's own data: `ls`, `cat`, `git log`, `cd` and friends.
@@ -44,7 +52,14 @@ const PAGES: Record<string, string> = {
   writing: '/journal',
 };
 
-const DEFAULT_SUGGESTIONS = ['whoisadarsh', 'ls projects', 'cat bite-wise', 'git log', 'help'];
+const DEFAULT_SUGGESTIONS = [
+  'whoisadarsh',
+  'ls projects',
+  'what is he working on now?',
+  'git log',
+  'cat bite-wise',
+  'help',
+];
 
 const pathToCwd = (pathname: string) => (pathname === '/' ? '~' : `~${pathname}`);
 
@@ -83,16 +98,49 @@ const COMMANDS = [
   'exit',
 ];
 
+const QUESTION_WORDS = new Set([
+  'what',
+  'whats',
+  "what's",
+  'who',
+  'whos',
+  "who's",
+  'how',
+  'why',
+  'when',
+  'where',
+  'which',
+  'is',
+  'are',
+  'does',
+  'do',
+  'did',
+  'can',
+  'could',
+  'has',
+  'have',
+  'tell',
+  'explain',
+  'describe',
+]);
+
+/** Plain-English input goes to the AI assistant instead of "command not found". */
+function looksLikeQuestion(input: string) {
+  const words = input.trim().split(/\s+/);
+  if (/\?\s*$/.test(input)) return true;
+  if (words.length >= 2 && QUESTION_WORDS.has(words[0].toLowerCase())) return true;
+  return words.length >= 4;
+}
+
 type Line = { id: number; node: ReactNode };
 
 type Effects = {
   navigate: (to: string) => void;
-  ask: (question: string) => void;
   close: () => void;
   embedded: boolean;
 };
 
-type Result = { out?: ReactNode; clear?: boolean; suggest?: string[] };
+type Result = { out?: ReactNode; clear?: boolean; suggest?: string[]; question?: string };
 
 const Muted = ({ children }: { children: ReactNode }) => (
   <span className="text-muted">{children}</span>
@@ -164,7 +212,7 @@ function run(raw: string, fx: Effects): Result {
               ['open <project>', 'open its case study'],
               ['cd <page>', 'go to ~, work, about or journal'],
               ['git log', 'career history'],
-              ['ask <question>', 'ask the AI assistant'],
+              ['ask <question>', 'ask the AI (or just type a question)'],
               ['contact', 'email and links'],
               ['resume', 'download the resume'],
               ['clear', 'clear the screen'],
@@ -331,9 +379,7 @@ function run(raw: string, fx: Effects): Result {
         return {
           out: <Muted>usage: ask &lt;question&gt; — e.g. ask what is he building now?</Muted>,
         };
-      fx.ask(arg.replace(/^["']|["']$/g, ''));
-      fx.close();
-      return {};
+      return { question: arg.replace(/^["']|["']$/g, '') };
     }
 
     case 'contact':
@@ -421,11 +467,12 @@ function run(raw: string, fx: Effects): Result {
       return {};
 
     default:
+      if (looksLikeQuestion(input)) return { question: input };
       return {
         out: (
           <span className="text-red-300">
             zsh: command not found: {cmd}
-            <Muted> — type help</Muted>
+            <Muted> — type help, or ask a question in plain English</Muted>
           </span>
         ),
         suggest: ['help'],
@@ -460,6 +507,39 @@ function complete(value: string) {
   return value;
 }
 
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function Thinking() {
+  const [dots, setDots] = useState(1);
+  useEffect(() => {
+    const id = window.setInterval(() => setDots((d) => (d % 3) + 1), 400);
+    return () => window.clearInterval(id);
+  }, []);
+  return <Muted>thinking{'.'.repeat(dots)}</Muted>;
+}
+
+/** Prints an answer a few characters at a time, like streamed command output. */
+function Typewriter({ text, onTick }: { text: string; onTick: () => void }) {
+  const [shown, setShown] = useState(() => (prefersReducedMotion() ? text.length : 0));
+  useEffect(() => {
+    if (shown >= text.length) return;
+    const id = window.setTimeout(() => setShown((n) => Math.min(text.length, n + 3)), 16);
+    return () => window.clearTimeout(id);
+  }, [shown, text]);
+  useEffect(onTick, [shown, onTick]);
+  return (
+    <span className={shown < text.length ? 'pdemo-caret' : undefined}>{text.slice(0, shown)}</span>
+  );
+}
+
+/** The assistant writes light markdown for the chat; plain text reads better here. */
+const plainText = (answer: string) =>
+  answer
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/^#+\s*/gm, '')
+    .trim();
+
 type Props = {
   /** Lines shown before the banner hints, e.g. the 404 message. */
   intro?: ReactNode;
@@ -478,7 +558,6 @@ export default function TerminalView({
 }: Props) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const askAdarsh = useAskAdarsh();
   const [lines, setLines] = useState<Line[]>([]);
   const [value, setValue] = useState('');
   const [suggest, setSuggest] = useState<string[]>(initialSuggestions ?? DEFAULT_SUGGESTIONS);
@@ -487,6 +566,11 @@ export default function TerminalView({
   const nextId = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const convo = useRef<AskTurn[]>([]);
+  const scrollToEnd = useCallback(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, []);
   const cwd = pathToCwd(pathname);
 
   useEffect(() => {
@@ -502,7 +586,6 @@ export default function TerminalView({
     const close = onClose ?? (() => {});
     const result = run(raw, {
       navigate,
-      ask: (q) => window.setTimeout(() => askAdarsh.open(q), 0),
       close,
       embedded,
     });
@@ -529,6 +612,33 @@ export default function TerminalView({
         {raw}
       </>
     );
+    if (result.question) {
+      const question = result.question;
+      const answerId = nextId.current++;
+      setLines((prev) => [
+        ...prev,
+        { id: nextId.current++, node: prompt },
+        { id: answerId, node: <Thinking /> },
+      ]);
+      const setAnswer = (node: ReactNode) =>
+        setLines((prev) => prev.map((l) => (l.id === answerId ? { ...l, node } : l)));
+      askAssistant(question, convo.current)
+        .then((answer) => {
+          unlock('ask');
+          const text = plainText(answer);
+          convo.current = [
+            ...convo.current,
+            { role: 'user' as const, content: question },
+            { role: 'assistant' as const, content: answer },
+          ].slice(-6);
+          setAnswer(<Typewriter text={text} onTick={scrollToEnd} />);
+          setSuggest(['ls projects', 'git log', 'contact']);
+        })
+        .catch((error: unknown) =>
+          setAnswer(<span className="text-red-300">{askErrorMessage(error)}</span>),
+        );
+      return;
+    }
     setLines((prev) => [
       ...prev,
       { id: nextId.current++, node: prompt },
@@ -582,7 +692,7 @@ export default function TerminalView({
         <p className="mt-3 whitespace-pre-wrap">
           <Muted>
             {experience[0].role} · {heroContent.location}
-            {'\n'}Type <Acc>help</Acc> for commands, or tap one below.
+            {'\n'}Type <Acc>help</Acc> for commands, or ask anything in plain English.
           </Muted>
         </p>
         <div className="mt-4 space-y-1">
