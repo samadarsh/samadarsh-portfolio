@@ -499,3 +499,20 @@ html {
 /* The suggestion row scrolls sideways on phones; fade the edge so it reads as "more this way". */
 .terminal-chips { mask-image: linear-gradient(to right, #000 85%, transparent); }
 .terminal-chips::-webkit-scrollbar { display: none; }
+
+/* ---------- Hero terminal (HeroTerminal.tsx) ---------- */
+.hero-term-caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  vertical-align: -0.15em;
+  background: hsl(var(--accent));
+  animation: hero-term-blink 1s steps(1) infinite;
+}
+@keyframes hero-term-blink { 50% { opacity: 0; } }
+.hero-term-hint { opacity: 0; transition: opacity 0.4s ease; }
+.hero-term.is-done .hero-term-hint { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-term-caret { animation: none; }
+  .hero-term-hint { transition: none; }
+}
