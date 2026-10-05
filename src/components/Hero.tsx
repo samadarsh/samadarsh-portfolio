@@ -4,12 +4,11 @@ import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 import { HeroNetwork } from './HeroNetwork';
 import { useAskAdarsh } from './AskAdarsh';
-import { useTerminal } from './Terminal';
+import { HeroTerminal } from './HeroTerminal';
 import { AssistantGlyph } from './AssistantGlyph';
 
 export function Hero() {
   const askAdarsh = useAskAdarsh();
-  const terminal = useTerminal();
 
   return (
     <section
@@ -41,7 +40,11 @@ export function Hero() {
             </h1>
           </div>
 
-          <div className="blur-in max-w-md lg:text-right" style={{ animationDelay: '0.43s' }}>
+          <div
+            className="blur-in flex max-w-md flex-col lg:text-right"
+            style={{ animationDelay: '0.43s' }}
+          >
+            <HeroTerminal className="order-last mt-6 lg:order-first lg:mb-8 lg:mt-0" />
             <p className="text-base leading-relaxed text-muted md:text-lg">{heroContent.tagline}</p>
             <p className="mt-4 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted/80">
               {heroContent.location}
@@ -74,17 +77,6 @@ export function Hero() {
               >
                 <AssistantGlyph size={16} className="text-accent" />
                 Ask Adarsh
-              </button>
-              <button
-                type="button"
-                onClick={terminal.open}
-                data-magnetic
-                className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.02] px-5 py-3 font-mono text-sm text-text-primary transition-colors hover:border-accent/40 sm:py-2.5"
-              >
-                <span className="text-accent" aria-hidden>
-                  &gt;_
-                </span>
-                Terminal
               </button>
               <ResumeButton />
               <CopyEmailButton />
