@@ -4,7 +4,7 @@ const BUBBLE =
   'M5.5 3.5h13A2.5 2.5 0 0 1 21 6v9a2.5 2.5 0 0 1-2.5 2.5H12.5L8 21v-3.5H5.5A2.5 2.5 0 0 1 3 15V6a2.5 2.5 0 0 1 2.5-2.5z';
 
 /**
- * The "Ask Adarsh" mark: a speech bubble with a friendly face, so it reads as a personal
+ * The mark for Ash, the AI assistant: a speech bubble with a friendly face, so it reads as a personal
  * assistant you can chat with. When animated, the eyes blink every few seconds.
  */
 export function AssistantGlyph({

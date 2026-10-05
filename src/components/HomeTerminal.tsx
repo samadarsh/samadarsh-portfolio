@@ -42,7 +42,7 @@ export function HomeTerminal() {
             </h2>
             <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
               Explore this portfolio from a shell. Read a project, walk the career history as a git
-              log, or ask the AI assistant without leaving the prompt.
+              log, or hand a question to Ash, the AI assistant.
             </p>
             <ul className="mt-6 grid gap-2 font-mono text-sm text-muted">
               {[

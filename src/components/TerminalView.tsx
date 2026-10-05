@@ -164,7 +164,7 @@ function run(raw: string, fx: Effects): Result {
               ['open <project>', 'open its case study'],
               ['cd <page>', 'go to ~, work, about or journal'],
               ['git log', 'career history'],
-              ['ask <question>', 'ask the AI assistant'],
+              ['ask <question>', 'ask Ash, the AI assistant'],
               ['contact', 'email and links'],
               ['resume', 'download the resume'],
               ['clear', 'clear the screen'],

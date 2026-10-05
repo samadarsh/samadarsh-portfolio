@@ -1,4 +1,4 @@
-// Builds the plain-text profile the "Ask Adarsh" assistant answers from.
+// Builds the plain-text profile Ash, the "Ask Ash" assistant, answers from.
 // Imported by api/ask.ts; relative imports carry `.js` so Node's ESM loader resolves them
 // after Vercel compiles the function.
 import {
