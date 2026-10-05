@@ -387,3 +387,85 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .pdemo *, .pdemo *::before, .pdemo *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- "How it works" diagram (ArchitectureFlow.tsx) ---------- */
+.arch { grid-template-columns: minmax(0, 1fr); }
+.arch-step {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.75rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition-delay: calc(var(--arch-i) * 110ms);
+}
+.arch-seen .arch-step { opacity: 1; transform: none; }
+.arch-node {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--accent) / 0.35);
+  background: hsl(var(--bg));
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: hsl(var(--accent));
+}
+.arch-card {
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  background: rgb(255 255 255 / 0.02);
+  padding: 0.75rem 1rem;
+}
+@media (min-width: 768px) {
+  .arch { grid-template-columns: repeat(var(--arch-cols), minmax(0, 1fr)); }
+  .arch-step { display: flex; flex-direction: column; align-items: stretch; }
+  .arch-node { align-self: center; margin-top: 0; }
+  .arch-card { height: 100%; }
+}
+.arch-rail { position: absolute; z-index: 0; background: rgb(255 255 255 / 0.1); border-radius: 2px; }
+.arch-pulse {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: hsl(var(--accent));
+  box-shadow: 0 0 0 4px hsl(var(--accent) / 0.15), 0 0 18px 2px hsl(var(--accent) / 0.55);
+  opacity: 0;
+  animation: arch-move var(--arch-cycle) linear infinite paused;
+}
+.arch-card,
+.arch-node { animation: arch-glow var(--arch-cycle) ease-out var(--arch-delay) infinite paused; }
+.arch-live .arch-pulse,
+.arch-live .arch-card,
+.arch-live .arch-node { animation-play-state: running; }
+@keyframes arch-move {
+  0% { transform: translate(0, 0); opacity: 0; }
+  4% { opacity: 1; }
+  80% { transform: translate(var(--arch-dx), var(--arch-dy)); opacity: 1; }
+  88%, 100% { transform: translate(var(--arch-dx), var(--arch-dy)); opacity: 0; }
+}
+@keyframes arch-glow {
+  0% {
+    border-color: hsl(var(--accent) / 0.7);
+    box-shadow: 0 0 0 1px hsl(var(--accent) / 0.2), 0 0 30px -8px hsl(var(--accent) / 0.5);
+  }
+  35%, 100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arch-step { opacity: 1; transform: none; transition: none; }
+  .arch-pulse { display: none; }
+  .arch-card, .arch-node { animation: none; }
+}
+
+/* Terminal output fades in line by line */
+.terminal-line { animation: terminal-in 0.18s ease-out; }
+@keyframes terminal-in { from { opacity: 0; transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .terminal-line { animation: none; } }

@@ -12,7 +12,8 @@ export type AchievementId =
   | 'chart'
   | 'streak'
   | 'konami'
-  | 'hire';
+  | 'hire'
+  | 'terminal';
 
 export type Achievement = { id: AchievementId; icon: string; name: string; description: string };
 
@@ -41,6 +42,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'streak', icon: '🔥', name: 'Hot hand', description: 'Three correct calls in a row' },
   { id: 'konami', icon: '🕹️', name: 'Old school', description: 'Entered the Konami code' },
   { id: 'hire', icon: '🤝', name: 'Good taste', description: 'Typed “hire”' },
+  { id: 'terminal', icon: '>_', name: 'Root access', description: 'Opened the terminal' },
 ];
 
 const STORAGE_KEY = 'portfolio-achievements';

@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { m } from 'framer-motion';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { NotFoundPage, notFoundMeta } from './NotFound';
+import { ArchitectureFlow } from '../components/ArchitectureFlow';
 import { projects } from '../data/content';
 import { ProjectPreview } from '../components/ProjectPreview';
 import { Footer } from '../components/Footer';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { caseStudyMeta, pages } from '../data/seo';
+import { caseStudyMeta } from '../data/seo';
 import { unlock } from '../lib/achievements';
 
 const fadeUp = {
@@ -28,14 +30,14 @@ export function CaseStudyPage() {
   const index = projects.findIndex((p) => p.slug === slug);
   const project = index >= 0 ? projects[index] : undefined;
 
-  const meta = project ? caseStudyMeta(project) : pages.work;
+  const meta = project ? caseStudyMeta(project) : notFoundMeta;
   usePageMeta(meta.title, meta.description);
 
   useEffect(() => {
     if (project) unlock('casestudy');
   }, [project]);
 
-  if (!project) return <Navigate to="/work" replace />;
+  if (!project) return <NotFoundPage />;
 
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
@@ -110,35 +112,7 @@ export function CaseStudyPage() {
           {project.architecture?.length ? (
             <m.section {...fadeUp} className="mt-20" aria-labelledby="how-it-works">
               <SectionLabel>How it works</SectionLabel>
-              <ol
-                id="how-it-works"
-                className="mt-6 flex flex-col gap-3 md:grid md:gap-3"
-                // One even row on wider screens; the step numbers carry the order there.
-                style={{
-                  gridTemplateColumns: `repeat(${project.architecture.length}, minmax(0, 1fr))`,
-                }}
-              >
-                {project.architecture.map((step, i) => (
-                  <li key={step.label} className="flex flex-col gap-3">
-                    {i > 0 ? (
-                      <span className="pl-5 text-accent md:hidden" aria-hidden>
-                        ↓
-                      </span>
-                    ) : null}
-                    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 md:h-full">
-                      <p className="flex items-baseline gap-2 text-[15px] font-medium text-text-primary">
-                        <span className="font-mono text-xs text-accent md:text-[11px]">
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                        {step.label}
-                      </p>
-                      {step.detail ? (
-                        <p className="mt-1 text-sm text-muted">{step.detail}</p>
-                      ) : null}
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <ArchitectureFlow steps={project.architecture} />
             </m.section>
           ) : null}
 

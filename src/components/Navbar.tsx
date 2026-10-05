@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useBackToClose } from '../hooks/useBackToClose';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useCommandPalette } from './CommandPalette';
+import { useTerminal } from './Terminal';
 import { isMac } from '../lib/contact';
 import { playSound, setSoundOn } from '../lib/sound';
 import { useSoundOn } from '../hooks/useSound';
@@ -26,6 +27,7 @@ export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const { pathname } = useLocation();
   const palette = useCommandPalette();
+  const terminal = useTerminal();
   const soundOn = useSoundOn();
   const goTo = useGoTo();
 
@@ -112,6 +114,15 @@ export function Navbar() {
                 <path d="m22 9-6 6M16 9l6 6" />
               )}
             </svg>
+          </button>
+          <button
+            type="button"
+            onClick={terminal.open}
+            className="hidden h-9 items-center rounded-full border border-white/[0.08] px-3 font-mono text-xs text-muted transition-colors hover:border-accent/40 hover:text-text-primary md:inline-flex"
+            aria-label="Open terminal"
+            title="Terminal (press `)"
+          >
+            &gt;_
           </button>
           <button
             type="button"
@@ -218,6 +229,16 @@ export function Navbar() {
               className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-3 text-sm text-text-primary"
             >
               Search
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                terminal.open();
+              }}
+              className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-3 font-mono text-sm text-text-primary"
+            >
+              &gt;_ Terminal
             </button>
           </div>
           <div className="flex gap-6 px-4 pb-2 pt-4 text-sm text-muted">

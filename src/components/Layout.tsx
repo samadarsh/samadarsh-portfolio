@@ -9,6 +9,7 @@ import { ToastProvider } from './Toaster';
 import { CommandPaletteProvider } from './CommandPalette';
 import { AchievementsProvider } from './Achievements';
 import { AskAdarshProvider } from './AskAdarsh';
+import { TerminalProvider } from './Terminal';
 import { useEasterEggs } from '../hooks/useEasterEggs';
 
 function ScrollManager() {
@@ -40,19 +41,21 @@ export function Layout() {
     <ToastProvider>
       <AchievementsProvider>
         <AskAdarshProvider>
-          <CommandPaletteProvider>
-            <ScrollManager />
-            <EasterEggs />
-            <CustomCursor />
-            <Navbar />
-            <main>
-              {/* Pages other than Home load on demand; hold their space while they arrive. */}
-              <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
-                <Outlet />
-              </Suspense>
-            </main>
-            <MobileActionBar />
-          </CommandPaletteProvider>
+          <TerminalProvider>
+            <CommandPaletteProvider>
+              <ScrollManager />
+              <EasterEggs />
+              <CustomCursor />
+              <Navbar />
+              <main>
+                {/* Pages other than Home load on demand; hold their space while they arrive. */}
+                <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
+                  <Outlet />
+                </Suspense>
+              </main>
+              <MobileActionBar />
+            </CommandPaletteProvider>
+          </TerminalProvider>
         </AskAdarshProvider>
       </AchievementsProvider>
     </ToastProvider>
