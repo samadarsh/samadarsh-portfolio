@@ -1,4 +1,5 @@
 import { m } from 'framer-motion';
+import { GitHubActivity } from '../components/GitHubActivity';
 import { SectionHeader } from '../components/SectionHeader';
 import { Experience } from '../components/Experience';
 import { Skills } from '../components/Skills';
@@ -72,6 +73,8 @@ export function AboutPage() {
           <Publications />
         </div>
       </section>
+
+      <GitHubActivity />
 
       <section className="pb-24 md:pb-32">
         <div className="container mx-auto max-w-6xl px-6">
