@@ -1,21 +1,25 @@
 import { Link } from 'react-router-dom';
 import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
-import { HeroNetwork } from './HeroNetwork';
 import { useAskAdarsh } from './AskAdarsh';
 import { HeroTerminal } from './HeroTerminal';
 import { ScrollCue } from './ScrollCue';
 import { AssistantGlyph } from './AssistantGlyph';
+import { DecodeText } from './DecodeText';
+
+const GLYPH = 'text-accent/70';
 
 export function Hero() {
   const askAdarsh = useAskAdarsh();
 
   return (
-    <section
-      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-20 pt-32 md:pb-28"
-    >
+    <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-20 pt-32 md:pb-28">
       <div className="absolute inset-x-0 top-0 -z-10 h-[70vh] bg-gradient-to-b from-accent/[0.06] via-transparent to-transparent" />
-      <HeroNetwork />
+      {/* One soft, still glow; the name and tagline carry the motion. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,hsl(var(--accent)/0.10),transparent_62%)] md:-right-24 md:h-[760px] md:w-[760px]"
+      />
 
       <div className="container relative z-10 mx-auto max-w-6xl px-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -31,11 +35,11 @@ export function Hero() {
             </p>
 
             <h1 className="font-display text-[25vw] leading-[0.9] tracking-tightest text-text-primary sm:text-7xl sm:leading-[0.95] md:text-8xl lg:text-[9.5rem]">
-              <span className="name-reveal block overflow-hidden">
-                <span className="block">Adarsh</span>
+              <span className="name-reveal">
+                <DecodeText text="Adarsh" delay={250} step={110} glyphClassName={GLYPH} />
               </span>
-              <span className="name-reveal block overflow-hidden">
-                <span className="block italic text-text-primary/90">S.</span>
+              <span className="name-reveal italic text-text-primary/90">
+                <DecodeText text="S." delay={910} step={110} glyphClassName={GLYPH} />
               </span>
             </h1>
           </div>
@@ -45,7 +49,9 @@ export function Hero() {
             style={{ animationDelay: '0.43s' }}
           >
             <HeroTerminal className="order-last mt-6 lg:order-first lg:mb-8 lg:mt-0" />
-            <p className="text-base leading-relaxed text-muted md:text-lg">{heroContent.tagline}</p>
+            <p className="text-base leading-relaxed text-muted md:text-lg">
+              <DecodeText text={heroContent.tagline} delay={900} step={16} glyphClassName={GLYPH} />
+            </p>
             <p className="mt-4 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted/80">
               {heroContent.location}
             </p>
