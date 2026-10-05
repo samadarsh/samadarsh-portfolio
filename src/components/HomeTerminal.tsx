@@ -42,15 +42,15 @@ export function HomeTerminal() {
             </h2>
             <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
               Explore this portfolio from a shell. Read a project, walk the career history as a git
-              log, or type any question in plain English and the AI answers right in the prompt.
+              log, or ask the AI assistant without leaving the prompt.
             </p>
             <ul className="mt-6 grid gap-2 font-mono text-sm text-muted">
               {[
                 ['ls projects', 'everything I have built'],
-                ['what is bitewise built with?', 'ask in plain English'],
+                ['cat finsight', 'read one project'],
                 ['git log', 'career as commits'],
               ].map(([cmd, what]) => (
-                <li key={cmd} className="flex flex-wrap gap-x-3">
+                <li key={cmd} className="flex gap-3">
                   <span className="text-accent">$</span>
                   <span className="text-text-primary">{cmd}</span>
                   <span className="text-muted/70">— {what}</span>
