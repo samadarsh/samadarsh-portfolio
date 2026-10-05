@@ -3,7 +3,7 @@ import { education, skillGroups } from '../data/content';
 
 export function Skills() {
   return (
-    <div className="grid gap-16 md:grid-cols-12">
+    <div className="grid grid-cols-1 gap-16 md:grid-cols-12">
       <div className="md:col-span-4">
         <p className="font-mono text-xs md:text-[11px] uppercase tracking-[0.25em] text-accent">
           Skills & Education
@@ -17,7 +17,7 @@ export function Skills() {
       </div>
 
       <div className="md:col-span-8">
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {skillGroups.map((group, index) => (
             <m.div
               key={group.title}

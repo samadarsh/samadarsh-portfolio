@@ -1,7 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { m } from 'framer-motion';
 
-const TerminalView = lazy(() => import('./TerminalView'));
+import { loadTerminalView, TerminalPlaceholder } from './TerminalPlaceholder';
+
+const TerminalView = lazy(loadTerminalView);
 
 /**
  * A live terminal on the home page: visitors can browse the portfolio from a shell right
@@ -10,6 +12,15 @@ const TerminalView = lazy(() => import('./TerminalView'));
 export function HomeTerminal() {
   const ref = useRef<HTMLElement>(null);
   const [near, setNear] = useState(false);
+
+  // Fetch the shell once the page is idle, so it's ready before the visitor scrolls here.
+  useEffect(() => {
+    const idle = window.requestIdleCallback
+      ? window.requestIdleCallback(() => void loadTerminalView(), { timeout: 4000 })
+      : window.setTimeout(() => void loadTerminalView(), 2500);
+    return () =>
+      window.cancelIdleCallback ? window.cancelIdleCallback(idle) : window.clearTimeout(idle);
+  }, []);
 
   useEffect(() => {
     const el = ref.current;
@@ -29,8 +40,8 @@ export function HomeTerminal() {
       aria-labelledby="terminal-title"
     >
       <div className="container mx-auto max-w-6xl px-6">
-        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-5">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="min-w-0 lg:col-span-5">
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent md:text-[11px]">
               Terminal
             </p>
@@ -60,13 +71,13 @@ export function HomeTerminal() {
           </div>
 
           <m.div
-            className="lg:col-span-7"
+            className="min-w-0 lg:col-span-7"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="h-[440px] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0b] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)] md:h-[480px]">
+            <div className="h-[440px] w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0b] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)] md:h-[480px]">
               <div
                 className="flex h-10 items-center gap-1.5 border-b border-white/[0.06] px-4"
                 aria-hidden
@@ -80,10 +91,12 @@ export function HomeTerminal() {
               </div>
               <div className="h-[calc(100%-2.5rem)]">
                 {near ? (
-                  <Suspense fallback={null}>
+                  <Suspense fallback={<TerminalPlaceholder />}>
                     <TerminalView embedded />
                   </Suspense>
-                ) : null}
+                ) : (
+                  <TerminalPlaceholder />
+                )}
               </div>
             </div>
           </m.div>

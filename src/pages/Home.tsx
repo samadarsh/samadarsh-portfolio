@@ -20,7 +20,7 @@ export function HomePage() {
 
       <section className="py-24 md:py-32">
         <div className="container mx-auto max-w-6xl px-6">
-          <div className="grid items-start gap-12 md:grid-cols-12">
+          <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-12">
             <div className="md:col-span-5">
               <SectionHeader
                 kicker="About"

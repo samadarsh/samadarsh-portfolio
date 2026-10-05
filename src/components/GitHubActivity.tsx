@@ -92,7 +92,7 @@ export function GitHubActivity() {
       aria-labelledby="github-title"
     >
       <div className="container mx-auto max-w-6xl px-6">
-        <div className="grid gap-10 md:grid-cols-12 md:gap-12">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
           <div className="md:col-span-4">
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent md:text-[11px]">
               Code activity

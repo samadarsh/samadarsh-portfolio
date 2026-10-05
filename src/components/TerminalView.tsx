@@ -12,6 +12,7 @@ import {
 } from '../data/content';
 import { copyText, downloadResume } from '../lib/contact';
 import { unlock } from '../lib/achievements';
+import { BANNER, DEFAULT_SUGGESTIONS } from './TerminalPlaceholder';
 import { useAskAdarsh } from './AskAdarsh';
 
 /**
@@ -19,18 +20,6 @@ import { useAskAdarsh } from './AskAdarsh';
  * Used full screen (Terminal.tsx) and inline on the 404 page. Every command can also be run
  * by tapping a suggestion, so it works on phones without typing.
  */
-
-// "ADARSH" in figlet's Small font, kept narrow enough for a 360px phone.
-const GLYPHS: Record<string, string[]> = {
-  A: ['   _   ', '  /_\\  ', ' / _ \\ ', '/_/ \\_\\'],
-  D: [' ___  ', '|   \\ ', '| |) |', '|___/ '],
-  R: [' ___ ', '| _ \\', '|   /', '|_|_\\'],
-  S: [' ___ ', '/ __|', '\\__ \\', '|___/'],
-  H: [' _  _ ', '| || |', '| __ |', '|_||_|'],
-};
-const BANNER = [0, 1, 2, 3]
-  .map((row) => [...'ADARSH'].map((c) => GLYPHS[c][row]).join(''))
-  .join('\n');
 
 const PAGES: Record<string, string> = {
   '~': '/',
@@ -43,8 +32,6 @@ const PAGES: Record<string, string> = {
   haugtun: '/journal',
   writing: '/journal',
 };
-
-const DEFAULT_SUGGESTIONS = ['whoisadarsh', 'ls projects', 'cat bite-wise', 'git log', 'help'];
 
 const pathToCwd = (pathname: string) => (pathname === '/' ? '~' : `~${pathname}`);
 
@@ -561,11 +548,11 @@ export default function TerminalView({
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col font-mono text-[13px] leading-relaxed text-text-primary md:text-sm">
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-col font-mono text-[13px] leading-relaxed text-text-primary md:text-sm">
       <div
         ref={scrollRef}
         data-lenis-prevent
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3 pt-4 md:px-5"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3 pt-4 [container-type:inline-size] md:px-5"
         onClick={(e) => {
           // Clicking empty space focuses the prompt on keyboards; on touch it would pop the keyboard.
           if (window.matchMedia('(pointer: fine)').matches && e.target === e.currentTarget)
@@ -574,7 +561,7 @@ export default function TerminalView({
       >
         {intro ? <div className="mb-4 whitespace-pre-wrap break-words">{intro}</div> : null}
         <pre
-          className="m-0 select-none overflow-hidden text-[13px] leading-[1.15] text-accent"
+          className="m-0 select-none overflow-hidden text-[min(13px,4.4cqi)] leading-[1.15] text-accent"
           aria-label="Adarsh"
         >
           {BANNER}
@@ -596,7 +583,7 @@ export default function TerminalView({
 
       <div className="border-t border-white/[0.06] bg-black/20">
         <div
-          className="terminal-chips flex gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
+          className="terminal-chips flex w-full min-w-0 gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
           aria-label="Suggested commands"
         >
           {suggest.map((s) => (
@@ -604,7 +591,7 @@ export default function TerminalView({
               key={s}
               type="button"
               onClick={() => exec(s)}
-              className="flex h-9 shrink-0 items-center rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 text-xs text-text-primary/90 transition-colors hover:border-accent/40 active:bg-white/[0.08]"
+              className="flex h-11 shrink-0 items-center rounded-lg border border-white/[0.1] bg-white/[0.03] px-3 text-xs md:h-9 text-text-primary/90 transition-colors hover:border-accent/40 active:bg-white/[0.08]"
             >
               {s}
             </button>
@@ -627,12 +614,12 @@ export default function TerminalView({
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="go"
-            className="min-w-0 flex-1 bg-transparent text-base text-text-primary caret-accent outline-none placeholder:text-muted/60 md:text-sm"
+            className="h-11 min-w-0 flex-1 bg-transparent text-base text-text-primary caret-accent md:h-auto outline-none placeholder:text-muted/60 md:text-sm"
           />
           <button
             type="button"
             onClick={() => exec(value)}
-            className="flex h-9 shrink-0 items-center rounded-lg px-2.5 text-xs text-muted active:bg-white/[0.08] md:hidden"
+            className="flex h-11 shrink-0 items-center rounded-lg px-3 text-xs text-muted active:bg-white/[0.08] md:hidden"
           >
             run ↵
           </button>
