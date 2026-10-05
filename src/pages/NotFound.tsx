@@ -1,8 +1,9 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { loadTerminalView, TerminalPlaceholder } from '../components/TerminalPlaceholder';
 
-const TerminalView = lazy(() => import('../components/TerminalView'));
+const TerminalView = lazy(loadTerminalView);
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const notFoundMeta = {
@@ -59,7 +60,7 @@ export function NotFoundPage() {
             <span className="ml-auto font-mono text-[11px] text-muted">zsh</span>
           </div>
           <div className="h-[calc(100%-2.5rem)]">
-            <Suspense fallback={null}>
+            <Suspense fallback={<TerminalPlaceholder />}>
               <TerminalView
                 embedded
                 intro={intro}

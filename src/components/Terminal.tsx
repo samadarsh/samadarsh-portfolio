@@ -14,9 +14,10 @@ import { useLocation } from 'react-router-dom';
 import { useBackToClose } from '../hooks/useBackToClose';
 import { lockScroll } from '../lib/smoothScroll';
 import { unlock } from '../lib/achievements';
+import { loadTerminalView, TerminalPlaceholder } from './TerminalPlaceholder';
 
 // The shell and its commands load on first open.
-const TerminalView = lazy(() => import('./TerminalView'));
+const TerminalView = lazy(loadTerminalView);
 
 const TerminalContext = createContext<{ open: () => void }>({ open: () => {} });
 
@@ -130,7 +131,7 @@ function TerminalWindow({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className="min-h-0 flex-1">
-          <Suspense fallback={null}>
+          <Suspense fallback={<TerminalPlaceholder />}>
             <TerminalView onClose={onClose} autoFocus={fine} />
           </Suspense>
         </div>

@@ -12,6 +12,7 @@ import {
 } from '../data/content';
 import { copyText, downloadResume } from '../lib/contact';
 import { unlock } from '../lib/achievements';
+import { BANNER, DEFAULT_SUGGESTIONS } from './TerminalPlaceholder';
 import { useAskAdarsh } from './AskAdarsh';
 
 /**
@@ -19,18 +20,6 @@ import { useAskAdarsh } from './AskAdarsh';
  * Used full screen (Terminal.tsx) and inline on the 404 page. Every command can also be run
  * by tapping a suggestion, so it works on phones without typing.
  */
-
-// "ADARSH" in figlet's Small font, kept narrow enough for a 360px phone.
-const GLYPHS: Record<string, string[]> = {
-  A: ['   _   ', '  /_\\  ', ' / _ \\ ', '/_/ \\_\\'],
-  D: [' ___  ', '|   \\ ', '| |) |', '|___/ '],
-  R: [' ___ ', '| _ \\', '|   /', '|_|_\\'],
-  S: [' ___ ', '/ __|', '\\__ \\', '|___/'],
-  H: [' _  _ ', '| || |', '| __ |', '|_||_|'],
-};
-const BANNER = [0, 1, 2, 3]
-  .map((row) => [...'ADARSH'].map((c) => GLYPHS[c][row]).join(''))
-  .join('\n');
 
 const PAGES: Record<string, string> = {
   '~': '/',
@@ -43,8 +32,6 @@ const PAGES: Record<string, string> = {
   haugtun: '/journal',
   writing: '/journal',
 };
-
-const DEFAULT_SUGGESTIONS = ['whoisadarsh', 'ls projects', 'cat bite-wise', 'git log', 'help'];
 
 const pathToCwd = (pathname: string) => (pathname === '/' ? '~' : `~${pathname}`);
 
@@ -561,7 +548,7 @@ export default function TerminalView({
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col font-mono text-[13px] leading-relaxed text-text-primary md:text-sm">
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-col font-mono text-[13px] leading-relaxed text-text-primary md:text-sm">
       <div
         ref={scrollRef}
         data-lenis-prevent
@@ -596,7 +583,7 @@ export default function TerminalView({
 
       <div className="border-t border-white/[0.06] bg-black/20">
         <div
-          className="terminal-chips flex gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
+          className="terminal-chips flex w-full min-w-0 gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
           aria-label="Suggested commands"
         >
           {suggest.map((s) => (
