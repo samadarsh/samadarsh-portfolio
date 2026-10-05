@@ -411,6 +411,11 @@ function run(raw: string, fx: Effects): Result {
     case 'exit':
     case 'quit':
     case 'q':
+      if (fx.embedded && window.location.pathname === '/')
+        return {
+          out: <Muted>Nowhere to exit to: this is home. Try cd work or ls projects.</Muted>,
+          suggest: ['cd work', 'ls projects'],
+        };
       if (fx.embedded) fx.navigate('/');
       fx.close();
       return {};
@@ -502,6 +507,7 @@ export default function TerminalView({
       embedded,
     });
     if (raw.trim()) {
+      unlock('terminal');
       history.current = [raw.trim(), ...history.current.filter((h) => h !== raw.trim())].slice(
         0,
         30,
@@ -535,9 +541,10 @@ export default function TerminalView({
     if (e.key === 'Enter') {
       e.preventDefault();
       exec(value);
-    } else if (e.key === 'Tab') {
+    } else if (e.key === 'Tab' && !e.shiftKey && complete(value) !== value) {
+      // Only when there is something to complete, so Tab still moves focus on the page.
       e.preventDefault();
-      setValue((v) => complete(v));
+      setValue(complete(value));
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
       const h = history.current;
@@ -589,7 +596,7 @@ export default function TerminalView({
 
       <div className="border-t border-white/[0.06] bg-black/20">
         <div
-          className="flex gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
+          className="terminal-chips flex gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
           aria-label="Suggested commands"
         >
           {suggest.map((s) => (

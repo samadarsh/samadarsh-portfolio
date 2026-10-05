@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Hero } from '../components/Hero';
 import { Stats } from '../components/Stats';
 import { SelectedWorks } from '../components/SelectedWorks';
+import { HomeTerminal } from '../components/HomeTerminal';
 import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
 import { aboutNarrative } from '../data/content';
@@ -67,6 +68,8 @@ export function HomePage() {
           </Link>
         </div>
       </section>
+
+      <HomeTerminal />
 
       <Footer />
     </>
