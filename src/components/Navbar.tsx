@@ -10,6 +10,9 @@ import { ResumeButton } from './ContactActions';
 import { AchievementsButton } from './Achievements';
 import { socialLinks } from '../data/content';
 import { useGoTo } from '../hooks/useGoTo';
+import { useTheme } from '../hooks/useTheme';
+import { toggleTheme } from '../lib/theme';
+import { ThemeIcon, ThemeToggle } from './ThemeToggle';
 
 const links = [
   { to: '/about', label: 'About' },
@@ -30,6 +33,7 @@ export function Navbar() {
   const terminal = useTerminal();
   const soundOn = useSoundOn();
   const goTo = useGoTo();
+  const theme = useTheme();
 
   const toggleSound = () => {
     setSoundOn(!soundOn);
@@ -88,6 +92,8 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <AchievementsButton className="h-11 w-11 md:h-9 md:w-9" />
+          {/* On phones the theme switch lives in the menu, so the bar keeps four buttons. */}
+          <ThemeToggle className="hidden md:flex md:h-9 md:w-9" />
           <button
             type="button"
             onClick={toggleSound}
@@ -230,6 +236,14 @@ export function Navbar() {
               className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-3 font-mono text-sm text-text-primary"
             >
               &gt;_ Terminal
+            </button>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] px-5 py-3 text-sm text-text-primary"
+            >
+              <ThemeIcon theme={theme} />
+              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
             </button>
           </div>
           <div className="flex gap-6 px-4 pb-2 pt-4 text-sm text-muted">

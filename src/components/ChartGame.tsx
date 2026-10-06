@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { unlock } from '../lib/achievements';
 import { playSound } from '../lib/sound';
+import { useTheme } from '../hooks/useTheme';
 
 type Candle = [date: string, open: number, high: number, low: number, close: number];
 type Dataset = { symbol: string; source: string; updated: string; candles: Candle[] };
@@ -49,8 +50,8 @@ function drawChart(canvas: HTMLCanvasElement, candles: Candle[], visible: number
   const accent = cssVar('--accent');
   const muted = cssVar('--muted');
   const text = cssVar('--text');
-  const up = '#5fc68f';
-  const down = '#e0786f';
+  const up = `rgb(${cssVar('--up')})`;
+  const down = `rgb(${cssVar('--down')})`;
 
   // Scale to the candles on screen only; including the hidden ones would leak the answer.
   const shown = candles.slice(0, visible);
@@ -70,7 +71,7 @@ function drawChart(canvas: HTMLCanvasElement, candles: Candle[], visible: number
   for (let g = 0; g <= 4; g++) {
     const v = lo + ((hi - lo) * g) / 4;
     const gy = y(v);
-    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.strokeStyle = `rgb(${cssVar('--ink')} / 0.06)`;
     ctx.beginPath();
     ctx.moveTo(pad.l, gy);
     ctx.lineTo(W - pad.r + 6, gy);
@@ -172,7 +173,8 @@ export function ChartGame() {
     [data, start],
   );
 
-  // Draw on every change and whenever the canvas resizes.
+  // Draw on every change, whenever the canvas resizes, and when the theme changes its colours.
+  const theme = useTheme();
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !window_) return;
@@ -181,7 +183,7 @@ export function ChartGame() {
     const observer = new ResizeObserver(draw);
     observer.observe(canvas);
     return () => observer.disconnect();
-  }, [window_, visible]);
+  }, [window_, visible, theme]);
 
   const guess = (choice: 'up' | 'down') => {
     if (!round || round.guess || !window_) return;
@@ -300,7 +302,7 @@ export function ChartGame() {
           type="button"
           onClick={() => guess('up')}
           disabled={!round || !!round.guess}
-          className="min-h-[48px] rounded-xl border border-white/[0.1] px-5 text-sm font-medium text-[#5fc68f] transition-colors enabled:hover:border-[#5fc68f] disabled:opacity-40"
+          className="min-h-[48px] rounded-xl border border-white/[0.1] px-5 text-sm font-medium text-[rgb(var(--up))] transition-colors enabled:hover:border-[rgb(var(--up))] disabled:opacity-40"
         >
           ▲ Higher
         </button>
@@ -308,7 +310,7 @@ export function ChartGame() {
           type="button"
           onClick={() => guess('down')}
           disabled={!round || !!round.guess}
-          className="min-h-[48px] rounded-xl border border-white/[0.1] px-5 text-sm font-medium text-[#e0786f] transition-colors enabled:hover:border-[#e0786f] disabled:opacity-40"
+          className="min-h-[48px] rounded-xl border border-white/[0.1] px-5 text-sm font-medium text-[rgb(var(--down))] transition-colors enabled:hover:border-[rgb(var(--down))] disabled:opacity-40"
         >
           ▼ Lower
         </button>
@@ -328,7 +330,9 @@ export function ChartGame() {
           <>
             <span
               className={
-                result.correct ? 'font-medium text-[#5fc68f]' : 'font-medium text-[#e0786f]'
+                result.correct
+                  ? 'font-medium text-[rgb(var(--up))]'
+                  : 'font-medium text-[rgb(var(--down))]'
               }
             >
               {result.correct ? 'Correct.' : 'Not this time.'}

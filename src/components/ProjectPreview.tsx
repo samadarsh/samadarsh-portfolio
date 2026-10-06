@@ -111,7 +111,7 @@ export function ProjectPreview({
       </div>
 
       {/* Preview body */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-bg">
+      <div data-theme="dark" className="relative aspect-[16/10] w-full overflow-hidden bg-bg">
         {/* Fallback layer — stays mounted under image, fades out smoothly */}
         <div
           className={`absolute inset-0 bg-gradient-to-br ${accent} transition-opacity duration-700 ${

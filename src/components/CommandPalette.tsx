@@ -30,6 +30,8 @@ import { useAskAdarsh } from './AskAdarsh';
 import { useTerminal } from './Terminal';
 import { AssistantGlyph } from './AssistantGlyph';
 import { playSound } from '../lib/sound';
+import { toggleTheme } from '../lib/theme';
+import { useTheme } from '../hooks/useTheme';
 
 type Command = {
   id: string;
@@ -57,6 +59,7 @@ function useCommands(): Command[] {
   const { open: openAchievements } = useAchievementsPanel();
   const askAdarsh = useAskAdarsh();
   const terminal = useTerminal();
+  const theme = useTheme();
 
   return useMemo(() => {
     const linkedIn = socialLinks.find((s) => s.label === 'LinkedIn')!.href;
@@ -239,6 +242,15 @@ function useCommands(): Command[] {
         run: () => goTo('/journal', 'chart-game'),
       },
       {
+        id: 'theme',
+        group: 'Actions',
+        icon: theme === 'dark' ? '☀' : '☾',
+        label: theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+        hint: 'theme',
+        keywords: 'light dark mode paper espresso colour color appearance',
+        run: toggleTheme,
+      },
+      {
         id: 'terminal',
         group: 'Fun',
         icon: '>_',
@@ -259,7 +271,7 @@ function useCommands(): Command[] {
         },
       },
     ];
-  }, [goTo, toast, openAchievements, askAdarsh, terminal]);
+  }, [goTo, toast, openAchievements, askAdarsh, terminal, theme]);
 }
 
 function matches(command: Command, tokens: string[]) {

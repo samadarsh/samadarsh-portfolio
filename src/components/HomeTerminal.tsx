@@ -77,7 +77,10 @@ export function HomeTerminal() {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="h-[440px] w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0b] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)] md:h-[480px]">
+            <div
+              data-theme="dark"
+              className="h-[440px] w-full max-w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0b] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)] md:h-[480px]"
+            >
               <div
                 className="flex h-10 items-center gap-1.5 border-b border-white/[0.06] px-4"
                 aria-hidden
