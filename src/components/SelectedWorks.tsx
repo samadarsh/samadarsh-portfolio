@@ -8,6 +8,9 @@ import { ProjectPreview } from './ProjectPreview';
 type SelectedWorksProps = {
   showHeader?: boolean;
   limit?: number;
+  /** Show these projects, in this order, instead of the first few. */
+  slugs?: string[];
+  subtitle?: string;
 };
 
 const ArrowIcon = () => (
@@ -63,8 +66,12 @@ function Highlights({ id, items }: { id: string; items: string[] }) {
   );
 }
 
-export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) {
-  const items = limit ? projects.slice(0, limit) : projects;
+export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: SelectedWorksProps) {
+  const items = slugs
+    ? slugs.flatMap((slug) => projects.filter((p) => p.slug === slug))
+    : limit
+      ? projects.slice(0, limit)
+      : projects;
 
   return (
     <section className="py-24 md:py-32">
@@ -74,7 +81,10 @@ export function SelectedWorks({ showHeader = true, limit }: SelectedWorksProps) 
             kicker="Selected Works"
             title="Projects across AI,"
             italic="product, and markets."
-            subtitle="A few of the systems I've shipped recently — each one built for production, not as a demo."
+            subtitle={
+              subtitle ??
+              "A few of the systems I've shipped recently — each one built for production, not as a demo."
+            }
           />
         ) : null}
 

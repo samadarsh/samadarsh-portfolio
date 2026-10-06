@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ViewingAs } from './ViewingAs';
 import { heroContent } from '../data/content';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 import { useAskAdarsh } from './AskAdarsh';
@@ -75,6 +76,7 @@ export function Hero() {
                 <ResumeButton />
                 <CopyEmailButton />
               </div>
+              <ViewingAs />
             </div>
           </div>
 
