@@ -2,30 +2,16 @@ import { useEffect, useState } from 'react';
 import { whenIntroDone } from '../lib/intro';
 
 /**
- * Text that resolves out of scrambled glyphs, left to right, the first time the hero is seen in a
- * visit. The finished text is laid out invisibly to hold the space, and the scrambling copy is
- * drawn over it, so the page around it never moves. Screen readers get the real text throughout.
+ * Text that resolves out of scrambled glyphs, left to right, each time it appears. The finished
+ * text is laid out invisibly to hold the space, and the scrambling copy is drawn over it, so the
+ * page around it never moves. Screen readers get the real text throughout.
  */
 
-const SEEN_KEY = 'hero-decoded';
 const GLYPHS = '01<>/{}[]#$%&*+=?ΔΣλ';
 const randomGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
 
-// Read once per page load, so every DecodeText on the page agrees on whether to animate.
-let animateThisLoad: boolean | null = null;
-function shouldAnimate() {
-  if (animateThisLoad === null) {
-    let seen = false;
-    try {
-      seen = sessionStorage.getItem(SEEN_KEY) === '1';
-      sessionStorage.setItem(SEEN_KEY, '1');
-    } catch {
-      // Storage blocked: just play it.
-    }
-    animateThisLoad = !seen && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-  return animateThisLoad;
-}
+// Plays every time the text mounts (so every time the home page shows), except under reduced motion.
+const shouldAnimate = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type Props = {
   text: string;
@@ -50,8 +36,6 @@ export function DecodeText({ text, delay = 0, step = 60, className = '', glyphCl
     const frame = (now: number) => {
       const done = Math.floor((now - start - delay) / step) + 1;
       if (done >= text.length) {
-        // Later visits to the home page in this load show the text straight away.
-        animateThisLoad = false;
         setSettled(null);
         return;
       }
