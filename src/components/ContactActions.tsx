@@ -92,7 +92,7 @@ export function CopyEmailButton({ className = '' }: { className?: string }) {
     >
       <span ref={textRef}>{contact.email}</span>
       <span
-        className={`inline-flex items-center gap-1 ${state === 'copied' ? 'text-emerald-400' : 'text-muted group-hover:text-accent'}`}
+        className={`inline-flex items-center gap-1 ${state === 'copied' ? 'text-[rgb(var(--up))]' : 'text-muted group-hover:text-accent'}`}
         aria-live="polite"
       >
         {state === 'copied' ? <CheckIcon /> : <CopyIcon />}

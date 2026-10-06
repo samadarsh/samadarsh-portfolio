@@ -2,14 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg: 0 0% 6%;
-  --surface: 0 0% 9%;
-  --text: 40 8% 96%;
-  --muted: 0 0% 58%;
-  --stroke: 0 0% 16%;
-  --accent: 38 22% 78%;
+/*
+ * Themes. Espresso (dark) is the default; Paper (light) is the visitor's opt-in, set as
+ * data-theme on <html> by src/lib/theme.ts. --ink is what Tailwind's "white" means, so the faint
+ * white borders and tints used across the site turn into faint ink on Paper. Anything that must
+ * stay dark in both themes (the terminal windows, project covers) carries data-theme="dark" itself.
+ */
+:root,
+[data-theme='dark'] {
+  --bg: 24 14% 6%;
+  --surface: 24 12% 9.5%;
+  --text: 36 30% 93%;
+  --muted: 30 9% 61%;
+  --stroke: 24 10% 18%;
+  --accent: 32 62% 64%;
+  --ink: 255 255 255;
+  --up: 95 198 143;
+  --down: 224 120 111;
   color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --bg: 42 33% 95%;
+  --surface: 40 30% 91%;
+  --text: 30 12% 10%;
+  --muted: 30 6% 38%;
+  --stroke: 35 16% 82%;
+  --accent: 14 62% 44%;
+  --ink: 38 28 18;
+  --up: 31 122 72;
+  --down: 178 62 50;
+  color-scheme: light;
+}
+
+/* A themed block sets its own text colour, so a dark island inside Paper isn't dark-on-dark. */
+[data-theme] {
+  color: hsl(var(--text));
+}
+
+/* The deep black shadows that suit Espresso look smudged on Paper; use one soft warm shadow. */
+[data-theme='light'] [class*='shadow-['] {
+  --tw-shadow: 0 24px 60px -28px rgb(60 40 20 / 0.28) !important;
 }
 
 * {
@@ -287,7 +320,7 @@ html {
 }
 .pdemo-top > .pdemo-r { min-width: 0; }
 .pdemo-good { color: #8fc9a3; border-color: rgb(143 201 163 / 0.35); }
-.pdemo-box { border: 1px solid rgb(255 255 255 / 0.08); background: rgb(255 255 255 / 0.025); border-radius: 0.8em; padding: 0.7em 0.9em; min-width: 0; }
+.pdemo-box { border: 1px solid rgb(var(--ink) / 0.08); background: rgb(var(--ink) / 0.025); border-radius: 0.8em; padding: 0.7em 0.9em; min-width: 0; }
 .pdemo-r { transition: opacity 0.45s ease, transform 0.45s ease; }
 .pdemo-off { opacity: 0; transform: translateY(0.5em); }
 .pdemo-caret::after {
@@ -310,7 +343,7 @@ html {
 .pdemo-meta { margin-left: auto; flex: none; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78em; color: hsl(var(--muted)); font-variant-numeric: tabular-nums; }
 .pdemo-bubble { max-width: 86%; border-radius: 1em; padding: 0.6em 0.9em; line-height: 1.4; }
 .pdemo-q { align-self: flex-end; background: hsl(var(--text)); color: #111; border-bottom-right-radius: 0.3em; }
-.pdemo-a { align-self: flex-start; min-height: 2.2em; background: rgb(255 255 255 / 0.05); border: 1px solid rgb(255 255 255 / 0.08); border-bottom-left-radius: 0.3em; }
+.pdemo-a { align-self: flex-start; min-height: 2.2em; background: rgb(var(--ink) / 0.05); border: 1px solid rgb(var(--ink) / 0.08); border-bottom-left-radius: 0.3em; }
 .pdemo-think { display: inline-flex; gap: 0.3em; padding-top: 0.3em; }
 .pdemo-think i { width: 0.4em; height: 0.4em; border-radius: 9px; background: hsl(var(--muted)); animation: pdemo-bob 1s infinite ease-in-out; }
 .pdemo-think i:nth-child(2) { animation-delay: 0.15s; }
@@ -347,7 +380,7 @@ html {
 .pdemo-mic.pdemo-done { background: #8fc9a3; color: #0f0f0f; }
 @keyframes pdemo-ring { from { transform: scale(1); opacity: 1; } to { transform: scale(1.9); opacity: 0; } }
 .pdemo-wave { flex: 1; min-width: 0; height: 5.2em; display: flex; align-items: center; gap: 0.16em; }
-.pdemo-wave i { flex: 1 1 0; min-width: 0; border-radius: 9px; background: rgb(246 245 243 / 0.16); transition: height 0.08s linear, background 0.3s; }
+.pdemo-wave i { flex: 1 1 0; min-width: 0; border-radius: 9px; background: rgb(var(--ink) / 0.16); transition: height 0.08s linear, background 0.3s; }
 .pdemo-wave i.pdemo-bar-rec { background: #e5484d; }
 .pdemo-wave i.pdemo-bar-done { background: hsl(var(--accent)); }
 .pdemo-time { flex: none; display: flex; align-items: center; gap: 0.4em; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.78em; color: hsl(var(--muted)); font-variant-numeric: tabular-nums; }
@@ -363,9 +396,9 @@ html {
 .pdemo-job h4 { margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 400; font-size: 1.2em; line-height: 1.15; }
 .pdemo-co { margin-top: 0.3em; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.72em; color: hsl(var(--muted)); }
 .pdemo-chips { display: flex; flex-wrap: wrap; gap: 0.35em; margin-top: 0.45em; }
-.pdemo-chip { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.72em; border: 1px solid rgb(255 255 255 / 0.1); border-radius: 999px; padding: 0.15em 0.6em; }
+.pdemo-chip { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.72em; border: 1px solid rgb(var(--ink) / 0.1); border-radius: 999px; padding: 0.15em 0.6em; }
 .pdemo-mail { display: flex; flex-direction: column; overflow: hidden; }
-.pdemo-subj { font-size: 0.84em; color: hsl(var(--muted)); border-bottom: 1px solid rgb(255 255 255 / 0.08); padding-bottom: 0.45em; }
+.pdemo-subj { font-size: 0.84em; color: hsl(var(--muted)); border-bottom: 1px solid rgb(var(--ink) / 0.08); padding-bottom: 0.45em; }
 .pdemo-subj b { color: hsl(var(--text)); font-weight: 500; }
 .pdemo-body { margin-top: 0.5em; font-size: 0.84em; line-height: 1.5; white-space: pre-wrap; }
 
@@ -403,8 +436,8 @@ html {
 }
 .arch-card {
   border-radius: 1rem;
-  border: 1px solid rgb(255 255 255 / 0.08);
-  background: rgb(255 255 255 / 0.02);
+  border: 1px solid rgb(var(--ink) / 0.08);
+  background: rgb(var(--ink) / 0.02);
   padding: 0.75rem 1rem;
 }
 @media (min-width: 768px) {
@@ -413,7 +446,7 @@ html {
   .arch-node { align-self: center; margin-top: 0; }
   .arch-card { height: 100%; }
 }
-.arch-rail { position: absolute; z-index: 0; background: rgb(255 255 255 / 0.1); border-radius: 2px; }
+.arch-rail { position: absolute; z-index: 0; background: rgb(var(--ink) / 0.1); border-radius: 2px; }
 .arch-pulse {
   position: absolute;
   left: -3px;
@@ -464,7 +497,7 @@ html {
   min-width: 100%;
 }
 .gh-month { grid-row: 1; height: 1rem; white-space: nowrap; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: hsl(var(--muted)); }
-.gh-cell { display: block; aspect-ratio: 1; border-radius: 2px; background: rgb(255 255 255 / 0.05); }
+.gh-cell { display: block; aspect-ratio: 1; border-radius: 2px; background: rgb(var(--ink) / 0.05); }
 .gh-grid .gh-cell { transition: opacity 0.35s ease, transform 0.35s ease; }
 .gh-grid:not(.gh-seen):not(.gh-skeleton) .gh-cell { opacity: 0; transform: scale(0.6); }
 .gh-grid .gh-cell:hover { outline: 1px solid hsl(var(--text) / 0.6); outline-offset: 1px; }
@@ -475,7 +508,7 @@ html {
 .gh-key { width: 10px; height: 10px; }
 .gh-skeleton .gh-cell { animation: gh-pulse 1.4s ease-in-out infinite; }
 @keyframes gh-pulse { 50% { opacity: 0.4; } }
-.gh-scroll { scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / 0.15) transparent; }
+.gh-scroll { scrollbar-width: thin; scrollbar-color: rgb(var(--ink) / 0.15) transparent; }
 @media (prefers-reduced-motion: reduce) {
   .gh-grid .gh-cell { transition: none; }
   .gh-grid:not(.gh-seen) .gh-cell { opacity: 1; transform: none; }
@@ -511,7 +544,7 @@ html {
   top: 0;
   bottom: 8px;
   width: 1px;
-  background: linear-gradient(to bottom, transparent, rgb(255 255 255 / 0.2) 35%, rgb(255 255 255 / 0.2));
+  background: linear-gradient(to bottom, transparent, rgb(var(--ink) / 0.2) 35%, rgb(var(--ink) / 0.2));
 }
 .scroll-cue i {
   position: absolute;

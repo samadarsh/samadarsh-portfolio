@@ -12,6 +12,7 @@ import {
 } from '../data/content';
 import { copyText, downloadResume } from '../lib/contact';
 import { unlock } from '../lib/achievements';
+import { getTheme, setTheme } from '../lib/theme';
 import { BANNER, DEFAULT_SUGGESTIONS } from './TerminalPlaceholder';
 import { useAskAdarsh } from './AskAdarsh';
 
@@ -66,6 +67,7 @@ const COMMANDS = [
   'ask',
   'contact',
   'resume',
+  'theme',
   'clear',
   'exit',
 ];
@@ -154,6 +156,7 @@ function run(raw: string, fx: Effects): Result {
               ['ask <question>', 'ask Ash, the AI assistant'],
               ['contact', 'email and links'],
               ['resume', 'download the resume'],
+              ['theme', 'switch light / dark theme'],
               ['clear', 'clear the screen'],
               ['exit', fx.embedded ? 'go to the home page' : 'close the terminal'],
             ].map(([c, d]) => (
@@ -376,6 +379,23 @@ function run(raw: string, fx: Effects): Result {
       return {
         out: <span className="text-red-300">rm: permission denied. The portfolio stays.</span>,
       };
+
+    case 'theme': {
+      const want = arg.toLowerCase();
+      if (want && want !== 'light' && want !== 'dark') {
+        return { out: <span className="text-red-300">theme: use light or dark</span> };
+      }
+      const next = want ? (want as 'light' | 'dark') : getTheme() === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+      return {
+        out: (
+          <>
+            Theme set to <Acc>{next === 'light' ? 'paper (light)' : 'espresso (dark)'}</Acc>
+            <Muted>. The terminal stays dark either way.</Muted>
+          </>
+        ),
+      };
+    }
 
     case 'pwd':
       return {

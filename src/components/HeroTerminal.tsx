@@ -155,6 +155,7 @@ export function HeroTerminal({ className = '' }: { className?: string }) {
       type="button"
       onClick={terminal.open}
       aria-label="Open the terminal"
+      data-theme="dark"
       className={`hero-term group block w-full overflow-hidden rounded-2xl border border-white/[0.1] bg-[#0b0b0b] text-left shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-accent/40 ${progress.done ? 'is-done' : ''} ${className}`}
     >
       <span

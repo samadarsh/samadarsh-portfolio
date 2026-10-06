@@ -49,7 +49,10 @@ export function NotFoundPage() {
           The link may be old or mistyped. Use the terminal below, or head back home.
         </p>
 
-        <div className="mt-8 h-[min(520px,62dvh)] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0b] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]">
+        <div
+          data-theme="dark"
+          className="mt-8 h-[min(520px,62dvh)] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b0b] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)]"
+        >
           <div
             className="flex h-10 items-center gap-1.5 border-b border-white/[0.06] px-4"
             aria-hidden

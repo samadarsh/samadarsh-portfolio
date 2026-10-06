@@ -106,6 +106,7 @@ function TerminalWindow({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-label="Terminal"
+        data-theme="dark"
         className="flex h-full w-full flex-col overflow-hidden bg-[#0b0b0b] pt-[env(safe-area-inset-top)] md:h-[min(640px,82vh)] md:max-w-3xl md:rounded-2xl md:border md:border-white/[0.1] md:pt-0 md:shadow-[0_50px_120px_-30px_rgba(0,0,0,0.95)]"
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}

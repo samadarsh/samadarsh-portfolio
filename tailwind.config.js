@@ -15,6 +15,8 @@ export default {
         muted: 'hsl(var(--muted) / <alpha-value>)',
         stroke: 'hsl(var(--stroke) / <alpha-value>)',
         accent: 'hsl(var(--accent) / <alpha-value>)',
+        // Faint lines and tints are written as white/[x]; on Paper they become ink.
+        white: 'rgb(var(--ink) / <alpha-value>)',
       },
       letterSpacing: {
         tightest: '-0.04em',
