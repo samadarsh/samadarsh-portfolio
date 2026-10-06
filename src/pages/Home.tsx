@@ -1,9 +1,9 @@
 import { m } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Hero } from '../components/Hero';
-import { Stats } from '../components/Stats';
+import { AttentionMatrix } from '../components/AttentionMatrix';
 import { SelectedWorks } from '../components/SelectedWorks';
-import { HomeTerminal } from '../components/HomeTerminal';
+import { AgentDemo } from '../components/AgentDemo';
 import { SectionHeader } from '../components/SectionHeader';
 import { Footer } from '../components/Footer';
 import { aboutNarrative } from '../data/content';
@@ -16,17 +16,13 @@ export function HomePage() {
   return (
     <>
       <Hero />
-      <Stats />
+      <AttentionMatrix />
 
       <section className="py-24 md:py-32">
         <div className="container mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-12">
             <div className="md:col-span-5">
-              <SectionHeader
-                kicker="About"
-                title="Practical AI,"
-                italic="shipped to production."
-              />
+              <SectionHeader kicker="About" title="Practical AI," italic="shipped to production." />
             </div>
             <div className="space-y-6 text-base leading-relaxed text-muted md:col-span-7 md:text-lg">
               {aboutNarrative.slice(0, 2).map((p, i) => (
@@ -69,7 +65,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <HomeTerminal />
+      <AgentDemo />
 
       <Footer />
     </>
