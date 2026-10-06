@@ -16,9 +16,17 @@ import { contact, projects } from '../data/content';
 import { unlock } from '../lib/achievements';
 import { lockScroll } from '../lib/smoothScroll';
 import { playSound } from '../lib/sound';
+import { followUps } from '../lib/followUps';
 import { AssistantGlyph } from './AssistantGlyph';
 
-type Message = { id: number; role: 'user' | 'assistant'; content: string; error?: boolean };
+type Message = {
+  id: number;
+  role: 'user' | 'assistant';
+  content: string;
+  error?: boolean;
+  /** Still arriving from the server. */
+  streaming?: boolean;
+};
 
 const SUGGESTIONS = [
   'What is he working on now?',
@@ -33,7 +41,36 @@ const ERRORS: Record<string, string> = {
   rate_limited: 'Lots of questions right now. Please try again in a minute.',
   not_configured: `The assistant is offline right now. You can email Adarsh at ${contact.email}.`,
   default: `Something went wrong. Please try again, or email Adarsh at ${contact.email}.`,
+  cut: 'The answer was cut off. Please ask again.',
 };
+
+/** Reads the answer stream from /api/ask: one JSON object per line. */
+async function readAnswer(res: Response, onText: (text: string) => void) {
+  const handle = (raw: string) => {
+    const msg = JSON.parse(raw) as { d?: string; done?: boolean; error?: string };
+    if (msg.error) throw new Error(msg.error);
+    if (msg.d) onText(msg.d);
+    return !!msg.done;
+  };
+  let finished = false;
+  const reader = res.body?.getReader();
+  if (!reader) {
+    for (const raw of (await res.text()).split('\n')) if (raw.trim()) finished ||= handle(raw);
+    return finished;
+  }
+  const decoder = new TextDecoder();
+  let buffer = '';
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() ?? '';
+    for (const raw of lines) if (raw.trim()) finished ||= handle(raw);
+  }
+  if (buffer.trim()) finished ||= handle(buffer);
+  return finished;
+}
 
 const STORE_KEY = 'ask-adarsh-chat';
 const TEASER_KEY = 'ask-adarsh-teased';
@@ -46,7 +83,9 @@ export const useAskAdarsh = () => useContext(AskContext);
 
 const readStored = (): Message[] => {
   try {
-    return JSON.parse(sessionStorage.getItem(STORE_KEY) || '[]') as Message[];
+    const stored = JSON.parse(sessionStorage.getItem(STORE_KEY) || '[]') as Message[];
+    // An answer cut short by a reload is shown as it was left.
+    return stored.map((m) => ({ ...m, streaming: false }));
   } catch {
     return [];
   }
@@ -112,28 +151,41 @@ export function AskAdarshProvider({ children }: { children: ReactNode }) {
         .map(({ role, content }) => ({ role, content }));
       setMessages((list) => [...list, { id: nextId.current++, role: 'user', content: question }]);
       setLoading(true);
+      const id = nextId.current++;
+      let text = '';
       try {
         const res = await fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ question, history }),
         });
-        const data = (await res.json().catch(() => ({}))) as { answer?: string; error?: string };
-        if (!res.ok || !data.answer) throw new Error(data.error || 'default');
+        if (!res.ok) {
+          const data = (await res.json().catch(() => ({}))) as { error?: string };
+          throw new Error(data.error || 'default');
+        }
+        // The reply bubble appears with the first words and grows as the rest arrives.
+        const finished = await readAnswer(res, (chunk) => {
+          const first = !text;
+          text += chunk;
+          const content = text;
+          setMessages((list) =>
+            first
+              ? [...list, { id, role: 'assistant', content, streaming: true }]
+              : list.map((m) => (m.id === id ? { ...m, content } : m)),
+          );
+        });
+        if (!text) throw new Error('default');
+        setMessages((list) => list.map((m) => (m.id === id ? { ...m, streaming: false } : m)));
+        if (!finished) throw new Error('cut');
         playSound('success');
-        const answer = data.answer;
-        setMessages((list) => [
-          ...list,
-          { id: nextId.current++, role: 'assistant', content: answer },
-        ]);
       } catch (error) {
         const code = error instanceof Error ? error.message : 'default';
         setMessages((list) => [
-          ...list,
+          ...list.map((m) => (m.id === id ? { ...m, streaming: false } : m)),
           {
             id: nextId.current++,
             role: 'assistant',
-            content: ERRORS[code] ?? ERRORS.default,
+            content: ERRORS[text ? 'cut' : code] ?? ERRORS.default,
             error: true,
           },
         ]);
@@ -320,8 +372,6 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   const reduced = useReducedMotion();
   const dragControls = useDragControls();
   const visibleHeight = useVisibleHeight(phone);
-  // Replies that arrive while the chat is open type themselves out; earlier ones show instantly.
-  const [typingFrom] = useState(() => messages.reduce((m, x) => Math.max(m, x.id), 0));
 
   // Escape closes; the phone sheet also locks the page behind it.
   useEffect(() => {
@@ -341,12 +391,31 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
     };
   }, [onClose, phone]);
 
-  const scrollToEnd = useCallback(() => {
+  // Follow the answer as it streams in, unless the visitor has scrolled up to read.
+  const stick = useRef(true);
+  const onLogScroll = () => {
     const el = logRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, []);
+    if (el) stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  };
+  useEffect(() => {
+    const el = logRef.current;
+    if (el && stick.current) el.scrollTop = el.scrollHeight;
+  }, [messages, loading]);
+  // A new question always brings the conversation back to the bottom.
+  const asked = messages.filter((m) => m.role === 'user');
+  useEffect(() => {
+    stick.current = true;
+  }, [asked.length]);
 
-  useEffect(scrollToEnd, [messages.length, loading, scrollToEnd]);
+  const last = messages[messages.length - 1];
+  const streaming = !!last?.streaming;
+  const suggestions =
+    !loading && last?.role === 'assistant' && !last.error
+      ? followUps(
+          last.content,
+          asked.map((m) => m.content),
+        )
+      : [];
 
   // Grow the input with its text, up to about four lines.
   useEffect(() => {
@@ -391,8 +460,20 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           <h2 id="ask-title" className="text-[15px] font-medium leading-tight text-text-primary">
             Ash
           </h2>
-          <p className="text-xs text-muted">
-            {loading ? 'Typing…' : 'Adarsh’s AI assistant · online'}
+          <p className="truncate text-xs text-muted">
+            {loading ? (
+              streaming ? (
+                'Writing…'
+              ) : (
+                'Typing…'
+              )
+            ) : (
+              <>
+                {/* Phones are narrow once "New chat" shows, so they get the short form. */}
+                <span className="sm:hidden">AI assistant · online</span>
+                <span className="hidden sm:inline">Adarsh’s AI assistant · online</span>
+              </>
+            )}
           </p>
         </div>
         {messages.length ? (
@@ -434,6 +515,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
 
       <div
         ref={logRef}
+        onScroll={onLogScroll}
         className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
         data-lenis-prevent
         aria-live="polite"
@@ -441,16 +523,26 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         {messages.length === 0 ? (
           <Welcome onPick={send} />
         ) : (
-          messages.map((m) => (
-            <Bubble
-              key={m.id}
-              message={m}
-              animate={!reduced && m.role === 'assistant' && !m.error && m.id > typingFrom}
-              onProgress={scrollToEnd}
-            />
-          ))
+          messages.map((m) => <Bubble key={m.id} message={m} />)
         )}
-        {loading ? <TypingDots /> : null}
+        {loading && !streaming ? <TypingDots /> : null}
+        {suggestions.length ? (
+          <div className="flex flex-wrap gap-2 pt-1" aria-label="Suggested follow-up questions">
+            {suggestions.map((q, i) => (
+              <m.button
+                key={q}
+                type="button"
+                onClick={() => send(q)}
+                className="min-h-[40px] rounded-full border border-white/[0.1] bg-white/[0.02] px-3.5 text-left text-[13px] text-text-primary/85 transition-colors hover:border-accent/50 hover:text-text-primary"
+                initial={reduced ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: reduced ? 0 : 0.1 + i * 0.06 }}
+              >
+                {q}
+              </m.button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <form onSubmit={onSubmit} className="border-t border-white/[0.06] p-3">
@@ -637,31 +729,21 @@ function TypingDots() {
   );
 }
 
-/** Reveals text a few words at a time, like a streamed reply. */
-function useTypewriter(text: string, enabled: boolean, onProgress: () => void) {
-  const words = useMemo(() => text.split(/(\s+)/), [text]);
-  const [count, setCount] = useState(enabled ? 0 : words.length);
-  useEffect(() => {
-    if (!enabled) return;
-    let i = 0;
-    const step = Math.max(1, Math.round(words.length / 70));
-    const timer = window.setInterval(() => {
-      i = Math.min(words.length, i + step);
-      setCount(i);
-      onProgress();
-      if (i >= words.length) window.clearInterval(timer);
-    }, 24);
-    return () => window.clearInterval(timer);
-  }, [enabled, words, onProgress]);
-  return { shown: words.slice(0, count).join(''), done: count >= words.length };
-}
-
 /** Plain text with "- " lines shown as a list; stray markdown emphasis is dropped. */
-function RichText({ text }: { text: string }) {
+const Caret = () => (
+  <span
+    className="ml-0.5 inline-block h-[1em] w-[0.45em] translate-y-[0.15em] animate-pulse rounded-[1px] bg-accent/80"
+    aria-hidden
+  />
+);
+
+function RichText({ text, caret = false }: { text: string; caret?: boolean }) {
   const blocks = text.replace(/\*\*(.+?)\*\*/g, '$1').split(/\n{2,}/);
   return (
     <div className="space-y-2.5">
       {blocks.map((block, i) => {
+        // While the answer streams, the caret follows the last word.
+        const tail = caret && i === blocks.length - 1 ? <Caret /> : null;
         const lines = block.split('\n').filter((l) => l.trim());
         const isList = lines.length > 0 && lines.every((l) => /^\s*[-•*]\s+/.test(l));
         if (isList) {
@@ -673,7 +755,10 @@ function RichText({ text }: { text: string }) {
                     className="mt-[0.65em] h-1 w-1 flex-shrink-0 rounded-full bg-accent"
                     aria-hidden
                   />
-                  <span>{l.replace(/^\s*[-•*]\s+/, '')}</span>
+                  <span>
+                    {l.replace(/^\s*[-•*]\s+/, '')}
+                    {j === lines.length - 1 ? tail : null}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -682,6 +767,7 @@ function RichText({ text }: { text: string }) {
         return (
           <p key={i} className="whitespace-pre-wrap">
             {block}
+            {tail}
           </p>
         );
       })}
@@ -689,19 +775,10 @@ function RichText({ text }: { text: string }) {
   );
 }
 
-function Bubble({
-  message,
-  animate,
-  onProgress,
-}: {
-  message: Message;
-  animate: boolean;
-  onProgress: () => void;
-}) {
+function Bubble({ message }: { message: Message }) {
   const mine = message.role === 'user';
-  const { shown, done } = useTypewriter(message.content, animate, onProgress);
   const links =
-    !mine && !message.error && done
+    !mine && !message.error && !message.streaming
       ? projects
           .filter((p) => message.content.toLowerCase().includes(p.title.toLowerCase()))
           .slice(0, 3)
@@ -723,7 +800,13 @@ function Bubble({
               : 'rounded-bl-md border border-white/[0.06] bg-white/[0.04] text-text-primary/90'
         }`}
       >
-        {mine ? message.content : <RichText text={shown} />}
+        {mine ? (
+          message.content
+        ) : (
+          <div aria-busy={message.streaming || undefined}>
+            <RichText text={message.content} caret={message.streaming} />
+          </div>
+        )}
         {links.length ? (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {links.map((p) => (

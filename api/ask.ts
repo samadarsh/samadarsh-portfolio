@@ -1,5 +1,7 @@
 // Vercel serverless function behind Ash, the AI assistant ("Ask Ash" chat).
-// Calls any OpenAI-compatible chat API (Groq by default) with the site's own profile as context.
+// Calls any OpenAI-compatible chat API (Groq by default) with the site's own profile as context,
+// and streams the answer back as newline-delimited JSON: {"d":"text"} chunks, then {"done":true}
+// (or {"error":"upstream"} if the model fails part-way). Errors before any text are plain JSON.
 //
 // Environment variables (Vercel → Project → Settings → Environment Variables):
 //   GROQ_API_KEY   required: free key from https://console.groq.com/keys
@@ -119,25 +121,24 @@ export async function POST(request: Request) {
 
   // Try each model in turn: a rate limit or failure on one moves to the next, since every Groq
   // model has its own free quota. Only when all are rate-limited does the visitor see "busy".
+  // Once a model starts answering, its stream is passed straight through.
   let sawRateLimit = false;
   const deadline = Date.now() + 25_000;
   for (const model of MODELS) {
     const remaining = deadline - Date.now();
     if (remaining < 3_000) break;
-    const result = await complete(model, messages, Math.min(20_000, remaining));
-    if ('answer' in result) return json({ answer: result.answer });
-    if (result.status === 429) sawRateLimit = true;
+    const upstream = await open(model, messages, Math.min(20_000, remaining));
+    if ('body' in upstream) return streamAnswer(model, upstream.body);
+    if (upstream.status === 429) sawRateLimit = true;
   }
   return json({ error: sawRateLimit ? 'rate_limited' : 'upstream' }, sawRateLimit ? 429 : 502);
 }
 
-type Completion = { answer: string } | { status: number };
-
-async function complete(
+async function open(
   model: string,
   messages: { role: string; content: string }[],
   timeoutMs: number,
-): Promise<Completion> {
+): Promise<{ body: ReadableStream<Uint8Array> } | { status: number }> {
   try {
     const upstream = await fetch(`${BASE_URL}/chat/completions`, {
       method: 'POST',
@@ -145,6 +146,7 @@ async function complete(
       body: JSON.stringify({
         model,
         messages,
+        stream: true,
         temperature: 0.3,
         // Room for a short answer plus a little reasoning. Kept tight because Groq's free tier
         // counts it against the per-minute token quota.
@@ -155,17 +157,77 @@ async function complete(
       }),
       signal: AbortSignal.timeout(timeoutMs),
     });
-    if (!upstream.ok) {
+    if (!upstream.ok || !upstream.body) {
       console.error('LLM error', model, upstream.status, (await upstream.text()).slice(0, 300));
-      return { status: upstream.status };
+      return { status: upstream.status || 502 };
     }
-    const data = (await upstream.json()) as { choices?: { message?: { content?: string } }[] };
-    const answer = data.choices?.[0]?.message?.content
-      ?.replace(/<think>[\s\S]*?<\/think>/g, '')
-      .trim();
-    return answer ? { answer } : { status: 502 };
+    return { body: upstream.body };
   } catch (error) {
     console.error('LLM request failed', model, error);
     return { status: 502 };
   }
+}
+
+/** Turns the model's server-sent events into our newline-delimited JSON chunks. */
+function streamAnswer(model: string, upstream: ReadableStream<Uint8Array>) {
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  const line = (value: unknown) => encoder.encode(`${JSON.stringify(value)}\n`);
+
+  const body = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const reader = upstream.getReader();
+      let buffer = '';
+      let sent = 0;
+      // A model that still thinks out loud wraps it in <think>…</think>; hold text back until
+      // any such block has closed so it never reaches the visitor.
+      let pending = '';
+      const emit = (text: string) => {
+        pending += text;
+        if (/<think>/.test(pending) && !/<\/think>/.test(pending)) return;
+        const clean = pending.replace(/<think>[\s\S]*?<\/think>/g, '');
+        pending = '';
+        const out = sent ? clean : clean.replace(/^\s+/, '');
+        if (out) {
+          sent += out.length;
+          controller.enqueue(line({ d: out }));
+        }
+      };
+      try {
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const events = buffer.split('\n');
+          buffer = events.pop() ?? '';
+          for (const event of events) {
+            const data = event.replace(/^data:\s*/, '').trim();
+            if (!data || data === '[DONE]' || !event.startsWith('data:')) continue;
+            try {
+              const chunk = JSON.parse(data) as { choices?: { delta?: { content?: string } }[] };
+              const text = chunk.choices?.[0]?.delta?.content;
+              if (text) emit(text);
+            } catch {
+              // A partial or non-JSON event: skip it.
+            }
+          }
+        }
+        controller.enqueue(line(sent ? { done: true } : { error: 'upstream' }));
+      } catch (error) {
+        console.error('LLM stream failed', model, error);
+        controller.enqueue(line({ error: 'upstream' }));
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(body, {
+    headers: {
+      'Content-Type': 'application/x-ndjson; charset=utf-8',
+      'Cache-Control': 'no-store',
+      // Ask proxies not to buffer, so each chunk reaches the browser as it is written.
+      'X-Accel-Buffering': 'no',
+    },
+  });
 }
