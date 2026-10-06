@@ -18,10 +18,47 @@ const KONAMI = [
 const HIRE = 'hire';
 // Phones have no arrow keys: the code is the eight arrows as swipes (B and A are left out, since a
 // tap would also press whatever is under the finger).
+// Thumb swipes are often slow and curved, so the rules are loose: the code needs four sideways
+// swipes in a row, which ordinary scrolling never produces.
 const SWIPES = KONAMI.slice(0, 8);
-const SWIPE_MIN = 40; // px
-const SWIPE_GAP = 2500; // ms allowed between swipes
-const EDGE = 24; // px; swipes from the screen edge are the browser's back/forward gesture
+const SWIPE_MIN = 30; // px
+const SWIPE_MAX_MS = 1500; // a longer press-and-drag isn't a swipe
+const SWIPE_GAP = 5000; // ms allowed between swipes
+const EDGE = 20; // px; swipes from the screen edge are the browser's back/forward gesture
+const ARROW: Record<string, string> = {
+  arrowup: '↑',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+};
+
+/**
+ * Once a visitor is clearly entering the code (the first sideways swipe), a small row of arrows
+ * shows how far they've got, so a swipe that didn't count is obvious.
+ */
+let progressEl: HTMLElement | null = null;
+let progressTimer = 0;
+function showProgress(done: number) {
+  window.clearTimeout(progressTimer);
+  if (done < 5) {
+    progressEl?.remove();
+    progressEl = null;
+    return;
+  }
+  if (!progressEl) {
+    progressEl = document.createElement('div');
+    progressEl.className = 'konami-progress';
+    progressEl.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(progressEl);
+  }
+  progressEl.innerHTML = SWIPES.map(
+    (k, i) => `<span${i < done ? ' class="on"' : ''}>${ARROW[k]}</span>`,
+  ).join('');
+  progressTimer = window.setTimeout(
+    () => showProgress(0),
+    done === SWIPES.length ? 900 : SWIPE_GAP,
+  );
+}
 
 // Any open panel (terminal, Ash, search, achievements) gets Esc first.
 const dialogOpen = () => !!document.querySelector('[role="dialog"]');
@@ -88,50 +125,56 @@ export function useEasterEggs() {
       }
     };
 
-    let swipes: string[] = [];
+    let done = 0; // swipes of the code matched so far
     let last = 0;
     let start: { x: number; y: number; t: number } | null = null;
     let end = { x: 0, y: 0 };
 
     const onTouchStart = (e: TouchEvent) => {
       const t = e.touches[0];
+      if (!t) return;
       start =
         e.touches.length === 1 && t.clientX > EDGE && t.clientX < window.innerWidth - EDGE
-          ? { x: t.clientX, y: t.clientY, t: e.timeStamp }
+          ? { x: t.clientX, y: t.clientY, t: performance.now() }
           : null;
       end = { x: t.clientX, y: t.clientY };
     };
     const onTouchMove = (e: TouchEvent) => {
-      end = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      const t = e.touches[0];
+      if (t) end = { x: t.clientX, y: t.clientY };
     };
     // Some browsers cancel the touch once the page starts scrolling, so a cancel counts as the end
     // of the swipe too, using the last position seen.
     const onTouchEnd = (e: TouchEvent) => {
       if (!start || isTypingTarget(document.activeElement)) return;
-      const t = e.changedTouches[0];
-      const x = e.type === 'touchend' && t ? t.clientX : end.x;
-      const y = e.type === 'touchend' && t ? t.clientY : end.y;
-      const dx = x - start.x;
-      const dy = y - start.y;
-      const quick = e.timeStamp - start.t < 700;
+      const t = e.type === 'touchend' ? e.changedTouches[0] : undefined;
+      const dx = (t ? t.clientX : end.x) - start.x;
+      const dy = (t ? t.clientY : end.y) - start.y;
+      const now = performance.now();
+      const tooSlow = now - start.t > SWIPE_MAX_MS;
       start = null;
       const ax = Math.abs(dx);
       const ay = Math.abs(dy);
-      // Only clear, quick, straight swipes count.
-      if (!quick || Math.max(ax, ay) < SWIPE_MIN || Math.min(ax, ay) > Math.max(ax, ay) / 2) return;
+      // A tap, a long drag, or a near-diagonal swipe doesn't count (and doesn't reset either).
+      if (tooSlow || Math.max(ax, ay) < SWIPE_MIN || Math.min(ax, ay) > Math.max(ax, ay) * 0.8)
+        return;
       // A finger moving up is "up", like the arrow key.
       const dir =
         ax > ay ? (dx > 0 ? 'arrowright' : 'arrowleft') : dy > 0 ? 'arrowdown' : 'arrowup';
-      if (e.timeStamp - last > SWIPE_GAP) swipes = [];
-      last = e.timeStamp;
-      swipes = [...swipes, dir].slice(-SWIPES.length);
-      if (swipes.join() === SWIPES.join()) {
-        swipes = [];
+      if (now - last > SWIPE_GAP) done = 0;
+      last = now;
+      if (dir === SWIPES[done]) done += 1;
+      // A wrong swipe can still be the start of a fresh attempt (e.g. a third "up").
+      else done = dir === SWIPES[0] ? (done === 2 && dir === 'arrowup' ? 2 : 1) : 0;
+      showProgress(done);
+      if (done === SWIPES.length) {
+        done = 0;
         konami();
       }
     };
 
-    const opts = { passive: true } as const;
+    // Capture phase, so nothing on the page can stop the swipe from being seen.
+    const opts = { passive: true, capture: true } as const;
     document.addEventListener('keydown', onKeyDown);
     window.addEventListener('touchstart', onTouchStart, opts);
     window.addEventListener('touchmove', onTouchMove, opts);
@@ -139,10 +182,11 @@ export function useEasterEggs() {
     window.addEventListener('touchcancel', onTouchEnd, opts);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
-      window.removeEventListener('touchcancel', onTouchEnd);
+      window.removeEventListener('touchstart', onTouchStart, opts);
+      window.removeEventListener('touchmove', onTouchMove, opts);
+      window.removeEventListener('touchend', onTouchEnd, opts);
+      window.removeEventListener('touchcancel', onTouchEnd, opts);
+      showProgress(0);
     };
   }, [goTo]);
 }
