@@ -35,6 +35,88 @@
   color-scheme: light;
 }
 
+/*
+ * Arcade mode, the Konami code's reward (src/lib/arcade.ts). It swaps the theme tokens, so every
+ * colour on the site follows, including the always-dark islands (terminals, project covers).
+ * Headings use Press Start 2P, sized so the widest words still fit a 320px phone; everything else
+ * uses Pixelify Sans, which reads like a normal sans at body sizes; ASCII art uses VT323.
+ */
+:root[data-arcade],
+:root[data-arcade] [data-theme] {
+  --bg: 266 55% 5%;
+  --surface: 266 50% 10%;
+  --text: 48 100% 86%;
+  --muted: 150 45% 72%;
+  --stroke: 183 70% 28%;
+  --accent: 328 100% 62%;
+  --ink: 77 252 255;
+  --up: 77 252 255;
+  --down: 328 100% 62%;
+  color-scheme: dark;
+}
+[data-arcade] *,
+[data-arcade] *::before,
+[data-arcade] *::after {
+  font-family: 'Pixelify Sans', ui-monospace, monospace, 'Apple Color Emoji', 'Segoe UI Emoji' !important;
+  border-radius: 0 !important;
+}
+/* ASCII art (the terminal banner) needs every character the same width. */
+[data-arcade] pre,
+[data-arcade] pre * {
+  font-family: 'VT323', ui-monospace, monospace !important;
+}
+[data-arcade] h1,
+[data-arcade] h1 *,
+[data-arcade] h2,
+[data-arcade] h2 * {
+  font-family: 'Press Start 2P', ui-monospace, monospace, 'Apple Color Emoji', 'Segoe UI Emoji' !important;
+  font-style: normal !important;
+  letter-spacing: 0 !important;
+}
+[data-arcade] h1,
+[data-arcade] h2 {
+  color: #ffe066;
+  text-shadow: 0.08em 0.08em 0 hsl(var(--accent));
+  overflow-wrap: anywhere;
+}
+[data-arcade] h1 {
+  font-size: clamp(1.75rem, 9vw, 4.75rem);
+  line-height: 1.3;
+}
+[data-arcade] h2 {
+  font-size: clamp(1.15rem, 4.6vw, 2.4rem);
+  line-height: 1.45;
+}
+[data-arcade] :is(h1, h2) :is(i, .italic) {
+  color: rgb(77 252 255);
+}
+/* CRT scanlines and a soft vignette over everything; never catches taps. */
+[data-arcade] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.22) 0 2px, transparent 2px 4px);
+  box-shadow: inset 0 0 18vmax rgb(0 0 0 / 0.55);
+}
+.arcade-bar {
+  box-shadow: 4px 4px 0 rgb(77 252 255);
+}
+.arcade-blink {
+  animation: arcade-blink 1s steps(1) infinite;
+}
+@keyframes arcade-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-blink {
+    animation: none;
+  }
+}
+
 /* Theme switch cross-fade (setTheme in src/lib/theme.ts). */
 ::view-transition-old(root),
 ::view-transition-new(root) {

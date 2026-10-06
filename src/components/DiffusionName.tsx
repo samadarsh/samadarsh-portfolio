@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { whenIntroDone } from '../lib/intro';
+import { isArcade } from '../lib/arcade';
 import { markNameShown, resetNameShown } from '../lib/heroName';
 
 /**
@@ -16,7 +17,10 @@ const PAD = 16;
 
 type Point = { x: number; y: number; nx: number; ny: number; warm: boolean };
 
-const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Arcade mode shows the name in its pixel font straight away; the noise is sampled from the
+// regular font, so it would not land on the pixel letters.
+const reduceMotion = () =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches || isArcade();
 
 /** Rasterises each name line exactly where the page draws it and returns the inked pixels. */
 function samplePoints(h1: HTMLElement, width: number, height: number, step: number): Point[] {

@@ -23,7 +23,9 @@ export function subscribeTheme(listener: () => void) {
 
 function apply(theme: Theme) {
   document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', BAR_COLOR[theme]);
+  // Arcade mode keeps its own address-bar colour until it is switched off.
+  if (!('arcade' in document.documentElement.dataset))
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', BAR_COLOR[theme]);
   try {
     localStorage.setItem(STORAGE_KEY, theme);
   } catch {

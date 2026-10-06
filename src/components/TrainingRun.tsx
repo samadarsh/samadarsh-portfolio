@@ -3,6 +3,7 @@ import { checkpoints, loss } from '../data/trainingRun';
 import { contact } from '../data/content';
 import { unlock } from '../lib/achievements';
 import { subscribeTheme } from '../lib/theme';
+import { subscribeArcade } from '../lib/arcade';
 import { SectionHeader } from './SectionHeader';
 
 /**
@@ -123,6 +124,7 @@ export function TrainingRun() {
     const resize = new ResizeObserver(schedule);
     resize.observe(canvas);
     const unsubscribeTheme = subscribeTheme(schedule);
+    const unsubscribeArcade = subscribeArcade(schedule);
     document.fonts.ready.then(schedule);
     schedule();
 
@@ -130,6 +132,7 @@ export function TrainingRun() {
       window.removeEventListener('scroll', schedule);
       resize.disconnect();
       unsubscribeTheme();
+      unsubscribeArcade();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -168,7 +171,10 @@ export function TrainingRun() {
                 </b>
               </span>
             </div>
-            <canvas ref={canvasRef} className="mt-2 block h-[108px] w-full min-[380px]:h-[132px] md:h-[280px]" />
+            <canvas
+              ref={canvasRef}
+              className="mt-2 block h-[108px] w-full min-[380px]:h-[132px] md:h-[280px]"
+            />
             <p className="mt-2 font-mono text-[11px] text-muted md:text-xs">
               status:{' '}
               {converged ? (

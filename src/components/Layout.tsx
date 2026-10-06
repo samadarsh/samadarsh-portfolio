@@ -3,6 +3,7 @@ import { Suspense, useEffect } from 'react';
 import { waitForElement } from '../lib/waitForElement';
 import { CustomCursor } from './CustomCursor';
 import { MobileActionBar } from './MobileActionBar';
+import { ArcadeBar } from './ArcadeBar';
 import { scrollToElement, scrollToTop, startSmoothScroll } from '../lib/smoothScroll';
 import { Navbar } from './Navbar';
 import { ToastProvider } from './Toaster';
@@ -54,6 +55,7 @@ export function Layout() {
                 </Suspense>
               </main>
               <MobileActionBar />
+              <ArcadeBar />
             </CommandPaletteProvider>
           </TerminalProvider>
         </AskAdarshProvider>
