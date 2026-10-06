@@ -1,7 +1,7 @@
 import { m } from 'framer-motion';
 import { GitHubActivity } from '../components/GitHubActivity';
 import { SectionHeader } from '../components/SectionHeader';
-import { Experience } from '../components/Experience';
+import { TrainingRun } from '../components/TrainingRun';
 import { Skills } from '../components/Skills';
 import { Publications } from '../components/Publications';
 import { Footer } from '../components/Footer';
@@ -64,7 +64,7 @@ export function AboutPage() {
 
       <section id="experience" className="scroll-mt-20 py-24 md:py-32">
         <div className="container mx-auto max-w-6xl px-6">
-          <Experience />
+          <TrainingRun />
         </div>
       </section>
 
