@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { whenIntroDone } from '../lib/intro';
+import { markNameShown, resetNameShown } from '../lib/heroName';
 
 /**
  * The hero name, generated the way diffusion models make images: it starts as scattered noise and
@@ -69,6 +70,7 @@ export function DiffusionName({ className = '' }: { className?: string }) {
 
   // Hide the letters before the first paint, so the name never flashes before the noise.
   useLayoutEffect(() => {
+    resetNameShown();
     if (h1Ref.current && !reduceMotion()) h1Ref.current.dataset.diffusing = '';
   }, []);
 
@@ -76,13 +78,17 @@ export function DiffusionName({ className = '' }: { className?: string }) {
     const h1 = h1Ref.current;
     const canvas = canvasRef.current;
     if (!h1 || !canvas) return;
-    if (reduceMotion()) return;
+    if (reduceMotion()) {
+      markNameShown();
+      return;
+    }
 
     let raf = 0;
     let cancelled = false;
     const reveal = () => {
       delete h1.dataset.diffusing;
       canvas.style.opacity = '0';
+      markNameShown();
     };
     // Any failure (or a very slow font) shows the plain name.
     const safety = window.setTimeout(reveal, 6000);
