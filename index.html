@@ -17,6 +17,17 @@
           document.documentElement.dataset.theme = 'light';
           document.querySelector('meta[name="theme-color"]').content = '#f6f4ee';
         }
+        // Arcade mode (the Konami code) lasts for the tab; see src/lib/arcade.ts.
+        if (sessionStorage.getItem('portfolio-arcade') === '1') {
+          document.documentElement.dataset.arcade = '';
+          document.querySelector('meta[name="theme-color"]').content = '#0b0614';
+          var f = document.createElement('link');
+          f.rel = 'stylesheet';
+          f.href =
+            'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400..700&family=VT323&display=swap';
+          f.setAttribute('data-arcade-fonts', '');
+          document.head.appendChild(f);
+        }
       } catch (e) {}
     </script>
 

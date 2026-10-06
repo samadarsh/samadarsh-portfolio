@@ -13,6 +13,7 @@ import {
 import { copyText, downloadResume } from '../lib/contact';
 import { unlock } from '../lib/achievements';
 import { getTheme, setTheme } from '../lib/theme';
+import { isArcade, toggleArcade } from '../lib/arcade';
 import { BANNER, DEFAULT_SUGGESTIONS } from './TerminalPlaceholder';
 import { useAskAdarsh } from './AskAdarsh';
 
@@ -393,6 +394,22 @@ function run(raw: string, fx: Effects): Result {
             Theme set to <Acc>{next === 'light' ? 'paper (light)' : 'espresso (dark)'}</Acc>
             <Muted>. The terminal stays dark either way.</Muted>
           </>
+        ),
+      };
+    }
+
+    // Hidden from help: the terminal way into the Konami code's arcade mode.
+    case 'arcade':
+    case 'konami': {
+      toggleArcade();
+      return {
+        out: isArcade() ? (
+          <>
+            <Acc>INSERT COIN.</Acc> Arcade mode on
+            <Muted>. Type arcade again, or press Exit arcade, to leave.</Muted>
+          </>
+        ) : (
+          <>Arcade mode off. Welcome back.</>
         ),
       };
     }
