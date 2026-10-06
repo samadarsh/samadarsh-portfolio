@@ -49,7 +49,7 @@ export function TerminalPlaceholder() {
         </p>
       </div>
       <div className="border-t border-white/[0.06] bg-black/20" aria-hidden>
-        <div className="terminal-chips flex w-full min-w-0 gap-2 overflow-hidden px-3 pt-2.5">
+        <div className="terminal-chips flex w-full min-w-0 flex-wrap gap-2 px-3 pt-2.5">
           {DEFAULT_SUGGESTIONS.map((s) => (
             <span
               key={s}

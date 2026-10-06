@@ -554,8 +554,6 @@ html {
   .gh-skeleton .gh-cell { animation: none; }
 }
 /* The suggestion row scrolls sideways on phones; fade the edge so it reads as "more this way". */
-.terminal-chips { mask-image: linear-gradient(to right, #000 85%, transparent); }
-.terminal-chips::-webkit-scrollbar { display: none; }
 
 /* ---------- Hero terminal (HeroTerminal.tsx) ---------- */
 .hero-term-caret {
