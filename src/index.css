@@ -74,22 +74,8 @@ body {
 }
 
 /* Hero entrance (CSS, so no animation library is needed on first load) */
-.name-reveal > span {
-  animation: name-rise 1.15s cubic-bezier(0.165, 0.84, 0.44, 1) both;
-}
-
-.name-reveal + .name-reveal > span {
-  animation-delay: 0.06s;
-}
-
 .blur-in {
   animation: blur-in 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s both;
-}
-
-@keyframes name-rise {
-  from {
-    transform: translateY(110%);
-  }
 }
 
 @keyframes blur-in {
@@ -117,7 +103,6 @@ body {
 
   /* Entrance animations are skipped under reduced motion; content shows immediately. */
   .blur-in,
-  .name-reveal > span,
   .marquee-track {
     animation: none;
   }

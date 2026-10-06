@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
 import { LoadingScreen } from './components/LoadingScreen';
+import { markIntroDone } from './lib/intro';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/Home';
 
@@ -79,13 +80,17 @@ function AppRoutes() {
 export default function App() {
   const [ready, setReady] = useState(skipLoader);
   const [showLoader, setShowLoader] = useState(!ready);
+  if (!showLoader) markIntroDone();
 
   const onLoaderComplete = useCallback(() => {
     markLoaderSeen();
     setReady(true);
   }, []);
 
-  const onLoaderExited = useCallback(() => setShowLoader(false), []);
+  const onLoaderExited = useCallback(() => {
+    markIntroDone();
+    setShowLoader(false);
+  }, []);
 
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 
