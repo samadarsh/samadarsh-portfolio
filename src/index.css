@@ -113,6 +113,15 @@ body {
   }
 }
 
+/* Diffusion name (DiffusionName.tsx): the letters stay in place but invisible while the noise
+   draws them, then fade in under it. */
+[data-line] {
+  transition: color 0.3s ease;
+}
+[data-diffusing] [data-line] {
+  color: transparent !important;
+}
+
 /* Hero entrance (CSS, so no animation library is needed on first load) */
 .blur-in {
   animation: blur-in 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s both;

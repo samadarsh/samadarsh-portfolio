@@ -6,6 +6,7 @@ import { HeroTerminal } from './HeroTerminal';
 import { ScrollCue } from './ScrollCue';
 import { AssistantGlyph } from './AssistantGlyph';
 import { DecodeText } from './DecodeText';
+import { DiffusionName } from './DiffusionName';
 
 const GLYPH = 'text-accent/70';
 
@@ -34,14 +35,7 @@ export function Hero() {
               {heroContent.eyebrow}
             </p>
 
-            <h1 className="font-display text-[25vw] leading-[0.9] tracking-tightest text-text-primary sm:text-7xl sm:leading-[0.95] md:text-8xl lg:text-[8.5rem]">
-              <span className="name-reveal">
-                <DecodeText text="Adarsh" delay={300} step={70} glyphClassName={GLYPH} />
-              </span>
-              <span className="name-reveal italic text-text-primary/90">
-                <DecodeText text="S." delay={720} step={70} glyphClassName={GLYPH} />
-              </span>
-            </h1>
+            <DiffusionName className="font-display text-[25vw] leading-[0.9] tracking-tightest text-text-primary sm:text-7xl sm:leading-[0.95] md:text-8xl lg:text-[8.5rem]" />
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
               <DecodeText text={heroContent.tagline} delay={300} step={14} glyphClassName={GLYPH} />
