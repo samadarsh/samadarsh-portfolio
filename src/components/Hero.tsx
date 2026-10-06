@@ -5,10 +5,8 @@ import { useAskAdarsh } from './AskAdarsh';
 import { HeroTerminal } from './HeroTerminal';
 import { ScrollCue } from './ScrollCue';
 import { AssistantGlyph } from './AssistantGlyph';
-import { DecodeText } from './DecodeText';
 import { DiffusionName } from './DiffusionName';
-
-const GLYPH = 'text-accent/70';
+import { NextTokenTagline } from './NextTokenTagline';
 
 export function Hero() {
   const askAdarsh = useAskAdarsh();
@@ -37,9 +35,7 @@ export function Hero() {
 
             <DiffusionName className="font-display text-[25vw] leading-[0.9] tracking-tightest text-text-primary sm:text-7xl sm:leading-[0.95] md:text-8xl lg:text-[8.5rem]" />
 
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
-              <DecodeText text={heroContent.tagline} delay={300} step={14} glyphClassName={GLYPH} />
-            </p>
+            <NextTokenTagline className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg" />
             <p className="mt-3 font-mono text-xs md:text-[11px] uppercase tracking-[0.2em] text-muted/80">
               {heroContent.location}
             </p>

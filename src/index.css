@@ -122,6 +122,29 @@ body {
   color: transparent !important;
 }
 
+/* Next-token tagline (NextTokenTagline.tsx): each word arrives with a short blur-in; once the
+   sentence is complete, a faint dotted underline shows the words can be tapped. */
+.next-token-fresh {
+  animation: next-token-in 0.3s ease-out;
+}
+.next-token-done {
+  background-image: linear-gradient(to right, hsl(var(--accent) / 0.35) 50%, transparent 50%);
+  background-size: 4px 1px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+@keyframes next-token-in {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .next-token-fresh {
+    animation: none;
+  }
+}
+
 /* Hero entrance (CSS, so no animation library is needed on first load) */
 .blur-in {
   animation: blur-in 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.35s both;
