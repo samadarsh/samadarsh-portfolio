@@ -21,7 +21,7 @@ export function subscribeTheme(listener: () => void) {
   return () => listeners.delete(listener);
 }
 
-export function setTheme(theme: Theme) {
+function apply(theme: Theme) {
   document.documentElement.dataset.theme = theme;
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', BAR_COLOR[theme]);
   try {
@@ -30,6 +30,23 @@ export function setTheme(theme: Theme) {
     // Storage blocked: the theme still applies for this page view.
   }
   listeners.forEach((l) => l());
+}
+
+type ViewTransitionDocument = Document & { startViewTransition?: (update: () => void) => unknown };
+
+/**
+ * Switches the theme with a short cross-fade where the browser supports view transitions
+ * (recent Chrome, Safari 18+), and instantly elsewhere or under reduced motion.
+ */
+export function setTheme(theme: Theme) {
+  if (theme === getTheme()) return;
+  const doc = document as ViewTransitionDocument;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!doc.startViewTransition || reduce) {
+    apply(theme);
+    return;
+  }
+  doc.startViewTransition(() => apply(theme));
 }
 
 export const toggleTheme = () => setTheme(getTheme() === 'dark' ? 'light' : 'dark');
