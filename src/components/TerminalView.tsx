@@ -603,7 +603,7 @@ export default function TerminalView({
 
       <div className="border-t border-white/[0.06] bg-black/20">
         <div
-          className="terminal-chips flex w-full min-w-0 gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]"
+          className="terminal-chips flex w-full min-w-0 flex-wrap gap-2 px-3 pt-2.5"
           aria-label="Suggested commands"
         >
           {suggest.map((s) => (
