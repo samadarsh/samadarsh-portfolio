@@ -35,6 +35,13 @@
   color-scheme: light;
 }
 
+/* Theme switch cross-fade (setTheme in src/lib/theme.ts). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: ease;
+}
+
 /* A themed block sets its own text colour, so a dark island inside Paper isn't dark-on-dark. */
 [data-theme] {
   color: hsl(var(--text));
