@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { projects } from '../data/content';
 import { SectionHeader } from './SectionHeader';
 import { ProjectPreview } from './ProjectPreview';
+import { sleepsWhenIdle, WAKE_NOTE } from '../lib/demoHost';
 
 type SelectedWorksProps = {
   showHeader?: boolean;
@@ -162,6 +163,9 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                     {project.links.live ? (
                       <a
                         href={project.links.live}
+                        aria-describedby={
+                          sleepsWhenIdle(project.links.live) ? `${project.slug}-wake` : undefined
+                        }
                         data-cursor="Live"
                         data-achievement="testdriver"
                         target="_blank"
@@ -187,6 +191,11 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                       </a>
                     ) : null}
                   </div>
+                  {sleepsWhenIdle(project.links.live) ? (
+                    <p id={`${project.slug}-wake`} className="mt-1 text-xs text-muted">
+                      {WAKE_NOTE}
+                    </p>
+                  ) : null}
                 </div>
               </m.article>
             );

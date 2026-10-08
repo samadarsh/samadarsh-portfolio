@@ -15,6 +15,7 @@ import {
   socialLinks,
   writingMeta,
 } from '../data/content.js';
+import { sleepsWhenIdle } from './demoHost.js';
 import {
   achievements,
   certifications,
@@ -68,7 +69,9 @@ export function buildKnowledge() {
           : '',
         list(projectDetails[p.slug] ?? []),
         `Stack: ${p.stack.join(', ')}.`,
-        p.links.live ? `Live: ${p.links.live}` : '',
+        p.links.live
+          ? `Live: ${p.links.live}${sleepsWhenIdle(p.links.live) ? ' (free hosting; the first visit can take about 30 seconds to wake up)' : ''}`
+          : '',
         p.links.github ? `GitHub: ${p.links.github}` : '',
       ]
         .filter(Boolean)
