@@ -261,7 +261,7 @@ export const projects: Project[] = [
       'FastAPI backend with Streamlit UI — upload, ingest, and query across companies with Ollama or Gemini LLM providers.',
       'Citation-aware answers with inline `[filename p.N]` references and post-processing when the model omits source tags.',
     ],
-    stack: ['FastAPI', 'ChromaDB', 'PyMuPDF', 'LangChain', 'Streamlit', 'Ollama'],
+    stack: ['FastAPI', 'ChromaDB', 'PyMuPDF', 'LangChain', 'Streamlit', 'Ollama', 'Gemini'],
     links: { live: null, github: 'https://github.com/samadarsh/fin-sight' },
     demo: 'rag',
     architecture: [

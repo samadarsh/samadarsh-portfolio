@@ -8,6 +8,7 @@ import { ProjectPreview } from '../components/ProjectPreview';
 import { Footer } from '../components/Footer';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { caseStudyMeta } from '../data/seo';
+import { sleepsWhenIdle, WAKE_NOTE } from '../lib/demoHost';
 import { unlock } from '../lib/achievements';
 
 const fadeUp = {
@@ -71,6 +72,7 @@ export function CaseStudyPage() {
               {project.links.live ? (
                 <a
                   href={project.links.live}
+                  aria-describedby={sleepsWhenIdle(project.links.live) ? 'live-wake' : undefined}
                   target="_blank"
                   rel="noreferrer"
                   data-cursor="Live"
@@ -94,6 +96,11 @@ export function CaseStudyPage() {
                 </a>
               ) : null}
             </div>
+            {sleepsWhenIdle(project.links.live) ? (
+              <p id="live-wake" className="mt-3 text-xs text-muted">
+                {WAKE_NOTE}
+              </p>
+            ) : null}
           </header>
 
           <div className="mt-12">
