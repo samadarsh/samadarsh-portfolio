@@ -285,13 +285,14 @@ export const projects: Project[] = [
     ],
     results: {
       setup:
-        'Retrieval measured on 46 questions written from the TCS 2025-26 and IndianOil 2024-25 annual reports (833 pages, 3,044 chunks), with local BGE embeddings. A question counts as found when a page that states its answer is among the top results; 43 have answers in the reports.',
+        'Measured on 46 questions written from the TCS 2025-26 and IndianOil 2024-25 annual reports (833 pages, 3,044 chunks): 43 the reports answer and 3 they cannot. Local BGE embeddings retrieve the top 5 chunks, and Llama 3 (8B) on Ollama writes the answers.',
       metrics: [
-        { value: '79.1%', label: 'Answer page in top 5', detail: '34 of 43 questions' },
-        { value: '83.7%', label: 'Answer page in top 10', detail: '36 of 43 questions' },
-        { value: '0.54', label: 'Mean reciprocal rank', detail: 'At k = 5' },
+        { value: '83.7%', label: 'Answer page in top 5', detail: '36 of 43 questions' },
+        { value: '74.4%', label: 'Answers cite the right page', detail: '32 of 43 answers' },
+        { value: '67.4%', label: 'Answers state every key figure', detail: '29 of 43 answers' },
+        { value: '3 / 3', label: 'Unanswerable questions declined', detail: 'No invented figures' },
       ],
-      note: 'Most misses are infographic pages and dense number tables, where hybrid keyword search is the next experiment. Answer quality (citations, figures, refusals) is measured next.',
+      note: 'Read by hand, 26 of the 43 answers are fully correct and 4 partly; 9 decline, mostly where retrieval missed the page, and 4 are wrong. Next: hybrid keyword search for infographic and table pages, and a larger model.',
       source: {
         label: 'Evaluation and question set',
         href: 'https://github.com/samadarsh/fin-sight/tree/master/eval',

@@ -129,7 +129,13 @@ export function CaseStudyPage() {
               <p className="mt-6 max-w-3xl text-[15px] leading-relaxed text-muted">
                 {project.results.setup}
               </p>
-              <dl className="mt-6 grid gap-3 sm:grid-cols-3">
+              <dl
+                className={`mt-6 grid gap-3 ${
+                  project.results.metrics.length === 4
+                    ? 'sm:grid-cols-2 lg:grid-cols-4'
+                    : 'sm:grid-cols-3'
+                }`}
+              >
                 {project.results.metrics.map((metric) => (
                   <div
                     key={metric.label}
