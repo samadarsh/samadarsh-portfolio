@@ -123,6 +123,50 @@ export function CaseStudyPage() {
             </m.section>
           ) : null}
 
+          {project.results ? (
+            <m.section {...fadeUp} className="mt-16" aria-label="Results">
+              <SectionLabel>Results</SectionLabel>
+              <p className="mt-6 max-w-3xl text-[15px] leading-relaxed text-muted">
+                {project.results.setup}
+              </p>
+              <dl className="mt-6 grid gap-3 sm:grid-cols-3">
+                {project.results.metrics.map((metric) => (
+                  <div
+                    key={metric.label}
+                    className="flex flex-col rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5"
+                  >
+                    <dt className="mt-2 text-sm text-text-primary">{metric.label}</dt>
+                    <dd className="order-first mt-0 font-display text-4xl tracking-tight text-accent md:text-5xl">
+                      {metric.value}
+                    </dd>
+                    {metric.detail ? (
+                      <dd className="mt-1 font-mono text-xs text-muted">{metric.detail}</dd>
+                    ) : null}
+                  </div>
+                ))}
+              </dl>
+              {project.results.note ? (
+                <p className="mt-5 max-w-3xl text-sm leading-relaxed text-muted">
+                  {project.results.note}
+                </p>
+              ) : null}
+              {project.results.source ? (
+                <a
+                  href={project.results.source.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor="Code"
+                  className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-sm text-text-primary"
+                >
+                  <span className="border-b border-accent/40 pb-0.5">
+                    {project.results.source.label}
+                  </span>
+                  <span aria-hidden>↗</span>
+                </a>
+              ) : null}
+            </m.section>
+          ) : null}
+
           <m.section {...fadeUp} className="mt-16" aria-label="Highlights">
             <SectionLabel>Highlights</SectionLabel>
             <ul className="mt-6 grid gap-4 md:grid-cols-2">
