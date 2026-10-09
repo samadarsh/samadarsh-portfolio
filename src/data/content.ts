@@ -23,7 +23,19 @@ export type Project = {
   demo?: DemoKind;
   /** How the system fits together, in order, for the case-study page. */
   architecture?: { label: string; detail?: string }[];
+  /** Measured results, shown on the case-study page. Only real, reproducible numbers. */
+  results?: ProjectResults;
   accent: string;
+};
+
+export type ProjectResults = {
+  /** What was measured and how, in one or two sentences. */
+  setup: string;
+  metrics: { value: string; label: string; detail?: string }[];
+  /** Limits of the measurement, or what is still to come. */
+  note?: string;
+  /** Where the evaluation lives, so anyone can rerun it. */
+  source?: { label: string; href: string };
 };
 
 export type JournalEntry = {
@@ -271,6 +283,20 @@ export const projects: Project[] = [
       { label: 'Ollama or Gemini', detail: 'Grounded answers via FastAPI + Streamlit' },
       { label: 'Cited answer', detail: 'Inline [filename p.N] references' },
     ],
+    results: {
+      setup:
+        'Retrieval measured on 46 questions written from the TCS 2025-26 and IndianOil 2024-25 annual reports (833 pages, 3,044 chunks), with local BGE embeddings. A question counts as found when a page that states its answer is among the top results; 43 have answers in the reports.',
+      metrics: [
+        { value: '79.1%', label: 'Answer page in top 5', detail: '34 of 43 questions' },
+        { value: '83.7%', label: 'Answer page in top 10', detail: '36 of 43 questions' },
+        { value: '0.54', label: 'Mean reciprocal rank', detail: 'At k = 5' },
+      ],
+      note: 'Most misses are infographic pages and dense number tables, where hybrid keyword search is the next experiment. Answer quality (citations, figures, refusals) is measured next.',
+      source: {
+        label: 'Evaluation and question set',
+        href: 'https://github.com/samadarsh/fin-sight/tree/master/eval',
+      },
+    },
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {

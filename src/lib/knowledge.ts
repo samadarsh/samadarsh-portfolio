@@ -69,6 +69,9 @@ export function buildKnowledge() {
           : '',
         list(projectDetails[p.slug] ?? []),
         `Stack: ${p.stack.join(', ')}.`,
+        p.results
+          ? `Measured results: ${p.results.metrics.map((r) => `${r.label}: ${r.value}${r.detail ? ` (${r.detail})` : ''}`).join('; ')}. ${p.results.setup}${p.results.note ? ` ${p.results.note}` : ''}`
+          : '',
         p.links.live
           ? `Live: ${p.links.live}${sleepsWhenIdle(p.links.live) ? ' (free hosting; the first visit can take about 30 seconds to wake up)' : ''}`
           : '',
