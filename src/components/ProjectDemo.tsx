@@ -5,7 +5,8 @@ import type { DemoKind } from '../data/content';
  * Short animated loops that stand in for a cover on projects without a live screenshot.
  * Each scene is a pure function of elapsed time `t` (ms). While inactive, `t` is Infinity,
  * which renders the finished state, so the static card (and reduced motion) still reads.
- * Sample names (Northwind, Acme, Priya) are illustrative.
+ * Sample names (Acme, Priya) are illustrative; FinSight's exchange is real, from its evaluation
+ * on the TCS 2025-26 annual report (the answer and its page citation are FinSight's own).
  */
 
 const HOLD = 2600;
@@ -69,15 +70,18 @@ function Shell({
 }
 
 // ---------- FinSight: question answered with page citations ----------
-const FIN_Q = 'What drove the operating margin change in FY24?';
+const FIN_DOC = 'annual-report-2025-2026.pdf';
+const FIN_PAGES = 360;
+const FIN_CHUNKS = 1315;
+const FIN_Q = "What drove TCS's FY 2026 operating margin?";
 const FIN_A =
-  'Operating margin rose 180 bps to 21.4%, mainly from lower subcontracting costs and firmer retail pricing.';
+  'It rose 70 bps to 25.0%, a 4-year high, on business mix, productivity and pyramid rebalancing.';
 const FIN_Q_AT = 1500;
 const FIN_A_AT = typingEnd(FIN_Q, FIN_Q_AT, 40) + 1300;
 const FIN_END = typingEnd(FIN_A, FIN_A_AT, 60) + 300;
 
 function RagDemo({ t }: { t: number }) {
-  const pages = Math.min(312, Math.max(0, Math.round(((t - 450) / 650) * 312)));
+  const pages = Math.min(FIN_PAGES, Math.max(0, Math.round(((t - 450) / 650) * FIN_PAGES)));
   return (
     <Shell
       brand="FinSight"
@@ -86,9 +90,10 @@ function RagDemo({ t }: { t: number }) {
     >
       <Reveal show={t >= 400} className="pdemo-box pdemo-doc">
         <span className="pdemo-pdf">PDF</span>
-        <span className="pdemo-ellipsis">northwind_AR_FY24.pdf</span>
+        <span className="pdemo-ellipsis">{FIN_DOC}</span>
         <span className="pdemo-meta">
-          {pages} pages · {Math.round(pages * 3.795).toLocaleString('en-IN')} chunks
+          {pages} pages · {Math.round((pages / FIN_PAGES) * FIN_CHUNKS).toLocaleString('en-IN')}{' '}
+          chunks
         </span>
       </Reveal>
       <Reveal show={t >= FIN_Q_AT} className="pdemo-bubble pdemo-q">
@@ -107,10 +112,7 @@ function RagDemo({ t }: { t: number }) {
       </Reveal>
       <Reveal show={t >= FIN_END} className="pdemo-cites">
         <span className="pdemo-cite">
-          <b>northwind_AR_FY24.pdf</b> p.41
-        </span>
-        <span className="pdemo-cite">
-          <b>northwind_AR_FY24.pdf</b> p.47
+          <b>{FIN_DOC}</b> p.24
         </span>
       </Reveal>
     </Shell>

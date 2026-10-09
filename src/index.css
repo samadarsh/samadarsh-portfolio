@@ -549,6 +549,14 @@ html {
 .pdemo-subj { font-size: 0.84em; color: hsl(var(--muted)); border-bottom: 1px solid rgb(var(--ink) / 0.08); padding-bottom: 0.45em; }
 .pdemo-subj b { color: hsl(var(--text)); font-weight: 500; }
 .pdemo-body { margin-top: 0.5em; font-size: 0.84em; line-height: 1.5; white-space: pre-wrap; }
+/* Smallest phones: the 9px font floor makes the content taller than the card, so tighten the spacing. */
+@container (max-height: 180px) {
+  .pdemo-scene { gap: 0.45em; padding: 0.8em 1.1em; }
+  .pdemo-bubble { max-width: 94%; padding: 0.45em 0.8em; }
+  .pdemo-wave { height: 3.6em; }
+  .pdemo-out { gap: 0.3em; }
+  .pdemo-cols { grid-template-rows: minmax(0, 1fr); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .pdemo *, .pdemo *::before, .pdemo *::after { animation: none !important; transition: none !important; }
