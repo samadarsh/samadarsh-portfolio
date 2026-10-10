@@ -25,10 +25,10 @@ export const pages = {
     path: '/',
     title: null,
     description:
-      'Adarsh S, AI engineer in Chennai, India. I take AI agents from demo to production: multi-agent platforms, retrieval with citations and speech AI, measured and shipped.',
+      'Adarsh S, AI engineer in Chennai, India. From research to production: AI agents that act in the real world, across multi-agent platforms, cited retrieval and speech AI.',
     image: '/og/home.png',
     imageAlt:
-      'Adarsh S — AI Engineer · Agentic Systems. I take AI agents from demo to production.',
+      'Adarsh S — AI Engineer · Agentic Systems. From research to production: AI agents that act in the real world.',
   },
   work: {
     path: '/work',

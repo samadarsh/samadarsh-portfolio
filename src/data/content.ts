@@ -83,7 +83,7 @@ export type SkillGroup = {
 
 export const heroContent = {
   eyebrow: 'AI Engineer · Agentic Systems',
-  tagline: 'I take AI agents from demo to production.',
+  tagline: 'From research to production: AI agents that act in the real world.',
   location: 'Chennai, India',
   available: true,
 };
