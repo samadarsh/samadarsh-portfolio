@@ -18,8 +18,8 @@ export function AboutPage() {
         <div className="container mx-auto max-w-6xl px-6">
           <SectionHeader
             kicker="About"
-            title="Exploring intelligence through"
-            italic="systems, software, and markets."
+            title="An AI engineer building"
+            italic="agents, RAG and speech AI."
           />
 
           <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-12">
@@ -46,7 +46,7 @@ export function AboutPage() {
               <ul className="mt-4 space-y-4 text-sm text-text-primary md:text-base">
                 <li className="flex items-start gap-3">
                   <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
-                  <span>Building applied AI tools and analytics systems.</span>
+                  <span>AI Engineer at Neeroma Technologies, building agents for Yantra.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-accent" />

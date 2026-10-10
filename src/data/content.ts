@@ -82,7 +82,7 @@ export type SkillGroup = {
 };
 
 export const heroContent = {
-  eyebrow: 'AI · Systems · Capital',
+  eyebrow: 'AI Engineer · Agents · RAG',
   tagline:
     'Building AI and data systems for real-world products and financial markets.',
   location: 'Chennai, India',
@@ -97,9 +97,9 @@ export const stats = [
 ] as const;
 
 export const aboutNarrative = [
-  'I build and study systems shaped by data, behavior, and decision-making — spanning AI workflows, machine learning, and financial markets.',
-  'Working close to both technology and live market environments has influenced the way I think: structured, analytical, and grounded in real-world constraints.',
-  'Currently exploring applied GenAI, LLM workflows, and data-driven systems.',
+  'I build AI systems end to end — agents, retrieval (RAG) pipelines and speech tools — and measure how well they actually work.',
+  'Lately that means agents that deploy code and triage tickets, retrieval with page citations across company annual reports, and Tamil speech recognition.',
+  'Two years close to live financial markets shaped the way I think: structured, analytical, and grounded in real-world constraints.',
 ];
 
 export const experience: ExperienceItem[] = [
@@ -202,32 +202,35 @@ export const publications: Publication[] = [
 
 export const skillGroups: SkillGroup[] = [
   {
-    title: 'Core Stack',
-    items: ['Python', 'SQL', 'Pandas', 'NumPy', 'Scikit-learn', 'Git', 'Streamlit'],
+    title: 'AI Engineering',
+    items: [
+      'AI Agents',
+      'Multi-Agent Systems',
+      'RAG Pipelines',
+      'MCP & Tool Calling',
+      'LLM Evaluation',
+      'Streaming Inference',
+    ],
+  },
+  {
+    title: 'LLMs & Frameworks',
+    items: ['LangChain', 'LangGraph', 'Hugging Face', 'OpenAI API', 'Groq', 'Gemini', 'Ollama', 'Whisper'],
+  },
+  {
+    title: 'Vector Search',
+    items: ['Chroma', 'FAISS', 'Pinecone', 'Weaviate', 'BGE Embeddings'],
+  },
+  {
+    title: 'Engineering',
+    items: ['Python', 'TypeScript', 'FastAPI', 'Next.js', 'React', 'Node.js', 'SQL', 'Docker', 'Git'],
   },
   {
     title: 'Machine Learning',
-    items: [
-      'Supervised Learning',
-      'Unsupervised Learning',
-      'Feature Engineering',
-      'Model Evaluation',
-      'NLP',
-    ],
-  },
-  {
-    title: 'Applied GenAI',
-    items: [
-      'LLM Workflows',
-      'Prompt Engineering',
-      'LangChain',
-      'Embeddings',
-      'Summarization',
-    ],
+    items: ['PyTorch', 'TensorFlow', 'Scikit-learn', 'NLP', 'Computer Vision', 'Pandas & NumPy'],
   },
   {
     title: 'Markets & Analytics',
-    items: ['F&O Workflows', 'Backtesting', 'Risk Awareness', 'Market Data Pipelines'],
+    items: ['Algorithmic Trading', 'OpenAlgo', 'Backtesting', 'Time-Series Analysis', 'F&O Workflows'],
   },
 ];
 
