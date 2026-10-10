@@ -82,9 +82,8 @@ export type SkillGroup = {
 };
 
 export const heroContent = {
-  eyebrow: 'AI Engineer · Agents · RAG',
-  tagline:
-    'Building AI and data systems for real-world products and financial markets.',
+  eyebrow: 'AI Engineer · Agentic Systems',
+  tagline: 'I take AI agents from demo to production.',
   location: 'Chennai, India',
   available: true,
 };

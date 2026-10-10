@@ -24,7 +24,7 @@ export function Hero() {
       <div className="container relative z-10 mx-auto max-w-6xl px-6">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:items-center lg:gap-14">
           <div className="min-w-0">
-            <p className="blur-in mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 font-mono text-xs md:text-[11px] uppercase tracking-[0.22em] text-muted backdrop-blur">
+            <p className="blur-in mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] whitespace-nowrap text-muted backdrop-blur min-[380px]:text-xs min-[380px]:tracking-[0.22em] md:text-[11px]">
               {heroContent.available ? (
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />

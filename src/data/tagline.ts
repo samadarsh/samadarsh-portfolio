@@ -7,91 +7,66 @@ export type TaglineToken = { word: string; candidates: [string, number][] };
 
 export const taglineTokens: TaglineToken[] = [
   {
-    word: 'Building',
+    word: 'I',
     candidates: [
-      ['Building', 0.58],
-      ['Shipping', 0.24],
-      ['Designing', 0.11],
-      ['Training', 0.07],
+      ['I', 0.93],
+      ['We', 0.07],
+    ],
+  },
+  {
+    word: 'take',
+    candidates: [
+      ['take', 0.52],
+      ['ship', 0.21],
+      ['bring', 0.17],
+      ['move', 0.1],
     ],
   },
   {
     word: 'AI',
     candidates: [
-      ['AI', 0.74],
-      ['ML', 0.12],
-      ['agentic', 0.09],
-      ['LLM', 0.05],
+      ['AI', 0.71],
+      ['LLM', 0.18],
+      ['autonomous', 0.11],
     ],
   },
   {
-    word: 'and',
+    word: 'agents',
     candidates: [
-      ['and', 0.93],
-      ['plus', 0.07],
+      ['agents', 0.67],
+      ['systems', 0.19],
+      ['products', 0.14],
     ],
   },
   {
-    word: 'data',
+    word: 'from',
     candidates: [
-      ['data', 0.61],
-      ['retrieval', 0.2],
-      ['speech', 0.1],
-      ['agent', 0.09],
+      ['from', 0.9],
+      ['out of', 0.1],
     ],
   },
   {
-    word: 'systems',
+    word: 'demo',
     candidates: [
-      ['systems', 0.7],
-      ['pipelines', 0.18],
-      ['products', 0.12],
+      ['demo', 0.48],
+      ['notebook', 0.27],
+      ['prototype', 0.19],
+      ['hackathon', 0.06],
     ],
   },
   {
-    word: 'for',
+    word: 'to',
     candidates: [
-      ['for', 0.88],
-      ['across', 0.12],
+      ['to', 0.95],
+      ['into', 0.05],
     ],
   },
   {
-    word: 'real-world',
+    word: 'production.',
     candidates: [
-      ['real-world', 0.66],
-      ['production', 0.21],
-      ['everyday', 0.13],
-    ],
-  },
-  {
-    word: 'products',
-    candidates: [
-      ['products', 0.59],
-      ['people', 0.27],
-      ['teams', 0.14],
-    ],
-  },
-  {
-    word: 'and',
-    candidates: [
-      ['and', 0.94],
-      ['&', 0.06],
-    ],
-  },
-  {
-    word: 'financial',
-    candidates: [
-      ['financial', 0.72],
-      ['Indian', 0.18],
-      ['live', 0.1],
-    ],
-  },
-  {
-    word: 'markets.',
-    candidates: [
-      ['markets.', 0.8],
-      ['systems.', 0.12],
-      ['decisions.', 0.08],
+      ['production.', 0.69],
+      ['real users.', 0.2],
+      ['scale.', 0.11],
     ],
   },
 ];

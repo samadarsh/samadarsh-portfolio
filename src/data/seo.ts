@@ -5,7 +5,7 @@ import { projects, SITE_URL, type Project } from './content';
 
 export { SITE_URL };
 export const SITE_NAME = 'Adarsh S';
-export const DEFAULT_TITLE = 'Adarsh S — Building intelligent systems across AI and markets';
+export const DEFAULT_TITLE = 'Adarsh S — AI Engineer, Agentic Systems';
 
 export type PageMeta = {
   path: string;
@@ -25,10 +25,10 @@ export const pages = {
     path: '/',
     title: null,
     description:
-      'Adarsh S — building intelligent systems across AI and markets. Practical AI, data systems, and market research, shipped to production.',
-    image: '/og-image.png',
+      'Adarsh S, AI engineer in Chennai, India. I take AI agents from demo to production: multi-agent platforms, retrieval with citations and speech AI, measured and shipped.',
+    image: '/og/home.png',
     imageAlt:
-      'Adarsh S — Building AI and data systems for real-world products and financial markets.',
+      'Adarsh S — AI Engineer · Agentic Systems. I take AI agents from demo to production.',
   },
   work: {
     path: '/work',
