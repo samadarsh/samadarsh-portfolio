@@ -156,7 +156,7 @@ export function llmsTxt() {
   return [
     '# Adarsh S',
     '',
-    `> ${ROLE}, based in ${heroContent.location}. ${heroContent.tagline} Builds RAG systems, AI agents and speech AI, and measures them.`,
+    `> ${ROLE}, based in ${heroContent.location}. Builds agentic systems, retrieval with citations and speech AI, and takes them from demo to production with measured results.`,
     '',
     aboutNarrative.slice(0, 2).join(' '),
     '',

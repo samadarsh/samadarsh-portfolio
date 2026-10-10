@@ -38,7 +38,7 @@ const list = (items: string[]) => items.map((i) => `- ${i}`).join('\n');
 export function buildKnowledge() {
   return [
     `# Adarsh S`,
-    `${heroContent.tagline} Based in ${heroContent.location}.`,
+    `${heroContent.eyebrow}. In his words: "${heroContent.tagline}" Based in ${heroContent.location}.`,
     aboutNarrative.join(' '),
     `His story: ${story}`,
     `Contact: ${contact.email}. ${socialLinks
