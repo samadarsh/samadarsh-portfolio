@@ -4,6 +4,7 @@ import path from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { allPages, fullTitle, pages, SITE_URL, type PageMeta } from './src/data/seo';
+import { llmsTxt, snapshotHtml } from './src/data/snapshot';
 
 const escapeAttr = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -23,7 +24,8 @@ function setMeta(html: string, attr: 'name' | 'property', key: string, value: st
  * Writes one HTML file per route (dist/work.html, dist/work/bite-wise.html, …; served at /work and
  * /work/bite-wise through `cleanUrls` in vercel.json) with
  * that page's title, description, canonical URL and share image. The app itself is unchanged;
- * this only matters to crawlers and link-preview bots, which don't run JavaScript.
+ * this only matters to crawlers and link-preview bots, which don't run JavaScript. Each file also
+ * carries the page's text (src/data/snapshot.ts), which React replaces when it mounts.
  */
 function prerenderMeta(): Plugin {
   let root = process.cwd();
@@ -57,6 +59,9 @@ function prerenderMeta(): Plugin {
         html = setMeta(html, 'name', 'twitter:title', title);
         html = setMeta(html, 'name', 'twitter:description', page.description);
         html = setMeta(html, 'name', 'twitter:image', `${SITE_URL}${image}`);
+        if (!html.includes('<div id="root"></div>'))
+          throw new Error('prerender-meta: <div id="root"></div> not found in index.html');
+        html = html.replace('<div id="root"></div>', `<div id="root">${snapshotHtml(page)}</div>`);
         return html.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`);
       };
 
@@ -69,6 +74,7 @@ function prerenderMeta(): Plugin {
           .map((loc) => `  <url><loc>${loc}</loc></url>`)
           .join('\n')}\n</urlset>\n`,
       );
+      await writeFile(path.join(outDir, 'llms.txt'), llmsTxt());
       await writeFile(
         path.join(outDir, 'robots.txt'),
         `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`,

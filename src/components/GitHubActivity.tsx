@@ -185,6 +185,7 @@ export function GitHubActivity() {
                 ) : (
                   <div
                     className="gh-grid gh-skeleton"
+                    role="status"
                     aria-busy="true"
                     aria-label="Loading GitHub activity"
                   >

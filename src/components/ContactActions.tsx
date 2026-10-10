@@ -88,7 +88,6 @@ export function CopyEmailButton({ className = '' }: { className?: string }) {
       type="button"
       onClick={onClick}
       className={`group inline-flex items-center gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] px-3.5 py-3 font-mono sm:py-2 text-xs text-muted transition hover:border-accent/40 hover:text-text-primary ${className}`}
-      aria-label={`Copy email address ${contact.email}`}
     >
       <span ref={textRef}>{contact.email}</span>
       <span

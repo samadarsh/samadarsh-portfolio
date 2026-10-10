@@ -74,7 +74,7 @@ export function Navbar() {
         <NavLink
           to="/"
           className="group relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] font-mono text-xs font-semibold tracking-tight md:h-9 md:w-9"
-          aria-label="Home"
+          aria-label="AS, home"
         >
           <span className="relative z-10 transition-colors group-hover:text-bg">AS</span>
           <span className="accent-gradient absolute inset-0 scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100" />
