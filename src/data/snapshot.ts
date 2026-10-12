@@ -18,6 +18,7 @@ import {
   type Project,
 } from './content';
 import { caseStudyMeta, pages, type PageMeta } from './seo';
+import { walkthroughs } from './walkthrough';
 
 const esc = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -82,6 +83,19 @@ const home = () =>
 const work = () =>
   `<h1>Work</h1>${para(pages.work.description)}${projects.map(projectCard).join('')}`;
 
+const walkthrough = (p: Project) => {
+  const w = walkthroughs[p.slug];
+  if (!w) return '';
+  const best = w.hits[0];
+  return (
+    `<section><h2>One question, end to end</h2>${para(`Question: ${w.question}`)}` +
+    para(
+      `Retrieved first: ${w.document.file} p.${best.page} (similarity ${best.score}). Answer (${w.model}, ${w.latencySeconds} s): ${w.answer.replace(/\[\[(p\.\d+)\]\]/g, '$1')}`,
+    ) +
+    `</section>`
+  );
+};
+
 const caseStudy = (p: Project) =>
   `<article><h1>${esc(p.title)}</h1><p>${esc(p.eyebrow)} · ${esc(p.year)} · ${esc(p.role)}</p>` +
   para(p.summary) +
@@ -91,6 +105,7 @@ const caseStudy = (p: Project) =>
         .map((s) => `<li>${esc(s.label)}${s.detail ? `: ${esc(s.detail)}` : ''}</li>`)
         .join('')}</ol></section>`
     : '') +
+  walkthrough(p) +
   results(p) +
   `<section><h2>Highlights</h2>${list(p.highlights.map(esc))}</section>` +
   `<section><h2>Stack</h2>${para(p.stack.join(', '))}</section>` +
