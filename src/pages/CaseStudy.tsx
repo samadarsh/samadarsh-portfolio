@@ -3,6 +3,8 @@ import { m } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 import { NotFoundPage, notFoundMeta } from './NotFound';
 import { ArchitectureFlow } from '../components/ArchitectureFlow';
+import { Walkthrough } from '../components/Walkthrough';
+import { walkthroughs } from '../data/walkthrough';
 import { projects } from '../data/content';
 import { ProjectPreview } from '../components/ProjectPreview';
 import { Footer } from '../components/Footer';
@@ -18,9 +20,9 @@ const fadeUp = {
   transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
 } as const;
 
-function SectionLabel({ children }: { children: string }) {
+function SectionLabel({ children, id }: { children: string; id?: string }) {
   return (
-    <h2 className="font-mono text-xs uppercase tracking-[0.22em] text-muted md:text-[11px]">
+    <h2 id={id} className="font-mono text-xs uppercase tracking-[0.22em] text-muted md:text-[11px]">
       {children}
     </h2>
   );
@@ -40,6 +42,7 @@ export function CaseStudyPage() {
 
   if (!project) return <NotFoundPage />;
 
+  const walkthrough = walkthroughs[project.slug];
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
 
@@ -116,9 +119,19 @@ export function CaseStudyPage() {
             />
           </div>
 
-          {project.architecture?.length ? (
+          {walkthrough ? (
+            // Not wrapped in the fade-up: it is several screens tall and pins its own stage.
+            <section className="mt-20" aria-labelledby="how-it-works">
+              <SectionLabel id="how-it-works">How it works</SectionLabel>
+              <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted">
+                One real question, traced end to end as you scroll. The chunks, scores and answer
+                are from an actual run.
+              </p>
+              <Walkthrough data={walkthrough} />
+            </section>
+          ) : project.architecture?.length ? (
             <m.section {...fadeUp} className="mt-20" aria-labelledby="how-it-works">
-              <SectionLabel>How it works</SectionLabel>
+              <SectionLabel id="how-it-works">How it works</SectionLabel>
               <ArchitectureFlow steps={project.architecture} />
             </m.section>
           ) : null}
