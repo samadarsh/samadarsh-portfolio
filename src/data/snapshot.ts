@@ -86,6 +86,17 @@ const work = () =>
 const walkthrough = (p: Project) => {
   const w = walkthroughs[p.slug];
   if (!w) return '';
+  if (w.kind === 'speech')
+    return (
+      `<section><h2>One voice note, end to end</h2>` +
+      para(`Tamil transcript (${w.model}): ${w.transcript}`) +
+      para(`Romanized: ${w.romanized.map(([, latin]) => latin).join(' ')}`) +
+      para(
+        `Against what the speaker read: ${w.errors.chars} of ${w.errors.charTotal} characters differ. ${w.otherClips}`,
+      ) +
+      (w.credit ? `<p>${link(w.credit.href, w.credit.text)}</p>` : '') +
+      `</section>`
+    );
   const best = w.hits[0];
   return (
     `<section><h2>One question, end to end</h2>${para(`Question: ${w.question}`)}` +

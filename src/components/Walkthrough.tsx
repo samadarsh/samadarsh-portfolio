@@ -1,245 +1,144 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Walkthrough as WalkthroughData } from '../data/walkthrough';
 import { getLenis } from '../lib/smoothScroll';
+import { RagScenes } from './walkthrough/RagScenes';
+import { SpeechScenes } from './walkthrough/SpeechScenes';
+import { tokenize, type Token } from './walkthrough/tokens';
 
 /**
- * A pinned, scroll-driven walkthrough of one real question through a project, in the manner of
+ * A pinned, scroll-driven walkthrough of one real input through a project, in the manner of
  * Apple's product pages: the stage stays pinned while scrolling moves it through five steps.
  * One passive scroll listener, throttled to a frame, writes the progress as CSS variables and
- * data attributes on the root; CSS does the drawing. Under reduced motion the same content is
- * laid out as a plain sequence instead.
+ * data attributes on the root; CSS does the drawing. Each project supplies its own scenes
+ * (walkthrough/*Scenes.tsx); captions, timing and data come from data/walkthrough.ts. Under
+ * reduced motion the same content is laid out as a plain sequence instead.
  */
 
-const STEPS = ['Ask', 'Parse', 'Chunk + embed', 'Retrieve', 'Answer + cite'] as const;
-const N = STEPS.length;
-/** Share of the last step's scroll that types out the answer; the rest holds the cited result. */
+const N = 5;
+/** Share of the typing step's scroll that types the text out; the rest holds the result. */
 const TYPE_SHARE = 0.65;
-
-type Token = { kind: 'word'; text: string } | { kind: 'cite'; text: string };
-
-/** Splits an answer into words and [[p.N]] citation chips, keeping the spacing. */
-function tokenize(answer: string): Token[] {
-  const out: Token[] = [];
-  for (const part of answer.split(/(\[\[p\.\d+\]\])/)) {
-    if (!part) continue;
-    const cite = part.match(/^\[\[(p\.\d+)\]\]$/);
-    if (cite) out.push({ kind: 'cite', text: cite[1] });
-    else for (const w of part.match(/\S+\s*|\s+/g) ?? []) out.push({ kind: 'word', text: w });
-  }
-  return out;
-}
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function captions(d: WalkthroughData) {
-  return [
-    {
-      title: 'A question an analyst would ask.',
-      body: `Not "what was the margin", but what drove it and what held it back. The answer sits in one paragraph of a ${d.document.pages}-page report.`,
-      facts: [`company = ${d.company}`],
-    },
-    {
-      title: 'Every page, read as text.',
-      body: 'PyMuPDF reads the PDF page by page and keeps each page number, so any answer can point back to where it came from.',
-      facts: [`${d.document.pages} pages`, d.document.file],
-    },
-    {
-      title: 'Pages become searchable meaning.',
-      body: `Each page is split into ${d.chunking.size.toLocaleString('en-IN')}-character chunks that overlap by ${d.chunking.overlap}, and each chunk becomes a ${d.chunking.dims}-number vector from a local embedding model. No API calls, no cost.`,
-      facts: [
-        `${d.chunking.companyChunks.toLocaleString('en-IN')} ${d.company} chunks`,
-        `${d.chunking.totalChunks.toLocaleString('en-IN')} in the index`,
-      ],
-    },
-    {
-      title: 'The right page comes first.',
-      body: `The question becomes a vector too. ChromaDB returns the five closest chunks, filtered to ${d.company}. Page ${d.document.page}, where the answer lives, ranks first.`,
-      facts: [`top 5 of ${d.chunking.companyChunks.toLocaleString('en-IN')}`, 'rank 1 = answer page'],
-    },
-    {
-      title: 'An answer you can check.',
-      body: `${d.model.split(' · ')[0]} answers only from those five chunks and cites the page for each claim. The sentence it relied on is right there on p.${d.document.page}.`,
-      facts: [`${d.latencySeconds} s, run locally`, '₹0 per question'],
-    },
-  ];
-}
-
-/** Deterministic bar heights, so the "vector" looks the same on every visit. */
-function vectorBars(seed: number, count = 48) {
-  const out: number[] = [];
-  let s = seed;
-  for (let i = 0; i < count; i++) {
-    s = (s * 9301 + 49297) % 233280;
-    out.push(0.18 + (s / 233280) * 0.82);
-  }
-  return out;
-}
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
 function Scenes({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
-  const top = d.hits[0].score;
-  const floor = 0.6;
+  return d.kind === 'rag' ? <RagScenes d={d} tokens={tokens} /> : <SpeechScenes d={d} tokens={tokens} />;
+}
+
+/**
+ * Plays a clip. While it plays, its progress drives --wave on the registered elements (and
+ * data-playing is set, so scrolling leaves --wave alone); when it stops, --wave returns to the
+ * scroll position in --scrub. Combining the two here keeps max() out of the CSS, which sent
+ * WebKit into a constant restyle when the bars carried transitions.
+ */
+function useClip(src: string | undefined) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const targets = useRef(new Set<HTMLElement>());
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(
+    () => () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    },
+    [],
+  );
+
+  const toggle = useCallback(() => {
+    if (!src) return;
+    let a = audioRef.current;
+    if (!a) {
+      a = new Audio(asset(src));
+      a.preload = 'auto';
+      audioRef.current = a;
+      const write = (v: number) =>
+        targets.current.forEach((el) => el.style.setProperty('--wave', v.toFixed(4)));
+      const stop = () => {
+        setPlaying(false);
+        targets.current.forEach((el) => {
+          el.removeAttribute('data-playing');
+          el.style.setProperty('--wave', el.style.getPropertyValue('--scrub') || '1');
+        });
+      };
+      let frame = 0;
+      const tick = () => {
+        const cur = audioRef.current;
+        if (!cur || cur.paused) return;
+        write(cur.duration ? cur.currentTime / cur.duration : 0);
+        frame = requestAnimationFrame(tick);
+      };
+      a.addEventListener('play', () => {
+        setPlaying(true);
+        targets.current.forEach((el) => el.setAttribute('data-playing', ''));
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(tick);
+      });
+      a.addEventListener('pause', stop);
+      a.addEventListener('ended', stop);
+    }
+    if (a.paused) void a.play().catch(() => setPlaying(false));
+    else a.pause();
+  }, [src]);
+
+  const register = useCallback((el: HTMLElement | null) => {
+    if (el) targets.current.add(el);
+  }, []);
+
+  return { playing, toggle, register };
+}
+
+function PlayButton({ playing, onClick, seconds }: { playing: boolean; onClick: () => void; seconds: number }) {
   return (
-    <>
-      <div className="wt-scene" data-scene="0">
-        <div className="wt-scene-label">
-          <span>finsight · ask</span>
-          <span>company = {d.company}</span>
-        </div>
-        <p className="wt-question">{d.question}</p>
-      </div>
-
-      <div className="wt-scene" data-scene="1">
-        <div className="wt-scene-label">
-          <span>{d.document.file}</span>
-          <span>
-            page {d.document.page} of {d.document.pages}
-          </span>
-        </div>
-        <div className="wt-pages">
-          <span className="wt-sheet" style={{ ['--k' as string]: 0 }} />
-          <span className="wt-sheet" style={{ ['--k' as string]: 1 }} />
-          <span className="wt-sheet" style={{ ['--k' as string]: 2 }} />
-          <div className="wt-sheet wt-sheet-hit">
-            <span className="wt-pg">
-              p.{d.document.page} · {d.document.section}
-            </span>
-            <span className="wt-ln" style={{ width: '92%' }} />
-            <span className="wt-ln" style={{ width: '78%' }} />
-            <span className="wt-ln" style={{ width: '86%' }} />
-            <span className="wt-hl">{d.document.highlight}</span>
-            <span className="wt-ln" style={{ width: '88%' }} />
-            <span className="wt-ln" style={{ width: '70%' }} />
-            <span className="wt-ln" style={{ width: '82%' }} />
-          </div>
-        </div>
-      </div>
-
-      <div className="wt-scene" data-scene="2">
-        <div className="wt-scene-label">
-          <span>chunks from p.{d.document.page}</span>
-          <span>
-            {d.chunking.model.split('/').pop()} · {d.chunking.dims} dims
-          </span>
-        </div>
-        <div className="wt-chunk">
-          <p>
-            {d.chunk.before}
-            <mark>{d.chunk.answer}</mark>
-            {d.chunk.after}
-          </p>
-          <span className="wt-vec">
-            {vectorBars(24).map((h, i) => (
-              <i key={i} style={{ ['--h' as string]: h, ['--d' as string]: (i / 48) * 0.6 }} />
-            ))}
-          </span>
-        </div>
-        <div className="wt-chunk wt-chunk-dim">
-          <p>{d.neighbour}</p>
-          <span className="wt-vec">
-            {vectorBars(58).map((h, i) => (
-              <i key={i} style={{ ['--h' as string]: h, ['--d' as string]: 0.2 + (i / 48) * 0.6 }} />
-            ))}
-          </span>
-        </div>
-        <p className="wt-note">
-          <code>{d.extractionNote.found}</code> {d.extractionNote.text}
-        </p>
-      </div>
-
-      <div className="wt-scene" data-scene="3">
-        <div className="wt-scene-label">
-          <span>chroma · top 5 · company = {d.company}</span>
-          <span>similarity</span>
-        </div>
-        <ol className="wt-hits">
-          {d.hits.map((h, i) => (
-            <li
-              key={i}
-              className={`wt-hit${i === 0 ? ' wt-hit-best' : ''}`}
-              style={{
-                ['--i' as string]: i,
-                ['--w' as string]: Math.max(0.04, (h.score - floor) / (top - floor)),
-              }}
-            >
-              <span className="wt-rank">#{i + 1}</span>
-              <span className="wt-hit-text">
-                <b>p.{h.page}</b>
-                {h.text}
-              </span>
-              <span className="wt-score">{h.score.toFixed(3)}</span>
-              <span className="wt-bar">
-                <i />
-              </span>
-            </li>
-          ))}
-        </ol>
-      </div>
-
-      <div className="wt-scene" data-scene="4">
-        <div className="wt-scene-label">
-          <span>{d.model.toLowerCase()} · local</span>
-          <span className="wt-gen" />
-        </div>
-        <p className="wt-answer">
-          {tokens.map((t, i) =>
-            t.kind === 'cite' ? (
-              <span key={i} className="wt-tok wt-cite">
-                {t.text}
-              </span>
-            ) : (
-              <span key={i} className="wt-tok">
-                {t.text}
-              </span>
-            ),
-          )}
-        </p>
-        <div className="wt-source">
-          <span className="wt-pg">
-            {d.document.file} · p.{d.document.page}
-          </span>
-          <p>
-            <mark>{d.source.mark}</mark>
-            <span className="wt-source-rest">{d.source.rest}</span>
-          </p>
-        </div>
-        <div className="wt-stats">
-          <span>
-            latency <b>{d.latencySeconds} s</b>
-          </span>
-          <span>
-            cited <b>p.{d.document.page}</b>
-          </span>
-          <span>
-            answer page rank <b>1</b>
-          </span>
-        </div>
-      </div>
-    </>
+    <button type="button" className="wt-play" aria-pressed={playing} onClick={onClick}>
+      <span className="wt-play-icon" aria-hidden>
+        {playing ? '❚❚' : '▶'}
+      </span>
+      {playing ? 'Pause the clip' : `Play the clip (${Math.round(seconds)} s)`}
+    </button>
   );
 }
 
 /** The same five steps as a plain sequence, for reduced motion. */
-function StaticWalkthrough({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
-  const caps = captions(d);
+function StaticWalkthrough({
+  d,
+  tokens,
+  clip,
+}: {
+  d: WalkthroughData;
+  tokens: Token[];
+  clip: ReturnType<typeof useClip>;
+}) {
   return (
     <ol className="wt-static">
-      {caps.map((c, i) => (
+      {d.steps.map((c, i) => (
         <li key={i} className="wt-static-step" data-step={i}>
           <div>
             <span className="wt-num">
-              {String(i + 1).padStart(2, '0')} · {STEPS[i]}
+              {String(i + 1).padStart(2, '0')} · {c.label}
             </span>
             <h3 className="wt-title">{c.title}</h3>
             <p className="wt-body">{c.body}</p>
-            {i === N - 1 ? <p className="wt-body">Answer: {tokens.map((t) => t.text).join('')}</p> : null}
+            {i === d.typeStep ? (
+              <p className="wt-body">{tokens.map((t) => t.text).join('')}</p>
+            ) : null}
+            {i === 0 && d.kind === 'speech' ? (
+              <PlayButton playing={clip.playing} onClick={clip.toggle} seconds={d.audio.seconds} />
+            ) : null}
           </div>
           <div
+            ref={i === 0 ? clip.register : undefined}
             className="wt-stage wt-stage-static"
             data-step={i}
-            data-cited=""
+            data-typed=""
             aria-hidden="true"
-            style={{ ['--hits' as string]: N, ['--wt-l' as string]: 1 }}
+            style={{
+              ['--hits' as string]: 99,
+              ['--wt-l' as string]: 1,
+              ['--scrub' as string]: 1,
+              ['--wave' as string]: 1,
+            }}
           >
             <Scenes d={d} tokens={tokens} />
           </div>
@@ -251,11 +150,13 @@ function StaticWalkthrough({ d, tokens }: { d: WalkthroughData; tokens: Token[] 
 
 export function Walkthrough({ data: d }: { data: WalkthroughData }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const tokens = useMemo(() => tokenize(d.answer), [d.answer]);
-  const caps = useMemo(() => captions(d), [d]);
-  const plainAnswer = useMemo(() => d.answer.replace(/\[\[(p\.\d+)\]\]/g, '$1'), [d.answer]);
+  const typed = d.kind === 'rag' ? d.answer : d.transcript;
+  const tokens = useMemo(() => tokenize(typed), [typed]);
+  const plainTyped = useMemo(() => typed.replace(/\[\[(p\.\d+)\]\]/g, '$1'), [typed]);
   const [reduced, setReduced] = useState(prefersReducedMotion);
   const [step, setStep] = useState(0);
+  const clip = useClip(d.kind === 'speech' ? d.audio.src : undefined);
+  const { register } = clip;
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -267,8 +168,10 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
   useEffect(() => {
     const root = rootRef.current;
     if (reduced || !root) return;
+    register(root);
     const toks = [...root.querySelectorAll<HTMLElement>('.wt-tok')];
-    const gen = root.querySelector<HTMLElement>('.wt-gen');
+    const listLen = root.querySelectorAll(`[data-scene="${d.listStep}"] .wt-li`).length;
+    const gen = root.querySelector<HTMLElement>(`[data-scene="${d.typeStep}"] .wt-gen`);
     let shown = -1;
     let current = -1;
     let frame = 0;
@@ -283,24 +186,31 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
       const local = pos - s;
       root.style.setProperty('--wt-p', p.toFixed(4));
       root.style.setProperty('--wt-l', local.toFixed(4));
+      const scrub = (s === 0 ? local : 1).toFixed(4);
+      root.style.setProperty('--scrub', scrub);
+      if (!root.hasAttribute('data-playing')) root.style.setProperty('--wave', scrub);
       if (s !== current) {
         current = s;
         root.dataset.step = String(s);
         setStep(s);
       }
-      root.style.setProperty('--hits', String(s < 3 ? 0 : s > 3 ? N : Math.min(N, Math.floor(local * 7))));
-      // The answer types out with the scroll, and un-types when scrolling back.
-      const typed = s < 4 ? 0 : Math.min(1, local / TYPE_SHARE);
-      const count = Math.round(typed * toks.length);
+      const hits =
+        s < d.listStep ? 0 : s > d.listStep ? listLen : Math.min(listLen, Math.floor(local * (listLen + 2)));
+      root.style.setProperty('--hits', String(hits));
+      // The text types out with the scroll, and un-types when scrolling back.
+      const t = s < d.typeStep ? 0 : s > d.typeStep ? 1 : Math.min(1, local / TYPE_SHARE);
+      const count = Math.round(t * toks.length);
       if (count !== shown) {
         const lo = Math.min(count, Math.max(shown, 0));
         const hi = Math.max(count, shown);
         for (let i = lo; i < hi; i++) toks[i].classList.toggle('on', i < count);
         shown = count;
-        root.toggleAttribute('data-cited', count === toks.length && toks.length > 0);
+        const done = count === toks.length && toks.length > 0;
+        root.toggleAttribute('data-typed', done);
         if (gen)
-          gen.textContent =
-            count === toks.length ? `done · ${d.latencySeconds} s` : `generating · ${Math.round(typed * 100)}%`;
+          gen.textContent = done
+            ? `done · ${d.latencySeconds} s`
+            : `generating · ${Math.round(t * 100)}%`;
       }
     };
     const onScroll = () => {
@@ -314,28 +224,28 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
       window.removeEventListener('resize', onScroll);
       cancelAnimationFrame(frame);
     };
-  }, [reduced, d.latencySeconds]);
+  }, [reduced, d.listStep, d.typeStep, d.latencySeconds, register]);
 
-  /** Scrolls to the middle of a step, the way Apple's dot navigation jumps between scenes. */
+  /** Scrolls to a step, the way Apple's dot navigation jumps between scenes. */
   const goTo = (i: number) => {
     const root = rootRef.current;
     if (!root) return;
     const total = root.offsetHeight - window.innerHeight;
-    // The last step lands past the typing, so the cited answer is shown complete.
-    const within = i === N - 1 ? 0.85 : 0.45;
+    // The typing step lands past the typing, so its text is shown complete.
+    const within = i === d.typeStep ? 0.85 : 0.45;
     const top = window.scrollY + root.getBoundingClientRect().top + ((i + within) / N) * total;
     const lenis = getLenis();
     if (lenis) lenis.scrollTo(top, { duration: 1.1 });
     else window.scrollTo({ top, behavior: 'smooth' });
   };
 
-  if (reduced) return <StaticWalkthrough d={d} tokens={tokens} />;
+  if (reduced) return <StaticWalkthrough d={d} tokens={tokens} clip={clip} />;
 
   return (
-    <div ref={rootRef} className="wt" data-step="0">
+    <div ref={rootRef} className="wt" data-step="0" data-kind={d.kind}>
       <div className="wt-pin">
         <nav className="wt-rail" aria-label="Walkthrough steps">
-          {STEPS.map((label, i) => (
+          {d.steps.map(({ label }, i) => (
             <button
               key={label}
               type="button"
@@ -356,10 +266,10 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
 
         <div className="wt-body-grid">
           <div className="wt-captions">
-            {caps.map((c, i) => (
+            {d.steps.map((c, i) => (
               <div key={i} className="wt-cap" data-cap={i}>
                 <span className="wt-num">
-                  {String(i + 1).padStart(2, '0')} · {STEPS[i]}
+                  {String(i + 1).padStart(2, '0')} · {c.label}
                 </span>
                 <h3 className="wt-title">{c.title}</h3>
                 <p className="wt-body">{c.body}</p>
@@ -368,7 +278,10 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
                     <span key={f}>{f}</span>
                   ))}
                 </p>
-                {i === N - 1 ? <p className="sr-only">Answer: {plainAnswer}</p> : null}
+                {i === 0 && d.kind === 'speech' ? (
+                  <PlayButton playing={clip.playing} onClick={clip.toggle} seconds={d.audio.seconds} />
+                ) : null}
+                {i === d.typeStep ? <p className="sr-only">{plainTyped}</p> : null}
               </div>
             ))}
           </div>
