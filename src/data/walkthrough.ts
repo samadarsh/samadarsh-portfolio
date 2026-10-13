@@ -8,6 +8,10 @@
 // VoiceNote AI: the clip is from Google's crowd-sourced Tamil speech data (CC BY-SA 4.0), run
 // through the live Hugging Face Space on 12 Oct 2026. The transcript and romanization are its
 // output, word for word; the reference is what the speaker read, from the same data set.
+//
+// BiteWise: one order run through its own FastAPI backend on 13 Oct 2026, in its mock-Swiggy mode
+// (USE_MOCK_MCP=true). The tool calls, scores, explanation, refusals and state transitions are the
+// backend's responses; the restaurants and menu are its test fixtures, and no order reaches Swiggy.
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
 export type WalkthroughStep = { label: string; title: string; body: string; facts: string[] };
@@ -76,7 +80,41 @@ export type SpeechWalkthrough = Base & {
   otherClips: string;
 };
 
-export type Walkthrough = RagWalkthrough | SpeechWalkthrough;
+export type AgentWalkthrough = Base & {
+  kind: 'agent';
+  /** What the user typed. */
+  query: string;
+  profile: {
+    /** The onboarding answers, as short chips. */
+    inputs: string[];
+    /** The target calculation, one line per step: [what, result]. */
+    math: [string, string][];
+  };
+  /** The MCP tool calls, in order; `fallback` marks the ones the agent fell back to. */
+  tools: { call: string; result: string; empty?: boolean; fallback?: boolean }[];
+  toolSummary: string;
+  /** The ranked shortlist, best first; score out of 100, to one decimal. */
+  ranked: { name: string; restaurant: string; protein: number; calories: number; price: number; score: number }[];
+  /** How the winner scored on each factor (0 to 1) and the factor's weight. */
+  factors: { name: string; weight: number; score: number }[];
+  /** The winner's explanation, as the backend returned it. */
+  explanation: string;
+  tradeoff: string;
+  /** Order states from cart review on; `refused` rows are calls the backend turned down. */
+  flow: { state: string; detail?: string; refused?: boolean }[];
+  /** The states before cart review, shown compactly. */
+  earlierStates: string[];
+  /** A second run where the cart grew past the cap after confirmation. */
+  capRun: { cart: string; refusal: string; short: string; state: string };
+  /** What happened with another profile, for honesty about this one being a good case. */
+  otherRuns: string;
+};
+
+export type Walkthrough = RagWalkthrough | SpeechWalkthrough | AgentWalkthrough;
+
+/** The text the typing step types out. */
+export const typedText = (w: Walkthrough) =>
+  w.kind === 'rag' ? w.answer : w.kind === 'speech' ? w.transcript : w.explanation;
 
 export const walkthroughs: Record<string, Walkthrough> = {
   'fin-sight': {
@@ -254,5 +292,101 @@ export const walkthroughs: Record<string, Walkthrough> = {
     latencySeconds: 59,
     otherClips:
       'On two other clips it heard ஒப்புக்கொண்டார் ("agreed") as உப்புக்கொண்டார் and wrote "thirteen" as 13.',
+  },
+  'bite-wise': {
+    kind: 'agent',
+    intro:
+      "One real order, traced end to end as you scroll. It ran on BiteWise's own backend in its mock-Swiggy mode: the agent and everything it returned are real; the restaurants are its test menu, and no order reaches Swiggy.",
+    typeStep: 3,
+    listStep: 2,
+    steps: [
+      {
+        label: 'Profile',
+        title: 'Targets from the body, not a guess.',
+        body: 'Age, height, weight, activity and goal go through the Mifflin-St Jeor formula. Fat loss takes 500 kcal off the day, and the day is split into three meals.',
+        facts: ['475 kcal · 45 g a meal', 'Rs 300 budget'],
+      },
+      {
+        label: 'Search',
+        title: 'It reaches for tools, and adapts.',
+        body: 'The agent calls Swiggy\'s MCP tools. No dish is called "high protein meal", so instead of giving up it searches restaurants and reads their menus.',
+        facts: ['5 tool calls', '6 dishes found'],
+      },
+      {
+        label: 'Rank',
+        title: 'Ten factors, one score.',
+        body: 'Every dish is scored on protein density, calories against the target, the goal, diet, cuisine, budget, delivery time, rating, popularity and order history, weighted to a score out of 100. Missing data scores neutral; nothing is made up.',
+        facts: ['top 5 of 6', '39 ms a search'],
+      },
+      {
+        label: 'Explain',
+        title: 'Reasons you can check.',
+        body: "The explanation is built from the same numbers that ranked the dish, so it can't disagree with them, and the trade-off is said out loud.",
+        facts: ['no LLM in the ranking', 'estimated, not verified'],
+      },
+      {
+        label: 'Confirm',
+        title: 'Nothing is ordered until you say so.',
+        body: "Every step is a state the backend checks and records. Placing an order before confirming is refused, and so is a cart over Swiggy's Rs 1,000 cap, re-read live just before placing.",
+        facts: ['9 recorded transitions', '2 refusals'],
+      },
+    ],
+    query: 'high protein meal',
+    profile: {
+      inputs: ['30 years', 'female', '165 cm', '68 kg', 'light activity', 'fat loss'],
+      math: [
+        ['BMR · Mifflin-St Jeor', '1,400 kcal'],
+        ['× 1.375 light activity', '1,925 kcal'],
+        ['− 500 for fat loss', '1,425 kcal a day'],
+        ['68 kg × 2.0 g protein', '136 g a day'],
+        ['÷ 3 meals', '475 kcal · 45 g'],
+      ],
+    },
+    tools: [
+      { call: 'search_menu("high protein meal")', result: '0 dishes', empty: true },
+      { call: 'search_restaurants("high protein meal")', result: '3 restaurants', fallback: true },
+      { call: 'get_restaurant_menu(Protein Bowl Co)', result: '2 dishes', fallback: true },
+      { call: 'get_restaurant_menu(Lean Meal Hub)', result: '2 dishes', fallback: true },
+      { call: 'get_restaurant_menu(Fit Feast Kitchen)', result: '2 dishes', fallback: true },
+    ],
+    toolSummary: '6 candidates · 5 tool calls · 0 failures',
+    ranked: [
+      { name: 'Peri Peri Chicken Salad', restaurant: 'Fit Feast Kitchen', protein: 36, calories: 440, price: 299, score: 70.6 },
+      { name: 'Grilled Chicken Rice Bowl', restaurant: 'Protein Bowl Co', protein: 42, calories: 580, price: 289, score: 67.2 },
+      { name: 'Paneer Power Bowl', restaurant: 'Protein Bowl Co', protein: 31, calories: 530, price: 249, score: 64.8 },
+      { name: 'Tofu Burrito Bowl', restaurant: 'Lean Meal Hub', protein: 27, calories: 400, price: 219, score: 63.7 },
+      { name: 'High Protein Soya Salad', restaurant: 'Fit Feast Kitchen', protein: 29, calories: 275, price: 199, score: 62.2 },
+    ],
+    factors: [
+      { name: 'Protein density', weight: 0.2, score: 0.576 },
+      { name: 'Fitness goal', weight: 0.2, score: 0.667 },
+      { name: 'Calories', weight: 0.15, score: 0.853 },
+      { name: 'Diet', weight: 0.15, score: 1 },
+      { name: 'Budget', weight: 0.1, score: 0.601 },
+      { name: 'Cuisine', weight: 0.05, score: 0.4 },
+      { name: 'Delivery time', weight: 0.05, score: 0.7 },
+      { name: 'Rating', weight: 0.05, score: 0.7 },
+      { name: 'Order history', weight: 0.03, score: 0.5 },
+      { name: 'Popularity', weight: 0.02, score: 0.7 },
+    ],
+    explanation:
+      'Provides 36g protein, close to your 45g target. Estimated 440 kcal, aligns well with your 475 kcal target. Priced at Rs 299, fits within your default budget of Rs 300.',
+    tradeoff: 'Nutrition is estimated based on ingredient signals, not verified.',
+    earlierStates: ['START', 'ADDRESS_SELECTED', 'SEARCHING', 'RECOMMENDATIONS_READY', 'ITEM_SELECTED', 'CART_UPDATED'],
+    flow: [
+      { state: 'CART_REVIEW_READY', detail: 'Rs 299 · cash on delivery' },
+      { state: 'place order', detail: 'refused: expected USER_CONFIRMED', refused: true },
+      { state: 'USER_CONFIRMED', detail: 'you tap confirm' },
+      { state: 'ORDER_PLACING', detail: 'live cart re-read: Rs 299' },
+      { state: 'ORDER_PLACED', detail: 'mock_order_1 · 50 ms' },
+    ],
+    capRun: {
+      cart: 'Second run: after confirming, the cart is changed to 4 salads, Rs 1,196.',
+      refusal: 'Checkout blocked: Cart total of Rs 1196.0 exceeds the Swiggy Builders Club cap of Rs 1000.',
+      short: 'Rs 1,196 is over the Rs 1,000 cap',
+      state: 'FAILED',
+    },
+    otherRuns:
+      'With a muscle-gain profile (60 g a meal) on the same menu, the soya salad edges out the chicken bowl by half a point: no dish reaches 60 g, so price and protein density decide.',
   },
 };

@@ -97,6 +97,23 @@ const walkthrough = (p: Project) => {
       (w.credit ? `<p>${link(w.credit.href, w.credit.text)}</p>` : '') +
       `</section>`
     );
+  if (w.kind === 'agent') {
+    const pick = w.ranked[0];
+    return (
+      `<section><h2>One order, end to end</h2>` +
+      para(w.intro) +
+      para(`Request: "${w.query}", for a profile of ${w.profile.inputs.join(', ')}.`) +
+      para(`Tool calls: ${w.tools.map((t) => `${t.call} → ${t.result}`).join('; ')}.`) +
+      para(
+        `Ranked first: ${pick.name}, ${pick.score.toFixed(1)} of 100. Explanation: ${w.explanation} Trade-off: ${w.tradeoff}`,
+      ) +
+      para(
+        `Order: ${w.flow.map((f) => (f.detail ? `${f.state} (${f.detail})` : f.state)).join(' → ')}. ${w.capRun.cart} ${w.capRun.refusal}`,
+      ) +
+      para(w.otherRuns) +
+      `</section>`
+    );
+  }
   const best = w.hits[0];
   return (
     `<section><h2>One question, end to end</h2>${para(`Question: ${w.question}`)}` +
