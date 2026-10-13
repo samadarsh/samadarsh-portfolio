@@ -92,7 +92,7 @@ const walkthrough = (p: Project) => {
       para(`Tamil transcript (${w.model}): ${w.transcript}`) +
       para(`Romanized: ${w.romanized.map(([, latin]) => latin).join(' ')}`) +
       para(
-        `Against what the speaker read: ${w.errors.chars} of ${w.errors.charTotal} characters differ. ${w.otherClips}`,
+        `Against what the speaker read: ${w.errors.charTotal - w.errors.chars} of ${w.errors.charTotal} characters and ${w.errors.wordTotal - w.errors.words} of ${w.errors.wordTotal} words match exactly.`,
       ) +
       (w.credit ? `<p>${link(w.credit.href, w.credit.text)}</p>` : '') +
       `</section>`

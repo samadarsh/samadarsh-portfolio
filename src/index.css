@@ -880,7 +880,7 @@ html {
 .wt-gr b { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 11.5px; color: hsl(var(--accent)); }
 .wt-compare { display: grid; gap: 0.35rem; padding: 0.8rem 0.9rem; border-radius: 0.8rem; border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--bg)); }
 .wt-compare p { margin: 0 0 0.45rem; font-size: 15px; line-height: 1.65; color: hsl(var(--text)); }
-.wt-miss { text-decoration: none; padding: 0 2px; border-radius: 3px; color: rgb(var(--down)); background: rgb(var(--down) / 0.14); box-shadow: inset 0 -2px 0 rgb(var(--down)); }
+.wt-miss { text-decoration: none; padding: 0 2px; border-radius: 3px; color: hsl(var(--accent)); background: hsl(var(--accent) / 0.14); box-shadow: inset 0 -2px 0 hsl(var(--accent)); }
 @media (max-width: 767px) {
   .wt-wave { height: 7rem; margin-top: 0.75rem; }
   .wt-transcript { font-size: 1.15rem; margin-top: 0.5rem; }

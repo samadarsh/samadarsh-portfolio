@@ -82,7 +82,7 @@ export function RagScenes({ d, tokens }: { d: RagWalkthrough; tokens: Token[] })
           </span>
         </div>
         <p className="wt-note">
-          <code>{d.extractionNote.found}</code> {d.extractionNote.text}
+          <code>{d.chunkNote.code}</code> {d.chunkNote.text}
         </p>
       </div>
 

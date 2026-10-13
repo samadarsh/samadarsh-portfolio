@@ -125,20 +125,21 @@ export function CaseStudyPage() {
               <SectionLabel id="how-it-works">How it works</SectionLabel>
               <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted">
                 {walkthrough.intro}
+                {walkthrough.credit ? (
+                  // The licence asks for the source to be credited; a quiet note by the intro does it.
+                  <span className="mt-2 block text-xs text-muted">
+                    <a
+                      href={walkthrough.credit.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline decoration-muted/40 underline-offset-4 hover:text-text-primary"
+                    >
+                      {walkthrough.credit.text}
+                    </a>
+                  </span>
+                ) : null}
               </p>
               <Walkthrough data={walkthrough} />
-              {walkthrough.credit ? (
-                <p className="mt-4 text-xs text-muted">
-                  <a
-                    href={walkthrough.credit.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline decoration-white/20 underline-offset-4 hover:text-text-primary"
-                  >
-                    {walkthrough.credit.text}
-                  </a>
-                </p>
-              ) : null}
             </section>
           ) : project.architecture?.length ? (
             <m.section {...fadeUp} className="mt-20" aria-labelledby="how-it-works">
