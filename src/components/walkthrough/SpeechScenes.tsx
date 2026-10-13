@@ -13,7 +13,7 @@ function Reference({ text }: { text: string }) {
       {text.split(/(\[\[[^\]]+\]\])/).map((part, i) => {
         const miss = part.match(/^\[\[([^\]]+)\]\]$/);
         return miss ? (
-          <ins key={i} className="wt-miss" title="VoiceNote's transcript lacks this">
+          <ins key={i} className="wt-miss" title="The one place VoiceNote's transcript differs">
             {miss[1]}
           </ins>
         ) : (
@@ -91,7 +91,7 @@ export function SpeechScenes({ d, tokens }: { d: SpeechWalkthrough; tokens: Toke
       <div className="wt-scene" data-scene="2">
         <div className="wt-scene-label">
           <span>{d.model} · language = ta</span>
-          <span className="wt-gen" />
+          <span className="wt-gen" data-done="on free CPU" />
         </div>
         <p className="wt-tamil wt-transcript" lang="ta">
           <TypedTokens tokens={tokens} />
@@ -136,7 +136,7 @@ export function SpeechScenes({ d, tokens }: { d: SpeechWalkthrough; tokens: Toke
         <div className="wt-scene-label">
           <span>check · against the data set's transcript</span>
           <span>
-            {d.errors.chars} of {d.errors.charTotal} characters
+            {d.errors.charTotal - d.errors.chars} of {d.errors.charTotal} characters match
           </span>
         </div>
         <div className="wt-compare">
@@ -151,19 +151,18 @@ export function SpeechScenes({ d, tokens }: { d: SpeechWalkthrough; tokens: Toke
         </div>
         <div className="wt-stats">
           <span>
-            character error <b>{((100 * d.errors.chars) / d.errors.charTotal).toFixed(1)}%</b>
+            characters exact <b>{(100 - (100 * d.errors.chars) / d.errors.charTotal).toFixed(1)}%</b>
           </span>
           <span>
-            words wrong{' '}
+            words exact{' '}
             <b>
-              {d.errors.words} of {d.errors.wordTotal}
+              {d.errors.wordTotal - d.errors.words} of {d.errors.wordTotal}
             </b>
           </span>
           <span>
-            time <b>{d.latencySeconds} s</b>
+            hosting <b>free CPU</b>
           </span>
         </div>
-        <p className="wt-note">{d.otherClips}</p>
       </div>
     </>
   );

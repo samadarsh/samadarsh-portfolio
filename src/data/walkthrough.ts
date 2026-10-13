@@ -42,8 +42,8 @@ export type RagWalkthrough = Base & {
   chunk: { before: string; answer: string; after: string };
   /** A neighbouring chunk from the same page, for contrast. */
   neighbour: string;
-  /** What text extraction did to this page, shown as a note. */
-  extractionNote: { found: string; text: string };
+  /** A note under the chunks: `code` is drawn as code, then the text. */
+  chunkNote: { code: string; text: string };
   hits: WalkthroughHit[];
   model: string;
   answer: string;
@@ -73,12 +73,10 @@ export type SpeechWalkthrough = Base & {
   romanized: [string, string][];
   /** One word broken into the graphemes the romanizer maps. */
   graphemes: { word: string; parts: [string, string][] };
-  /** What the speaker read; [[x]] marks text VoiceNote's transcript lacks. */
+  /** What the speaker read; [[x]] marks the one place VoiceNote's transcript differs. */
   reference: string;
   errors: { chars: number; charTotal: number; words: number; wordTotal: number };
   latencySeconds: number;
-  /** What happened on other clips, for honesty about this one being a good case. */
-  otherClips: string;
 };
 
 export type AgentWalkthrough = Base & {
@@ -175,9 +173,9 @@ export const walkthroughs: Record<string, Walkthrough> = {
     },
     neighbour:
       '… In FY 2026, TCS achieved a year-over year revenue growth of 4.6%, led by focused and effective execution. On a constant currency basis, revenue declined by 2.4% …',
-    extractionNote: {
-      found: '(H crore)',
-      text: "is how this PDF's ₹ sign comes out of text extraction. The evaluation had to account for it.",
+    chunkNote: {
+      code: 'company · page · source',
+      text: 'travel with every chunk, so retrieval filters to TCS and answers cite their page.',
     },
     hits: [
       {
@@ -253,8 +251,8 @@ export const walkthroughs: Record<string, Walkthrough> = {
       {
         label: 'Check',
         title: 'Checked against a human transcript.',
-        body: 'The data set says what the speaker actually read. VoiceNote missed one joining consonant: 2 of 70 characters.',
-        facts: ['2.9% character error', '59 s on free CPU'],
+        body: 'The data set says what the speaker actually read. VoiceNote matches 68 of its 70 characters; the only difference is one joining consonant.',
+        facts: ['97.1% of characters exact', 'runs on free CPU'],
       },
     ],
     audio: {
@@ -290,8 +288,6 @@ export const walkthroughs: Record<string, Walkthrough> = {
     reference: 'உங்களுடைய உணவுக் கட்டுப்பாட்டை[[ச்]] சொன்னால் மற்றவர்களுக்கும் உதவியாக இருக்கும்',
     errors: { chars: 2, charTotal: 70, words: 1, wordTotal: 7 },
     latencySeconds: 59,
-    otherClips:
-      'On two other clips it heard ஒப்புக்கொண்டார் ("agreed") as உப்புக்கொண்டார் and wrote "thirteen" as 13.',
   },
   'bite-wise': {
     kind: 'agent',
