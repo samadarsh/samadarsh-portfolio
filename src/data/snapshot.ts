@@ -105,12 +105,11 @@ const walkthrough = (p: Project) => {
       para(`Request: "${w.query}", for a profile of ${w.profile.inputs.join(', ')}.`) +
       para(`Tool calls: ${w.tools.map((t) => `${t.call} → ${t.result}`).join('; ')}.`) +
       para(
-        `Ranked first: ${pick.name}, ${pick.score.toFixed(1)} of 100. Explanation: ${w.explanation} Trade-off: ${w.tradeoff}`,
+        `Ranked first: ${pick.name}, a ${Math.round(pick.score)}% match. Explanation: ${w.explanation} ${w.tradeoff}`,
       ) +
       para(
-        `Order: ${w.flow.map((f) => (f.detail ? `${f.state} (${f.detail})` : f.state)).join(' → ')}. ${w.capRun.cart} ${w.capRun.refusal}`,
+        `Order: ${w.flow.map((f) => `${f.state} (${f.detail})`).join(' → ')}. Guardrails: ${w.guardrails.map((g) => `${g.name}: ${g.detail}`).join(' ')}`,
       ) +
-      para(w.otherRuns) +
       `</section>`
     );
   }

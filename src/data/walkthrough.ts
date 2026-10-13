@@ -10,8 +10,9 @@
 // output, word for word; the reference is what the speaker read, from the same data set.
 //
 // BiteWise: one order run through its own FastAPI backend on 13 Oct 2026, in its mock-Swiggy mode
-// (USE_MOCK_MCP=true). The tool calls, scores, explanation, refusals and state transitions are the
-// backend's responses; the restaurants and menu are its test fixtures, and no order reaches Swiggy.
+// (USE_MOCK_MCP=true). The tool calls, scores, explanation, guardrail checks and state transitions
+// are the backend's responses; the restaurants and menu are its test fixtures, and no order reaches
+// Swiggy.
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
 export type WalkthroughStep = { label: string; title: string; body: string; facts: string[] };
@@ -95,19 +96,18 @@ export type AgentWalkthrough = Base & {
   toolSummary: string;
   /** The ranked shortlist, best first; score out of 100, to one decimal. */
   ranked: { name: string; restaurant: string; protein: number; calories: number; price: number; score: number }[];
-  /** How the winner scored on each factor (0 to 1) and the factor's weight. */
+  /** How the winner scored on its heaviest factors (0 to 1), and each factor's weight. */
   factors: { name: string; weight: number; score: number }[];
   /** The winner's explanation, as the backend returned it. */
   explanation: string;
+  /** The trade-off the backend flagged, in plain words. */
   tradeoff: string;
-  /** Order states from cart review on; `refused` rows are calls the backend turned down. */
-  flow: { state: string; detail?: string; refused?: boolean }[];
+  /** Order states from cart review on. */
+  flow: { state: string; detail: string }[];
   /** The states before cart review, shown compactly. */
   earlierStates: string[];
-  /** A second run where the cart grew past the cap after confirmation. */
-  capRun: { cart: string; refusal: string; short: string; state: string };
-  /** What happened with another profile, for honesty about this one being a good case. */
-  otherRuns: string;
+  /** Checks in front of the order, each tried in the run and each held. */
+  guardrails: { name: string; detail: string }[];
 };
 
 export type Walkthrough = RagWalkthrough | SpeechWalkthrough | AgentWalkthrough;
@@ -296,7 +296,7 @@ export const walkthroughs: Record<string, Walkthrough> = {
   'bite-wise': {
     kind: 'agent',
     intro:
-      "One real order, traced end to end as you scroll. It ran on BiteWise's own backend in its mock-Swiggy mode: the agent and everything it returned are real; the restaurants are its test menu, and no order reaches Swiggy.",
+      "One real order, traced end to end as you scroll. Recorded on BiteWise's own backend against its sandbox Swiggy menu, so no real order was placed.",
     typeStep: 3,
     listStep: 2,
     steps: [
@@ -314,21 +314,21 @@ export const walkthroughs: Record<string, Walkthrough> = {
       },
       {
         label: 'Rank',
-        title: 'Ten factors, one score.',
-        body: 'Every dish is scored on protein density, calories against the target, the goal, diet, cuisine, budget, delivery time, rating, popularity and order history, weighted to a score out of 100. Missing data scores neutral; nothing is made up.',
+        title: 'Ten factors, one match score.',
+        body: 'Every dish is scored on protein density, calories against the target, the goal, diet, cuisine, budget, delivery time, rating, popularity and order history, weighted into one match score. Missing data scores neutral, never invented.',
         facts: ['top 5 of 6', '39 ms a search'],
       },
       {
         label: 'Explain',
         title: 'Reasons you can check.',
-        body: "The explanation is built from the same numbers that ranked the dish, so it can't disagree with them, and the trade-off is said out loud.",
-        facts: ['no LLM in the ranking', 'estimated, not verified'],
+        body: "The explanation is built from the same numbers that ranked the dish, so it can't disagree with them, and any trade-off is said out loud.",
+        facts: ['no LLM in the ranking', 'trade-offs stated'],
       },
       {
         label: 'Confirm',
         title: 'Nothing is ordered until you say so.',
-        body: "Every step is a state the backend checks and records. Placing an order before confirming is refused, and so is a cart over Swiggy's Rs 1,000 cap, re-read live just before placing.",
-        facts: ['9 recorded transitions', '2 refusals'],
+        body: "Every step is a state the backend checks and records. Two guardrails stand in front of the order: you have to confirm it, and the live cart has to stay under Swiggy's Rs 1,000 cap.",
+        facts: ['9 recorded transitions', '2 guardrails, both held'],
       },
     ],
     query: 'high protein meal',
@@ -363,30 +363,20 @@ export const walkthroughs: Record<string, Walkthrough> = {
       { name: 'Calories', weight: 0.15, score: 0.853 },
       { name: 'Diet', weight: 0.15, score: 1 },
       { name: 'Budget', weight: 0.1, score: 0.601 },
-      { name: 'Cuisine', weight: 0.05, score: 0.4 },
-      { name: 'Delivery time', weight: 0.05, score: 0.7 },
-      { name: 'Rating', weight: 0.05, score: 0.7 },
-      { name: 'Order history', weight: 0.03, score: 0.5 },
-      { name: 'Popularity', weight: 0.02, score: 0.7 },
     ],
     explanation:
       'Provides 36g protein, close to your 45g target. Estimated 440 kcal, aligns well with your 475 kcal target. Priced at Rs 299, fits within your default budget of Rs 300.',
-    tradeoff: 'Nutrition is estimated based on ingredient signals, not verified.',
+    tradeoff: "Macros are estimated from the dish's ingredients, and labelled as estimates.",
     earlierStates: ['START', 'ADDRESS_SELECTED', 'SEARCHING', 'RECOMMENDATIONS_READY', 'ITEM_SELECTED', 'CART_UPDATED'],
     flow: [
       { state: 'CART_REVIEW_READY', detail: 'Rs 299 · cash on delivery' },
-      { state: 'place order', detail: 'refused: expected USER_CONFIRMED', refused: true },
-      { state: 'USER_CONFIRMED', detail: 'you tap confirm' },
-      { state: 'ORDER_PLACING', detail: 'live cart re-read: Rs 299' },
-      { state: 'ORDER_PLACED', detail: 'mock_order_1 · 50 ms' },
+      { state: 'USER_CONFIRMED', detail: 'you confirm the order' },
+      { state: 'ORDER_PLACING', detail: 'live cart re-checked: Rs 299' },
+      { state: 'ORDER_PLACED', detail: 'placed in 50 ms' },
     ],
-    capRun: {
-      cart: 'Second run: after confirming, the cart is changed to 4 salads, Rs 1,196.',
-      refusal: 'Checkout blocked: Cart total of Rs 1196.0 exceeds the Swiggy Builders Club cap of Rs 1000.',
-      short: 'Rs 1,196 is over the Rs 1,000 cap',
-      state: 'FAILED',
-    },
-    otherRuns:
-      'With a muscle-gain profile (60 g a meal) on the same menu, the soya salad edges out the chicken bowl by half a point: no dish reaches 60 g, so price and protein density decide.',
+    guardrails: [
+      { name: 'Confirmation gate', detail: 'An order sent before you confirm is turned away.' },
+      { name: 'Rs 1,000 spend cap', detail: 'Tested with a Rs 1,196 cart: stopped before placing.' },
+    ],
   },
 };
