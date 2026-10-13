@@ -124,10 +124,21 @@ export function CaseStudyPage() {
             <section className="mt-20" aria-labelledby="how-it-works">
               <SectionLabel id="how-it-works">How it works</SectionLabel>
               <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted">
-                One real question, traced end to end as you scroll. The chunks, scores and answer
-                are from an actual run.
+                {walkthrough.intro}
               </p>
               <Walkthrough data={walkthrough} />
+              {walkthrough.credit ? (
+                <p className="mt-4 text-xs text-muted">
+                  <a
+                    href={walkthrough.credit.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline decoration-white/20 underline-offset-4 hover:text-text-primary"
+                  >
+                    {walkthrough.credit.text}
+                  </a>
+                </p>
+              ) : null}
             </section>
           ) : project.architecture?.length ? (
             <m.section {...fadeUp} className="mt-20" aria-labelledby="how-it-works">

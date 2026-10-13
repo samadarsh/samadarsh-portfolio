@@ -728,8 +728,8 @@ html {
 }
 
 /* ---------- Walkthrough (Walkthrough.tsx): a pinned, scroll-driven trace of one real question ----------
-   The component writes --wt-p (whole walkthrough), --wt-l (progress within the current step), --hits and
-   data-step / data-cited on .wt; everything below is drawn from those. */
+   The component writes --wt-p (whole walkthrough), --wt-l (progress within the current step), --hits,
+   --scrub, --wave, data-step and data-typed on .wt (--wave follows the clip while it plays); everything below is drawn from those. */
 .wt { position: relative; height: calc(100vh * 5.6); height: calc(100dvh * 5.6); --wt-p: 0; --wt-l: 0; --hits: 0; --wt-ease: cubic-bezier(0.16, 1, 0.3, 1); }
 .wt-pin { position: sticky; top: 0; height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1.5rem; padding: 6.5rem 0 2.5rem; }
 .wt-rail { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; }
@@ -804,15 +804,15 @@ html {
 .wt-tok { opacity: 0.08; transition: opacity 0.35s ease; }
 .wt-tok.on, .wt-stage-static .wt-tok { opacity: 1; }
 .wt-cite { display: inline-block; margin: 0 0.15rem; padding: 0 0.4rem; border-radius: 0.3rem; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: hsl(var(--accent)); background: hsl(var(--accent) / 0.14); transition: opacity 0.35s ease, box-shadow 0.5s ease; }
-.wt[data-cited] .wt-cite, .wt-stage-static .wt-cite { box-shadow: 0 0 0 1.5px hsl(var(--accent)); }
+.wt[data-typed] .wt-cite, .wt-stage-static .wt-cite { box-shadow: 0 0 0 1.5px hsl(var(--accent)); }
 .wt-source { display: grid; gap: 0.35rem; padding: 0.75rem 0.9rem; border-radius: 0.8rem; border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--bg)); opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.8s var(--wt-ease); }
 .wt-source p { margin: 0; font-size: 12.5px; line-height: 1.55; color: hsl(var(--muted)); }
 .wt-source mark { background: hsl(var(--accent) / 0.16); color: hsl(var(--text)); border-radius: 3px; padding: 0 2px; }
 .wt-stats { display: flex; flex-wrap: wrap; gap: 0.4rem; opacity: 0; transition: opacity 0.5s ease 0.2s; }
 .wt-stats span { padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid rgb(var(--ink) / 0.1); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: hsl(var(--muted)); }
 .wt-stats b { font-weight: 500; color: hsl(var(--text)); }
-.wt[data-cited] .wt-source, .wt-stage-static .wt-source { opacity: 1; transform: none; }
-.wt[data-cited] .wt-stats, .wt-stage-static .wt-stats { opacity: 1; }
+.wt[data-typed] .wt-source, .wt-stage-static .wt-source { opacity: 1; transform: none; }
+.wt[data-typed] .wt-stats, .wt-stage-static .wt-stats { opacity: 1; }
 
 /* Reduced motion: the same steps as a plain sequence */
 .wt-static { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 2.5rem; }
@@ -847,3 +847,53 @@ html {
   .wt-chunk p { font-size: 12px; }
 }
 @media (max-width: 399px) { .wt-stats { display: none; } }
+
+/* Walkthrough, speech scenes (VoiceNote): the waveform lights up as you scroll or as the clip plays */
+.wt-play { display: inline-flex; align-items: center; gap: 0.6rem; justify-self: start; min-height: 44px; padding: 0 1.1rem; border-radius: 999px; border: 1px solid hsl(var(--accent) / 0.5); background: hsl(var(--accent) / 0.08); color: hsl(var(--text)); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; cursor: pointer; transition: background 0.3s, border-color 0.3s; }
+.wt-play:hover, .wt-play[aria-pressed="true"] { background: hsl(var(--accent) / 0.18); border-color: hsl(var(--accent)); }
+.wt-play:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 3px; }
+.wt-play-icon { color: hsl(var(--accent)); font-size: 11px; }
+.wt-tamil { font-family: 'Noto Sans Tamil', 'Tamil Sangam MN', 'Nirmala UI', 'Latha', sans-serif; }
+.wt-wave { display: flex; align-items: center; gap: 2px; height: clamp(7rem, 24vh, 13rem); margin-top: 1.5rem; }
+/* No transitions here: --wave already changes every frame, and transitions on these bars kept WebKit restyling. */
+.wt-wave i { --lit: clamp(0, calc((var(--wave, 0) - var(--x)) * 60), 1); flex: 1; height: calc(var(--h) * 100%); min-height: 3px; border-radius: 2px; background: hsl(var(--accent)); opacity: calc(0.22 + 0.78 * var(--lit)); transform: scaleY(calc(0.7 + 0.3 * var(--lit))); }
+.wt-wave-meta { margin: 0.25rem 0 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: hsl(var(--muted)); }
+.wt-rate { display: grid; gap: 0.4rem; }
+.wt-rate-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: hsl(var(--muted)); }
+.wt-strip { display: flex; align-items: center; gap: 1px; height: 3.2rem; padding: 0.4rem 0.6rem; border-radius: 0.7rem; border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--bg)); }
+.wt-strip i { flex: 1; height: calc(var(--h) * 100%); min-height: 2px; border-radius: 1px; background: rgb(var(--ink) / 0.3); }
+.wt-rate-16 .wt-strip { gap: 3px; }
+.wt-rate-16 .wt-strip i { background: hsl(var(--accent)); transform: scaleY(clamp(0.05, calc((var(--wt-l) - var(--d)) * 3), 1)); }
+.wt-chunkbar { display: grid; gap: 0.4rem; margin-top: 0.3rem; }
+.wt-chunkbar-track { display: block; height: 10px; border-radius: 999px; background: rgb(var(--ink) / 0.08); overflow: hidden; }
+.wt-chunkbar-track i { display: block; height: 100%; width: calc(var(--c) * 100%); border-radius: 999px; background: hsl(var(--accent)); transform-origin: left; transform: scaleX(clamp(0, calc((var(--wt-l) - 0.45) * 3), 1)); }
+.wt-transcript { margin: 1.2rem 0 0; font-size: clamp(1.2rem, 2.3vw, 1.6rem); line-height: 1.7; color: hsl(var(--text)); }
+.wt-roman { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.wt-roman li { --on: clamp(0, calc(var(--hits) - var(--i)), 1); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.7rem; align-items: baseline; padding: 0.4rem 0.75rem; border-radius: 0.6rem; border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--bg)); opacity: var(--on); transform: translateX(calc((1 - var(--on)) * 22px)); transition: opacity 0.4s ease, transform 0.6s var(--wt-ease, ease); }
+.wt-roman .wt-tamil { font-size: 14px; color: hsl(var(--text)); }
+.wt-arrow { color: hsl(var(--muted) / 0.6); font-size: 12px; }
+.wt-latin { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12.5px; color: hsl(var(--accent)); overflow-wrap: anywhere; }
+.wt-graphemes { --on: clamp(0, calc(var(--hits) - var(--n) + 1), 1); display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-top: 0.2rem; opacity: var(--on); transform: translateY(calc((1 - var(--on)) * 10px)); transition: opacity 0.5s ease, transform 0.7s var(--wt-ease, ease); }
+.wt-graphemes > .wt-tamil { font-size: 15px; }
+.wt-gr { display: inline-grid; justify-items: center; gap: 0.1rem; min-width: 2.4rem; padding: 0.3rem 0.5rem; border-radius: 0.5rem; border: 1px solid hsl(var(--accent) / 0.4); background: hsl(var(--accent) / 0.08); }
+.wt-gr span { font-family: 'Noto Sans Tamil', 'Tamil Sangam MN', 'Nirmala UI', 'Latha', sans-serif; font-size: 15px; color: hsl(var(--text)); }
+.wt-gr b { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 11.5px; color: hsl(var(--accent)); }
+.wt-compare { display: grid; gap: 0.35rem; padding: 0.8rem 0.9rem; border-radius: 0.8rem; border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--bg)); }
+.wt-compare p { margin: 0 0 0.45rem; font-size: 15px; line-height: 1.65; color: hsl(var(--text)); }
+.wt-miss { text-decoration: none; padding: 0 2px; border-radius: 3px; color: rgb(var(--down)); background: rgb(var(--down) / 0.14); box-shadow: inset 0 -2px 0 rgb(var(--down)); }
+@media (max-width: 767px) {
+  .wt-wave { height: 7rem; margin-top: 0.75rem; }
+  .wt-transcript { font-size: 1.15rem; margin-top: 0.5rem; }
+  .wt-strip { height: 2.6rem; }
+  .wt-compare p { font-size: 14px; }
+}
+@media (max-width: 767px) and (max-height: 700px), (max-width: 359px) {
+  .wt-roman { gap: 0.2rem; }
+  .wt-roman li { padding: 0.2rem 0.55rem; gap: 0.5rem; }
+  .wt-roman .wt-tamil { font-size: 13px; }
+  .wt-latin { font-size: 11.5px; }
+  .wt-graphemes { display: none; }
+  .wt-rate-16 { display: none; }
+  .wt-compare { padding: 0.6rem 0.75rem; gap: 0.2rem; }
+  .wt-compare p { font-size: 13px; line-height: 1.5; margin-bottom: 0.25rem; }
+}
