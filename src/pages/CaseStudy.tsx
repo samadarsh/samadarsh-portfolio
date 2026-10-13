@@ -10,7 +10,7 @@ import { ProjectPreview } from '../components/ProjectPreview';
 import { Footer } from '../components/Footer';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { caseStudyMeta } from '../data/seo';
-import { sleepsWhenIdle, WAKE_NOTE } from '../lib/demoHost';
+import { sleepsWhenIdle, wakeNote } from '../lib/demoHost';
 import { unlock } from '../lib/achievements';
 
 const fadeUp = {
@@ -101,7 +101,7 @@ export function CaseStudyPage() {
             </div>
             {sleepsWhenIdle(project.links.live) ? (
               <p id="live-wake" className="mt-3 text-xs text-muted">
-                {WAKE_NOTE}
+                {wakeNote(project.links.live)}
               </p>
             ) : null}
           </header>

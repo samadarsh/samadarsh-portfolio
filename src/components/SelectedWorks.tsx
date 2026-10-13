@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { projects } from '../data/content';
 import { SectionHeader } from './SectionHeader';
 import { ProjectPreview } from './ProjectPreview';
-import { sleepsWhenIdle, WAKE_NOTE } from '../lib/demoHost';
+import { sleepsWhenIdle, wakeNote } from '../lib/demoHost';
 
 type SelectedWorksProps = {
   showHeader?: boolean;
@@ -193,7 +193,7 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                   </div>
                   {sleepsWhenIdle(project.links.live) ? (
                     <p id={`${project.slug}-wake`} className="mt-1 text-xs text-muted">
-                      {WAKE_NOTE}
+                      {wakeNote(project.links.live)}
                     </p>
                   ) : null}
                 </div>

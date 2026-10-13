@@ -14,7 +14,7 @@ import { copyText, downloadResume } from '../lib/contact';
 import { unlock } from '../lib/achievements';
 import { getTheme, setTheme } from '../lib/theme';
 import { isArcade, toggleArcade } from '../lib/arcade';
-import { sleepsWhenIdle } from '../lib/demoHost';
+import { wakeTime } from '../lib/demoHost';
 import { BANNER, DEFAULT_SUGGESTIONS } from './TerminalPlaceholder';
 import { useAskAdarsh } from './AskAdarsh';
 
@@ -103,6 +103,7 @@ const Ext = ({ href, children }: { href: string; children: ReactNode }) => (
 );
 
 function catProject(p: Project): ReactNode {
+  const wake = wakeTime(p.links.live);
   return (
     <>
       <Acc># {p.title}</Acc>
@@ -121,7 +122,7 @@ function catProject(p: Project): ReactNode {
           {'\n'}
           <Muted>live: </Muted>
           <Ext href={p.links.live}>{p.links.live.replace(/^https?:\/\//, '')}</Ext>
-          {sleepsWhenIdle(p.links.live) ? <Muted> (free hosting, ~30s to wake)</Muted> : null}
+          {wake ? <Muted> (free hosting, {wake.short} to wake)</Muted> : null}
         </>
       ) : null}
       {p.links.github ? (
