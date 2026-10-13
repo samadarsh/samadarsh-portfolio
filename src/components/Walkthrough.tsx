@@ -3,6 +3,7 @@ import { typedText, type Walkthrough as WalkthroughData } from '../data/walkthro
 import { getLenis } from '../lib/smoothScroll';
 import { AgentScenes } from './walkthrough/AgentScenes';
 import { RagScenes } from './walkthrough/RagScenes';
+import { RepoScenes } from './walkthrough/RepoScenes';
 import { SpeechScenes } from './walkthrough/SpeechScenes';
 import { tokenize, type Token } from './walkthrough/tokens';
 
@@ -27,6 +28,7 @@ const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 function Scenes({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
   if (d.kind === 'rag') return <RagScenes d={d} tokens={tokens} />;
   if (d.kind === 'speech') return <SpeechScenes d={d} tokens={tokens} />;
+  if (d.kind === 'repo') return <RepoScenes d={d} tokens={tokens} />;
   return <AgentScenes d={d} tokens={tokens} />;
 }
 
@@ -160,7 +162,7 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
   const [step, setStep] = useState(0);
   const clip = useClip(d.kind === 'speech' ? d.audio.src : undefined);
   const { register } = clip;
-  const latency = d.kind === 'agent' ? null : d.latencySeconds;
+  const latency = d.kind === 'rag' || d.kind === 'speech' ? d.latencySeconds : null;
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');

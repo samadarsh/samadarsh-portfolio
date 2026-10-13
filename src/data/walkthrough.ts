@@ -13,6 +13,11 @@
 // (USE_MOCK_MCP=true). The tool calls, scores, explanation, guardrail checks and state transitions
 // are the backend's responses; the restaurants and menu are its test fixtures, and no order reaches
 // Swiggy.
+//
+// RepoMind: its own pipeline (chain.py, stage by stage) run on samadarsh/fin-sight on 13 Oct 2026
+// with Groq's openai/gpt-oss-120b on the free tier. The counts, classification, file list,
+// timings and one-line summary are its output; each file's gist condenses the purpose line
+// RepoMind wrote for it.
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
 export type WalkthroughStep = { label: string; title: string; body: string; facts: string[] };
@@ -108,11 +113,38 @@ export type AgentWalkthrough = Base & {
   guardrails: { name: string; detail: string }[];
 };
 
-export type Walkthrough = RagWalkthrough | SpeechWalkthrough | AgentWalkthrough;
+export type RepoWalkthrough = Base & {
+  kind: 'repo';
+  repoUrl: string;
+  model: string;
+  /** A few of the files the clone finds, for the file list. */
+  sampleFiles: string[];
+  /** Files after each filtering pass: [what, count]. */
+  funnel: [string, number][];
+  /** What the filter drops and what it keeps. */
+  ignored: string[];
+  keptTypes: string[];
+  /** The types the classifier chooses from, and its choice and reason. */
+  types: string[];
+  classification: string;
+  reason: string;
+  /** Files the analyzer ranked important, before the cap of ten. */
+  candidates: number;
+  /** The files explained in the map step: path and a condensed purpose. */
+  explained: { path: string; gist: string }[];
+  /** RepoMind's one-line summary of the repository, word for word. */
+  summary: string;
+  /** The sections of the final overview. */
+  sections: string[];
+  calls: number;
+  seconds: number;
+};
+
+export type Walkthrough = RagWalkthrough | SpeechWalkthrough | AgentWalkthrough | RepoWalkthrough;
 
 /** The text the typing step types out. */
 export const typedText = (w: Walkthrough) =>
-  w.kind === 'rag' ? w.answer : w.kind === 'speech' ? w.transcript : w.explanation;
+  w.kind === 'rag' ? w.answer : w.kind === 'speech' ? w.transcript : w.kind === 'agent' ? w.explanation : w.summary;
 
 export const walkthroughs: Record<string, Walkthrough> = {
   'fin-sight': {
@@ -374,5 +406,105 @@ export const walkthroughs: Record<string, Walkthrough> = {
       { name: 'Confirmation gate', detail: 'An order sent before you confirm is turned away.' },
       { name: 'Rs 1,000 spend cap', detail: 'Tested with a Rs 1,196 cart: stopped before placing.' },
     ],
+  },
+  repomind: {
+    kind: 'repo',
+    intro:
+      'One real analysis, traced end to end as you scroll: RepoMind reading FinSight, another project on this page. Every stage below is its own output.',
+    typeStep: 4,
+    listStep: 3,
+    steps: [
+      {
+        label: 'Clone',
+        title: 'Any GitHub repo, one link.',
+        body: 'Paste a repository URL. RepoMind shallow-clones it into a temporary folder, walks every file and pulls out the README for context.',
+        facts: ['98 files found', 'cloned in 1.1 s'],
+      },
+      {
+        label: 'Filter',
+        title: 'Noise out, code in.',
+        body: 'Version control, virtual environments, dependencies, images and data files are dropped. Source code, notebooks and docs stay.',
+        facts: ['98 → 61 files', 'no LLM needed'],
+      },
+      {
+        label: 'Classify',
+        title: 'It works out what the repo is.',
+        body: 'The name, the file list and the README go to the classifier, which picks one of eight project types and says why. Every later step is told the answer.',
+        facts: ['Web Application', '1 LLM call'],
+      },
+      {
+        label: 'Map',
+        title: 'Every key file, explained in context.',
+        body: "The analyzer ranks the files and the top ten are explained one by one. Each prompt carries the repo's name and type, and is told not to judge the whole project from one file.",
+        facts: ['top 10 of 31 key files', 'one call per file'],
+      },
+      {
+        label: 'Reduce',
+        title: 'One overview, in fixed sections.',
+        body: "The file explanations and the README are reduced into one structured overview: what the repo does, its workflow, architecture, features and a one-line summary.",
+        facts: ['11 sections', '172 s on the free tier'],
+      },
+    ],
+    repoUrl: 'github.com/samadarsh/fin-sight',
+    model: 'gpt-oss-120b · groq',
+    sampleFiles: [
+      'api/main.py',
+      'frontend/app.py',
+      'src/finsight/pipeline/query_pipeline.py',
+      'src/finsight/retrieval/retriever.py',
+      'src/finsight/vectorstore/chroma_store.py',
+      'src/finsight/embeddings/local.py',
+      'scripts/evaluate.py',
+      'README.md',
+    ],
+    funnel: [
+      ['in the clone', 98],
+      ['after ignore rules', 66],
+      ['source and docs kept', 61],
+    ],
+    ignored: ['.git', 'venv', 'node_modules', '__pycache__', '.env', 'images', '.csv'],
+    keptTypes: ['.py', '.ts', '.js', '.ipynb', '.md'],
+    types: [
+      'Portfolio Website',
+      'Machine Learning Project',
+      'Web Application',
+      'Library/SDK',
+      'Script Collection',
+      'Data Science Notebook',
+      'Backend API',
+      'Unknown',
+    ],
+    classification: 'Web Application',
+    reason:
+      'The repository implements a full RAG system with a FastAPI backend, Streamlit frontend, and supporting scripts for ingestion and querying, indicating a complete web application rather than just an API or library.',
+    candidates: 31,
+    explained: [
+      { path: 'README.md', gist: 'what FinSight does, how it is built and how to run it' },
+      { path: 'api/main.py', gist: 'the HTTP API: upload PDFs, ingest them, run RAG queries' },
+      { path: 'frontend/app.py', gist: 'the Streamlit app: connect, upload, ingest and ask' },
+      { path: 'src/finsight/evaluation.py', gist: 'scores retrieval hits, citations, facts and refusals' },
+      { path: 'src/finsight/errors.py', gist: 'custom errors for AI-service and embedding problems' },
+      { path: 'src/finsight/models.py', gist: 'the data structures that travel through the pipeline' },
+      { path: 'src/finsight/llm/factory.py', gist: 'one cached entry point to the configured LLM' },
+      { path: 'src/finsight/llm/base.py', gist: 'the interface every LLM provider implements' },
+      { path: 'src/finsight/llm/gemini.py', gist: "a provider for Google's Gemini models" },
+    ],
+    summary:
+      'FinSight is a modular RAG system that ingests financial PDFs, stores chunk embeddings in ChromaDB, and delivers citation-rich answers via configurable LLM backends through a FastAPI-Streamlit interface.',
+    sections: [
+      'Overview',
+      'What it does',
+      'Core workflow',
+      'Architecture',
+      'Key features',
+      'Strengths',
+      'Improvements',
+      'Upgrades',
+      'Applications',
+      'Tech concepts',
+      'One-line summary',
+    ],
+    calls: 12,
+    seconds: 172,
   },
 };
