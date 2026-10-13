@@ -220,7 +220,7 @@ export const walkthroughs: Record<string, Walkthrough> = {
     typeStep: 2,
     listStep: 3,
     credit: {
-      text: "Audio: Google's crowd-sourced Tamil speech data, CC BY-SA 4.0",
+      text: "Audio: Google's Tamil speech data, CC BY-SA 4.0",
       href: 'https://huggingface.co/datasets/ylacombe/google-tamil',
     },
     steps: [
