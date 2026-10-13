@@ -15,7 +15,7 @@ import {
   socialLinks,
   writingMeta,
 } from '../data/content.js';
-import { sleepsWhenIdle } from './demoHost.js';
+import { wakeTime } from './demoHost.js';
 import {
   achievements,
   certifications,
@@ -73,7 +73,7 @@ export function buildKnowledge() {
           ? `Measured results: ${p.results.metrics.map((r) => `${r.label}: ${r.value}${r.detail ? ` (${r.detail})` : ''}`).join('; ')}. ${p.results.setup}${p.results.note ? ` ${p.results.note}` : ''}`
           : '',
         p.links.live
-          ? `Live: ${p.links.live}${sleepsWhenIdle(p.links.live) ? ' (free hosting; the first visit can take about 30 seconds to wake up)' : ''}`
+          ? `Live: ${p.links.live}${wakeTime(p.links.live) ? ` (free hosting; the first visit can take ${wakeTime(p.links.live)!.long} to wake up)` : ''}`
           : '',
         p.links.github ? `GitHub: ${p.links.github}` : '',
       ]
