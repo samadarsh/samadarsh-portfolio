@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Walkthrough as WalkthroughData } from '../data/walkthrough';
+import { typedText, type Walkthrough as WalkthroughData } from '../data/walkthrough';
 import { getLenis } from '../lib/smoothScroll';
+import { AgentScenes } from './walkthrough/AgentScenes';
 import { RagScenes } from './walkthrough/RagScenes';
 import { SpeechScenes } from './walkthrough/SpeechScenes';
 import { tokenize, type Token } from './walkthrough/tokens';
@@ -24,7 +25,9 @@ const prefersReducedMotion = () =>
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
 function Scenes({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
-  return d.kind === 'rag' ? <RagScenes d={d} tokens={tokens} /> : <SpeechScenes d={d} tokens={tokens} />;
+  if (d.kind === 'rag') return <RagScenes d={d} tokens={tokens} />;
+  if (d.kind === 'speech') return <SpeechScenes d={d} tokens={tokens} />;
+  return <AgentScenes d={d} tokens={tokens} />;
 }
 
 /**
@@ -150,13 +153,14 @@ function StaticWalkthrough({
 
 export function Walkthrough({ data: d }: { data: WalkthroughData }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const typed = d.kind === 'rag' ? d.answer : d.transcript;
+  const typed = typedText(d);
   const tokens = useMemo(() => tokenize(typed), [typed]);
   const plainTyped = useMemo(() => typed.replace(/\[\[(p\.\d+)\]\]/g, '$1'), [typed]);
   const [reduced, setReduced] = useState(prefersReducedMotion);
   const [step, setStep] = useState(0);
   const clip = useClip(d.kind === 'speech' ? d.audio.src : undefined);
   const { register } = clip;
+  const latency = d.kind === 'agent' ? null : d.latencySeconds;
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -172,6 +176,9 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
     const toks = [...root.querySelectorAll<HTMLElement>('.wt-tok')];
     const listLen = root.querySelectorAll(`[data-scene="${d.listStep}"] .wt-li`).length;
     const gen = root.querySelector<HTMLElement>(`[data-scene="${d.typeStep}"] .wt-gen`);
+    // Scenes can name the typing's two states; the default fits a model writing an answer.
+    const busy = gen?.dataset.busy ?? 'generating';
+    const doneLabel = gen?.dataset.done ?? `${latency} s`;
     let shown = -1;
     let current = -1;
     let frame = 0;
@@ -208,9 +215,7 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
         const done = count === toks.length && toks.length > 0;
         root.toggleAttribute('data-typed', done);
         if (gen)
-          gen.textContent = done
-            ? `done · ${d.latencySeconds} s`
-            : `generating · ${Math.round(t * 100)}%`;
+          gen.textContent = done ? `done · ${doneLabel}` : `${busy} · ${Math.round(t * 100)}%`;
       }
     };
     const onScroll = () => {
@@ -224,7 +229,7 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
       window.removeEventListener('resize', onScroll);
       cancelAnimationFrame(frame);
     };
-  }, [reduced, d.listStep, d.typeStep, d.latencySeconds, register]);
+  }, [reduced, d.listStep, d.typeStep, latency, register]);
 
   /** Scrolls to a step, the way Apple's dot navigation jumps between scenes. */
   const goTo = (i: number) => {
