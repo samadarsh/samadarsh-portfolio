@@ -97,6 +97,17 @@ const walkthrough = (p: Project) => {
       (w.credit ? `<p>${link(w.credit.href, w.credit.text)}</p>` : '') +
       `</section>`
     );
+  if (w.kind === 'repo')
+    return (
+      `<section><h2>One repository, end to end</h2>` +
+      para(w.intro) +
+      para(
+        `RepoMind on ${w.repoUrl}: ${w.funnel.map(([what, n]) => `${n} ${what}`).join(', ')}. Classified as ${w.classification}: ${w.reason}`,
+      ) +
+      para(`Files explained: ${w.explained.map((f) => `${f.path} (${f.gist})`).join('; ')}.`) +
+      para(`One-line summary: ${w.summary} (${w.calls} LLM calls, ${w.seconds} s, ${w.model}.)`) +
+      `</section>`
+    );
   if (w.kind === 'agent') {
     const pick = w.ranked[0];
     return (
