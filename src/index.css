@@ -180,30 +180,6 @@ body {
   background: hsl(var(--text));
 }
 
-/* Phones: "Adarsh" and "S." on two large lines. Wider screens: one line with a space. */
-.name-reveal {
-  display: block;
-}
-
-@media (min-width: 640px) {
-  .name-reveal {
-    display: inline-block;
-  }
-
-  .name-reveal + .name-reveal {
-    margin-left: 0.22em;
-  }
-}
-
-/* Diffusion name (DiffusionName.tsx): the letters stay in place but invisible while the noise
-   draws them, then fade in under it. */
-[data-line] {
-  transition: color 0.3s ease;
-}
-[data-diffusing] [data-line] {
-  color: transparent !important;
-}
-
 /* Next-token tagline (NextTokenTagline.tsx): each word arrives with a short blur-in; once the
    sentence is complete, a faint dotted underline shows the words can be tapped. */
 .next-token-fresh {

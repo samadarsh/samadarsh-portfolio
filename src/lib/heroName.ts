@@ -1,6 +1,6 @@
 /**
- * Lets the hero tagline start writing once the name has finished denoising (DiffusionName).
- * Resets each time the hero mounts, since the name plays again on every visit to the home page.
+ * Lets the hero tagline start writing once the hero's opening animation has played (Hero).
+ * Resets each time the hero mounts, since the opening plays again on every visit to the home page.
  */
 
 let shown = false;

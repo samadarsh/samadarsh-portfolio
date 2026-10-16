@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import { m } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Hero } from '../components/Hero';
+import { HeroExtras } from '../components/HeroExtras';
 import { AttentionMatrix } from '../components/AttentionMatrix';
 import { SelectedWorks } from '../components/SelectedWorks';
 import { AgentDemo } from '../components/AgentDemo';
@@ -44,6 +45,7 @@ export function HomePage() {
   return (
     <>
       <Hero />
+      <HeroExtras />
       {/* Order follows "Viewing as"; keys keep each section mounted while it moves. */}
       {view.order.map((id) => (
         <Fragment key={id}>{sections[id]}</Fragment>
