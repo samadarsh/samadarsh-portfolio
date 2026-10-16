@@ -5,7 +5,7 @@ import { whenNameShown } from '../lib/heroName';
 
 /**
  * The hero tagline, written one word at a time like a language model generating text, once the
- * name has finished denoising. Tapping or hovering a written word shows the other words the
+ * hero's opening animation has played. Tapping or hovering a written word shows the other words the
  * "model" considered, with their probabilities. Screen readers get the plain sentence.
  */
 
@@ -13,7 +13,7 @@ const STEP_MS = 110;
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function NextTokenTagline({ className = '' }: { className?: string }) {
+export function NextTokenTagline({ className = '', popUp = false }: { className?: string; popUp?: boolean }) {
   const [count, setCount] = useState(() => (reduceMotion() ? taglineTokens.length : 0));
   const [open, setOpen] = useState<number | null>(null);
   const rootRef = useRef<HTMLParagraphElement>(null);
@@ -72,7 +72,7 @@ export function NextTokenTagline({ className = '' }: { className?: string }) {
               onPointerLeave={(e) => e.pointerType === 'mouse' && setOpen(null)}
             >
               {token.word}
-              {open === i ? <Candidates index={i} /> : null}
+              {open === i ? <Candidates index={i} popUp={popUp} /> : null}
             </span>{' '}
           </span>
         ))}
@@ -81,7 +81,8 @@ export function NextTokenTagline({ className = '' }: { className?: string }) {
   );
 }
 
-function Candidates({ index }: { index: number }) {
+/** `popUp` opens the list above the word, for a tagline that sits at the bottom of the screen. */
+function Candidates({ index, popUp }: { index: number; popUp: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const token = taglineTokens[index];
 
@@ -96,7 +97,7 @@ function Candidates({ index }: { index: number }) {
   return (
     <span
       ref={ref}
-      className="absolute left-0 top-full z-20 mt-1.5 block w-52 cursor-default rounded-xl border border-white/[0.1] bg-surface p-2.5 text-left font-mono text-xs text-muted shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)]"
+      className={`absolute left-0 z-20 block w-52 ${popUp ? 'bottom-full mb-1.5' : 'top-full mt-1.5'} cursor-default rounded-xl border border-white/[0.1] bg-surface p-2.5 text-left font-mono text-xs text-muted shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)]`}
     >
       <span className="block pb-1 text-[10px] uppercase tracking-[0.14em] text-muted/70">
         next-token candidates

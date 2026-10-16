@@ -3,7 +3,7 @@ import { scrollToElement } from '../lib/smoothScroll';
 /**
  * Scroll cue for the home hero, desktop only: a glowing dot sliding down a thin line (the same
  * pulse as the "How it works" diagrams). Clicking it scrolls to the next section. Phones don't get
- * one: the hero terminal card already peeks in at the bottom of the screen.
+ * one: the hero's tagline and buttons already fill the bottom of the screen.
  */
 export function ScrollCue() {
   return (
