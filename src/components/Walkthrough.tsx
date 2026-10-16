@@ -259,13 +259,16 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
               className="wt-rail-step"
               style={{ ['--i' as string]: i }}
               aria-current={i === step ? 'step' : undefined}
+              aria-label={`Step ${i + 1}: ${label}`}
               onClick={() => goTo(i)}
             >
               <span className="wt-rail-bar">
                 <i />
               </span>
               <span className="wt-rail-label">
-                <span className="wt-rail-n">{String(i + 1).padStart(2, '0')}</span> {label}
+                <span className="wt-rail-n">{String(i + 1).padStart(2, '0')}</span>
+                {/* Phones show only the number: the caption below names the current step. */}
+                <span className="wt-rail-text"> {label}</span>
               </span>
             </button>
           ))}
