@@ -153,9 +153,11 @@ export function ProjectPreview({
             decoding="async"
             // React 18 only knows the lowercase attribute; camelCase triggers a dev warning.
             {...{ fetchpriority: priority ? 'high' : 'auto' }}
-            className={`absolute inset-0 h-full w-full object-contain object-center transition-[opacity,transform] ease-out ${
+            // No zoom: the screenshots run edge to edge (BiteWise's copy sits 24 px from the
+            // edge of a 1920 px capture), so any scale-up crops real text. The clip is the motion.
+            className={`absolute inset-0 h-full w-full object-contain object-center transition-opacity duration-700 ease-out ${
               loaded ? 'opacity-100' : 'opacity-0'
-            } ${active ? 'scale-[1.06] duration-[6000ms]' : 'scale-100 duration-700'}`}
+            }`}
             onLoad={() => setLoaded(true)}
             onError={() => setErrored(true)}
           />
