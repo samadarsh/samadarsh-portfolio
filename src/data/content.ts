@@ -69,9 +69,17 @@ export type EducationItem = {
 
 export type Publication = {
   title: string;
+  /** The gallery card's headline: the title, shortened to read at a glance. */
+  short: string;
+  /** What the work does, in a sentence, for the detail sheet. Says only what the title states. */
+  summary: string;
+  /** Which drawing the gallery card shows. */
+  figure: 'food' | 'music';
   /** Where it appeared, journal first. */
   venues: { kind: 'Journal' | 'Conference'; name: string }[];
   topics: string[];
+  /** Year of publication, once confirmed. */
+  year?: string;
   /** Optional link to the paper, if one is public. */
   href?: string;
 };
@@ -178,6 +186,10 @@ export const education: EducationItem[] = [
 export const publications: Publication[] = [
   {
     title: 'An Integrated Framework for Food Recognition, Nutritional Insights, and Meal Recording',
+    short: 'Food recognition, nutritional insights and meal recording.',
+    summary:
+      'One framework for three jobs: it recognises the food in a meal photo, works out its nutritional values and records the meal.',
+    figure: 'food',
     venues: [
       { kind: 'Journal', name: 'Journal of Jilin University (Engineering and Technology Edition)' },
       {
@@ -189,6 +201,9 @@ export const publications: Publication[] = [
   },
   {
     title: 'Music Genre Classification by Deep Learning Techniques',
+    short: 'Music genre classification with deep learning.',
+    summary: 'Deep learning models that classify a piece of music into its genre from the audio.',
+    figure: 'music',
     venues: [
       {
         kind: 'Conference',
