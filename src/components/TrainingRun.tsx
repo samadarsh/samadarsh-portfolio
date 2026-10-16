@@ -14,6 +14,8 @@ import { SectionHeader } from './SectionHeader';
  */
 
 const STEPS = 1000;
+/** Height of the floating navbar, which covers the top of the screen on wide layouts. */
+const NAV_CLEARANCE = 96;
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function drawChart(canvas: HTMLCanvasElement, step: number) {
@@ -80,6 +82,7 @@ function drawChart(canvas: HTMLCanvasElement, step: number) {
 export function TrainingRun() {
   const listRef = useRef<HTMLOListElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef<HTMLElement>(null);
   const lossRef = useRef<HTMLElement>(null);
   const [reached, setReached] = useState(() => (reduceMotion() ? checkpoints.length - 1 : 0));
@@ -102,17 +105,27 @@ export function TrainingRun() {
     const update = () => {
       raf = 0;
       if (!still) {
-        // Progress through the list: starts as it reaches the middle of the screen, ends as the
-        // last checkpoint does.
-        const r = list.getBoundingClientRect();
-        const vh = window.innerHeight;
-        const p = Math.max(0, Math.min(1, (vh * 0.6 - r.top) / Math.max(1, r.height - vh * 0.35)));
-        step = p * STEPS;
-        let last = 0;
-        checkpoints.forEach((c, i) => {
-          if (c.step <= step + 1) last = i;
+        // A checkpoint lights up as its top crosses the middle of the part of the screen the
+        // visitor can read: below the pinned chart on phones, below the navbar beside it. The
+        // chart's step then moves from one checkpoint's step to the next as the following one
+        // approaches, so the curve and the story always agree.
+        const pin = pinRef.current?.getBoundingClientRect();
+        const box = list.getBoundingClientRect();
+        const stacked = pin && pin.left < box.right && box.left < pin.right;
+        const readTop = stacked ? pin.bottom : NAV_CLEARANCE;
+        const line = readTop + (window.innerHeight - readTop) * 0.5;
+        const tops = [...list.children].map((li) => li.getBoundingClientRect().top);
+        let last = -1;
+        tops.forEach((top, i) => {
+          if (top <= line) last = i;
         });
-        setReached(last);
+        if (last < 0) step = 0;
+        else if (last === tops.length - 1) step = STEPS;
+        else {
+          const f = Math.max(0, Math.min(1, (line - tops[last]) / Math.max(1, tops[last + 1] - tops[last])));
+          step = checkpoints[last].step + f * (checkpoints[last + 1].step - checkpoints[last].step);
+        }
+        setReached(Math.max(0, last));
       }
       render();
     };
@@ -154,6 +167,7 @@ export function TrainingRun() {
       <div className="grid grid-cols-1 border-t border-white/[0.06] md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
         {/* Pinned chart: below the navbar on phones, beside the story on wider screens. */}
         <div
+          ref={pinRef}
           aria-hidden
           className="sticky top-[calc(max(1.25rem,env(safe-area-inset-top))+3.9rem)] z-10 -mx-6 self-start bg-bg px-6 pb-3 pt-3 md:top-28 md:mx-0 md:bg-transparent md:px-0 md:pt-8"
         >
