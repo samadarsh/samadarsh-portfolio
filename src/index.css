@@ -180,6 +180,20 @@ body {
   background: hsl(var(--text));
 }
 
+/* Arcade mode's exit bar sits under the nav on phones and bottom-left on desktop (ArcadeBar.tsx).
+   The home hero gives way: on phones its corner labels step aside for the bar, on desktop the
+   tagline and buttons sit above it. */
+@media (max-width: 767px) {
+  :root[data-arcade] .hero-corners {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  :root[data-arcade] .hero-foot {
+    padding-bottom: 5.5rem;
+  }
+}
+
 /* Next-token tagline (NextTokenTagline.tsx): each word arrives with a short blur-in; once the
    sentence is complete, a faint dotted underline shows the words can be tapped. */
 .next-token-fresh {
