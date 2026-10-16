@@ -552,6 +552,43 @@ html {
   .pdemo *, .pdemo *::before, .pdemo *::after { animation: none !important; transition: none !important; }
 }
 
+/* ---------- Publications gallery (Publications.tsx) ----------
+   Each card's drawing rests in its finished state; when the row first comes into view
+   (.pub-seen) it plays once: boxes land on the plate, nutrient and genre bars fill. */
+.pub-row { scrollbar-width: none; overscroll-behavior-x: contain; }
+.pub-row::-webkit-scrollbar { display: none; }
+.pub-plate {
+  position: absolute; left: 50%; top: 50%; width: 156px; height: 156px; translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(var(--surface)) 0 55%, rgb(var(--ink) / 0.1) 56% 58%, hsl(var(--surface)) 59%);
+  box-shadow: 0 0 0 1px rgb(var(--ink) / 0.1), 0 18px 40px -20px rgb(0 0 0 / 0.5);
+}
+.pub-box { position: absolute; border: 1.5px solid hsl(var(--accent)); border-radius: 5px; }
+.pub-box b {
+  position: absolute; left: -1.5px; bottom: 100%; padding: 1px 6px; border-radius: 4px 4px 0 0;
+  background: hsl(var(--accent)); color: hsl(var(--bg)); font: 500 9px/1.4 'JetBrains Mono', ui-monospace, monospace;
+  white-space: nowrap;
+}
+.pub-nutri, .pub-genres { position: absolute; font: 9.5px/1 'JetBrains Mono', ui-monospace, monospace; color: hsl(var(--muted)); }
+.pub-nutri { left: 16px; bottom: 16px; display: grid; gap: 5px; }
+.pub-nutri i, .pub-genres b { display: block; height: 5px; border-radius: 3px; background: hsl(var(--accent) / 0.8); transform-origin: left; }
+.pub-wave { position: absolute; left: 18px; right: 18px; top: 34%; height: 76px; display: flex; align-items: center; gap: 3px; }
+.pub-wave i { flex: 1; border-radius: 2px; background: hsl(var(--muted) / 0.55); }
+.pub-genres { left: 18px; right: 18px; bottom: 18px; display: grid; grid-template-columns: 4.4em 1fr; align-items: center; gap: 7px 8px; }
+.pub-genres b { height: 6px; background: rgb(var(--ink) / 0.1); }
+.pub-genres b.pub-on { background: hsl(var(--accent)); }
+@media (prefers-reduced-motion: no-preference) {
+  .pub-row:not(.pub-seen) .pub-box { opacity: 0; transform: scale(1.25); }
+  .pub-row:not(.pub-seen) .pub-nutri i, .pub-row:not(.pub-seen) .pub-genres b { transform: scaleX(0); }
+  .pub-row:not(.pub-seen) .pub-wave i { transform: scaleY(0.15); }
+  .pub-box { transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .pub-box + .pub-box { transition-delay: 0.18s; }
+  .pub-nutri i, .pub-genres b { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s; }
+  .pub-nutri i:nth-of-type(2), .pub-genres b:nth-of-type(2) { transition-delay: 0.55s; }
+  .pub-nutri i:nth-of-type(3), .pub-genres b:nth-of-type(3) { transition-delay: 0.65s; }
+  .pub-wave i { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); transition-delay: calc(var(--i) * 12ms); }
+}
+
 /* ---------- "How it works" diagram (ArchitectureFlow.tsx) ---------- */
 .arch { grid-template-columns: minmax(0, 1fr); }
 .arch-step {
