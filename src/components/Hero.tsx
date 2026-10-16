@@ -48,7 +48,7 @@ export function Hero() {
       <h1 className="sr-only">Adarsh S</h1>
       <p className="sr-only">{heroProofSentence}</p>
 
-      <div className="pointer-events-none absolute inset-x-0 top-[calc(max(1.25rem,env(safe-area-inset-top))+5rem)] z-10 flex justify-between gap-6 px-6 font-mono text-[11px] uppercase leading-relaxed tracking-[0.12em] md:px-8">
+      <div className="hero-corners pointer-events-none absolute inset-x-0 top-[calc(max(1.25rem,env(safe-area-inset-top))+5rem)] z-10 flex justify-between gap-6 px-6 font-mono text-[11px] uppercase leading-relaxed tracking-[0.12em] md:px-8">
         <p className="blur-in flex gap-2" style={{ animationDelay: '0.15s' }}>
           {heroContent.available ? (
             <span className="relative mt-[0.45em] flex h-1.5 w-1.5 shrink-0">
@@ -68,7 +68,7 @@ export function Hero() {
       </div>
 
       {/* On wider screens the right edge leaves room for the floating Ask Ash bubble. */}
-      <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:pb-8 md:pl-8 md:pr-24">
+      <div className="hero-foot absolute inset-x-0 bottom-0 z-10 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:pb-8 md:pl-8 md:pr-24">
         <div data-hero-ui className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <NextTokenTagline popUp className="max-w-md text-base leading-relaxed text-text-primary md:text-lg" />
           <div className="blur-in flex flex-wrap gap-3" style={{ animationDelay: '0.55s' }}>
