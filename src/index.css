@@ -689,13 +689,14 @@ html {
 .gh-l3 { background: hsl(var(--accent) / 0.72); }
 .gh-l4 { background: hsl(var(--accent)); }
 .gh-key { width: 10px; height: 10px; }
-.gh-skeleton .gh-cell { animation: gh-pulse 1.4s ease-in-out infinite; }
+/* One animation for the whole placeholder: one per cell meant 371 restyles every frame while scrolling. */
+.gh-skeleton { animation: gh-pulse 1.4s ease-in-out infinite; }
 @keyframes gh-pulse { 50% { opacity: 0.4; } }
 .gh-scroll { scrollbar-width: thin; scrollbar-color: rgb(var(--ink) / 0.15) transparent; }
 @media (prefers-reduced-motion: reduce) {
   .gh-grid .gh-cell { transition: none; }
   .gh-grid:not(.gh-seen) .gh-cell { opacity: 1; transform: none; }
-  .gh-skeleton .gh-cell { animation: none; }
+  .gh-skeleton { animation: none; }
 }
 /* The suggestion row scrolls sideways on phones; fade the edge so it reads as "more this way". */
 
@@ -755,8 +756,9 @@ html {
 }
 
 /* ---------- Walkthrough (Walkthrough.tsx): a pinned, scroll-driven trace of one real question ----------
-   The component writes --wt-p (whole walkthrough), --wt-l (progress within the current step), --hits,
-   --scrub, --wave, data-step and data-typed on .wt (--wave follows the clip while it plays); everything below is drawn from those. */
+   The component writes data-step and data-typed on .wt, --wt-p (whole walkthrough) on the rail, --wt-l (progress
+   within the step) and --hits on the current scene's elements whose rules below read them, and --scrub and --wave
+   on the first scene (--wave follows the clip while it plays); everything below is drawn from those. */
 .wt { position: relative; height: calc(100vh * 5.6); height: calc(100dvh * 5.6); --wt-p: 0; --wt-l: 0; --hits: 0; --wt-ease: cubic-bezier(0.16, 1, 0.3, 1); }
 .wt-pin { position: sticky; top: 0; height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1.5rem; padding: 6.5rem 0 2.5rem; }
 .wt-rail { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; }

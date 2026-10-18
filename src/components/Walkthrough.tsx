@@ -10,10 +10,10 @@ import { tokenize, type Token } from './walkthrough/tokens';
 /**
  * A pinned, scroll-driven walkthrough of one real input through a project, in the manner of
  * Apple's product pages: the stage stays pinned while scrolling moves it through five steps.
- * One passive scroll listener, throttled to a frame, writes the progress as CSS variables and
- * data attributes on the root; CSS does the drawing. Each project supplies its own scenes
- * (walkthrough/*Scenes.tsx); captions, timing and data come from data/walkthrough.ts. Under
- * reduced motion the same content is laid out as a plain sequence instead.
+ * One passive scroll listener, throttled to a frame, writes the progress as data attributes on the
+ * root and CSS variables on the elements that read them; CSS does the drawing. Each project
+ * supplies its own scenes (walkthrough/*Scenes.tsx); captions, timing and data come from
+ * data/walkthrough.ts. Under reduced motion the same content is laid out as a plain sequence.
  */
 
 const N = 5;
@@ -24,6 +24,30 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
+/**
+ * The elements under `root` whose styles draw from a CSS variable, found from the page's own
+ * stylesheets, so the scroll writes the variable to them alone. Set on an ancestor instead, a
+ * custom property restyles everything inside it, including all the elements that never read it.
+ */
+function readersOf(root: HTMLElement, name: string): HTMLElement[] {
+  const selectors: string[] = [];
+  const walk = (rules: CSSRuleList) => {
+    for (const rule of rules) {
+      if (rule instanceof CSSStyleRule) {
+        if (rule.style.cssText.includes(`var(${name}`)) selectors.push(rule.selectorText);
+      } else if ('cssRules' in rule) walk((rule as CSSGroupingRule).cssRules);
+    }
+  };
+  for (const sheet of document.styleSheets) {
+    try {
+      walk(sheet.cssRules);
+    } catch {
+      // A stylesheet from another origin (the web fonts) can't be read, and has none of these.
+    }
+  }
+  return selectors.length ? [...root.querySelectorAll<HTMLElement>(selectors.join(','))] : [];
+}
 
 function Scenes({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
   if (d.kind === 'rag') return <RagScenes d={d} tokens={tokens} />;
@@ -174,7 +198,20 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
   useEffect(() => {
     const root = rootRef.current;
     if (reduced || !root) return;
-    register(root);
+    // The per-frame variables go on the elements that read them rather than the root: changed on
+    // the root, they restyled the whole walkthrough every frame, which on phones was most of it.
+    const rail = root.querySelector<HTMLElement>('.wt-rail');
+    const scenes = [...root.querySelectorAll<HTMLElement>('.wt-stage [data-scene]')];
+    const readsLocal = scenes.map((scene) => readersOf(scene, '--wt-l'));
+    const hitsIn = scenes.map((scene) => readersOf(scene, '--hits'));
+    const wave = scenes[0] ?? root;
+    register(wave);
+    // Skipping unchanged values keeps an off-screen walkthrough from restyling at all.
+    const write = (els: (HTMLElement | null)[] | undefined, name: string, value: string) => {
+      els?.forEach((el) => {
+        if (el && el.style.getPropertyValue(name) !== value) el.style.setProperty(name, value);
+      });
+    };
     const toks = [...root.querySelectorAll<HTMLElement>('.wt-tok')];
     const listLen = root.querySelectorAll(`[data-scene="${d.listStep}"] .wt-li`).length;
     const gen = root.querySelector<HTMLElement>(`[data-scene="${d.typeStep}"] .wt-gen`);
@@ -192,22 +229,22 @@ export function Walkthrough({ data: d }: { data: WalkthroughData }) {
       const p = Math.min(Math.max(-r.top / total, 0), 1);
       const pos = Math.min(p * N, N - 0.0001);
       const s = Math.floor(pos);
-      const local = pos - s;
-      root.style.setProperty('--wt-p', p.toFixed(4));
-      root.style.setProperty('--wt-l', local.toFixed(4));
-      const scrub = (s === 0 ? local : 1).toFixed(4);
-      root.style.setProperty('--scrub', scrub);
-      if (!root.hasAttribute('data-playing')) root.style.setProperty('--wave', scrub);
+      const within = pos - s;
+      write([rail], '--wt-p', p.toFixed(4));
+      write(readsLocal[s], '--wt-l', within.toFixed(4));
+      const scrub = (s === 0 ? within : 1).toFixed(4);
+      write([wave], '--scrub', scrub);
+      if (!wave.hasAttribute('data-playing')) write([wave], '--wave', scrub);
       if (s !== current) {
         current = s;
         root.dataset.step = String(s);
         setStep(s);
       }
       const hits =
-        s < d.listStep ? 0 : s > d.listStep ? listLen : Math.min(listLen, Math.floor(local * (listLen + 2)));
-      root.style.setProperty('--hits', String(hits));
+        s < d.listStep ? 0 : s > d.listStep ? listLen : Math.min(listLen, Math.floor(within * (listLen + 2)));
+      write(hitsIn[s], '--hits', String(hits));
       // The text types out with the scroll, and un-types when scrolling back.
-      const t = s < d.typeStep ? 0 : s > d.typeStep ? 1 : Math.min(1, local / TYPE_SHARE);
+      const t = s < d.typeStep ? 0 : s > d.typeStep ? 1 : Math.min(1, within / TYPE_SHARE);
       const count = Math.round(t * toks.length);
       if (count !== shown) {
         const lo = Math.min(count, Math.max(shown, 0));

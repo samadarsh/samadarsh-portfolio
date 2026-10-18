@@ -79,6 +79,8 @@ const FIN_A =
 const FIN_Q_AT = 1500;
 const FIN_A_AT = typingEnd(FIN_Q, FIN_Q_AT, 40) + 1300;
 const FIN_END = typingEnd(FIN_A, FIN_A_AT, 60) + 300;
+// Made once: toLocaleString builds a new formatter on every call, and this redraws 25 times a second.
+const indian = new Intl.NumberFormat('en-IN');
 
 function RagDemo({ t }: { t: number }) {
   const pages = Math.min(FIN_PAGES, Math.max(0, Math.round(((t - 450) / 650) * FIN_PAGES)));
@@ -92,7 +94,7 @@ function RagDemo({ t }: { t: number }) {
         <span className="pdemo-pdf">PDF</span>
         <span className="pdemo-ellipsis">{FIN_DOC}</span>
         <span className="pdemo-meta">
-          {pages} pages · {Math.round((pages / FIN_PAGES) * FIN_CHUNKS).toLocaleString('en-IN')}{' '}
+          {pages} pages · {indian.format(Math.round((pages / FIN_PAGES) * FIN_CHUNKS))}{' '}
           chunks
         </span>
       </Reveal>

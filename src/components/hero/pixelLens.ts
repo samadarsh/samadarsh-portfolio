@@ -87,6 +87,7 @@ export const pixelLens: HeroEngine = (host, canvas, { proofs, reduced, onIntroDo
   let curtainFrom = 0;
   let lastActive = 0;
   let t = 0;
+  let curtain = '';
 
   const setup = () => {
     stage = fitCanvas(canvas);
@@ -105,6 +106,7 @@ export const pixelLens: HeroEngine = (host, canvas, { proofs, reduced, onIntroDo
       onAccent: token('--bg'),
       onAccentSoft: token('--bg', 0.7),
     };
+    curtain = col.accent;
     research = paint(stage, cell, proofs, false, reduced, col);
     production = paint(stage, cell, proofs, true, reduced, col);
   };
@@ -140,7 +142,7 @@ export const pixelLens: HeroEngine = (host, canvas, { proofs, reduced, onIntroDo
     // The opening curtain: accent tiles shrink away along the diagonal.
     const el = (now - curtainFrom) / 1000;
     if (el < (rows + cols) * STAGGER + 0.4) {
-      ctx.fillStyle = token('--accent');
+      ctx.fillStyle = curtain;
       for (let r = 0; r < rows; r++)
         for (let c = 0; c < cols; c++) {
           const k = 1 - easeOut((el - (r + c) * STAGGER) / 0.35);
@@ -154,6 +156,8 @@ export const pixelLens: HeroEngine = (host, canvas, { proofs, reduced, onIntroDo
   let stop = () => {};
   let cancelled = false;
   const resize = new ResizeObserver(() => {
+    // Observing reports the current size straight away; only a real change needs a repaint.
+    if (stage && canvas.clientWidth === stage.W && canvas.clientHeight === stage.H) return;
     setup();
     draw(performance.now());
   });

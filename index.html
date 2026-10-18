@@ -30,6 +30,33 @@
         }
       } catch (e) {}
     </script>
+    <script>
+      // If one of the site's startup files fails to download (a deploy just replaced it, or a weak
+      // signal dropped it), the app never starts. Reload once to fetch the current files; if that
+      // fails too, show the plain-HTML version of the page that's already in it, with a note to
+      // reload, instead of a blank screen. Files loaded after start-up are handled in src/lib/chunkRecovery.ts.
+      window.addEventListener(
+        'error',
+        function (e) {
+          var t = e.target;
+          var url = t && (t.src || t.href);
+          if (!url || url.indexOf('/assets/') === -1 || !/^(SCRIPT|LINK)$/.test(t.tagName)) return;
+          // Until the app starts, #root holds only the plain-HTML copy (.prerender); once it has
+          // replaced that, a failed file is a later one, which src/lib/chunkRecovery.ts handles.
+          var root = document.getElementById('root');
+          if (root && root.firstElementChild && !root.querySelector(':scope > .prerender')) return;
+          var key = 'portfolio-chunk-reload';
+          var recent = true;
+          try {
+            recent = Date.now() - Number(sessionStorage.getItem(key) || 0) < 15000;
+            if (!recent) sessionStorage.setItem(key, String(Date.now()));
+          } catch (err) {}
+          if (!recent) return location.reload();
+          document.documentElement.classList.add('boot-failed');
+        },
+        true,
+      );
+    </script>
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Adarsh S — AI Engineer, Agentic Systems" />
@@ -56,14 +83,20 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- The font stylesheets load without holding up the first paint or the app's start (the text
+         shows in a system face for a moment instead); the hero canvas waits for its faces itself. -->
     <link
-      rel="stylesheet"
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
     <!-- The hero's two display faces, cut down to the few characters the hero draws. -->
     <link
-      rel="stylesheet"
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&text=ADRSHs%200123456789.%25%2F%3F&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
 
     <title>Adarsh S — AI Engineer, Agentic Systems</title>
@@ -122,7 +155,18 @@
       /* Page text for crawlers that don't run JavaScript; React replaces it on mount. */
       .prerender { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
     </style>
+    <style>
+      /* Startup failed twice (see the script above): show the plain-HTML page with a way to retry. */
+      .boot-failed .prerender { position: static; width: auto; height: auto; margin: 0 auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; max-width: 44rem; padding: 2rem 1.5rem; line-height: 1.6; color: #efe9df; }
+      .boot-failed body { background: #110f0d; font-family: system-ui, sans-serif; }
+      .boot-failed .prerender a { color: inherit; text-decoration: underline; }
+      .boot-failed body::before { content: 'Part of the page didn\2019t load. Pull to refresh or reload to try again.'; display: block; max-width: 44rem; margin: 0 auto; padding: 1.25rem 1.5rem 0; color: #d9a35a; font: 500 14px/1.5 system-ui, sans-serif; }
+    </style>
     <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      />
       <style>
         .prerender { position: static; width: auto; height: auto; margin: 0 auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; max-width: 44rem; padding: 2rem 1.5rem; line-height: 1.6; }
         .prerender a { text-decoration: underline; }
