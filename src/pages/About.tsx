@@ -4,8 +4,9 @@ import { SectionHeader } from '../components/SectionHeader';
 import { TrainingRun } from '../components/TrainingRun';
 import { Skills } from '../components/Skills';
 import { Publications } from '../components/Publications';
+import { ContinueCard } from '../components/ContinueCard';
 import { Footer } from '../components/Footer';
-import { aboutNarrative, heroContent } from '../data/content';
+import { aboutNarrative, heroContent, projects } from '../data/content';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { pages } from '../data/seo';
 
@@ -82,6 +83,11 @@ export function AboutPage() {
         </div>
       </section>
 
+      <ContinueCard
+        to="/work"
+        title="See what I've built"
+        teaser={`${projects.length} projects, from agents to speech AI, each with how it works and what it measured.`}
+      />
       <Footer />
     </>
   );

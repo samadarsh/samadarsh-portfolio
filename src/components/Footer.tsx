@@ -1,9 +1,19 @@
+import { NavLink } from 'react-router-dom';
 import { contact, socialLinks } from '../data/content';
+import { resumeHref } from '../lib/contact';
 import { CopyEmailButton, ResumeButton } from './ContactActions';
 
 const MARQUEE_TEXT = 'Built with intent · Engineered with discipline · Shipped to production';
 
 const elsewhereSocials = socialLinks.filter((s) => s.label !== 'Email');
+
+/** Every page, at the foot of every page: the menu is behind ☰ on phones and easy to miss. */
+const PAGES = [
+  { to: '/', label: 'Home' },
+  { to: '/work', label: 'Work' },
+  { to: '/about', label: 'About' },
+  { to: '/journal', label: 'Haugtun Research' },
+] as const;
 
 const MailIcon = () => (
   <svg
@@ -94,7 +104,44 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-20 flex flex-col items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-xs text-muted md:flex-row">
+        <nav aria-label="Pages" className="mt-16 border-t border-white/[0.06] pt-6">
+          <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 md:justify-start">
+            {PAGES.map((p) => (
+              <li key={p.to}>
+                <NavLink
+                  to={p.to}
+                  end
+                  className={({ isActive }) =>
+                    `inline-flex min-h-[44px] items-center rounded-full px-3 text-sm transition-colors ${
+                      isActive ? 'text-text-primary' : 'text-muted hover:text-text-primary'
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      {isActive ? (
+                        <span aria-hidden className="mr-2 h-1.5 w-1.5 rounded-full bg-accent" />
+                      ) : null}
+                      {p.label}
+                    </>
+                  )}
+                </NavLink>
+              </li>
+            ))}
+            <li>
+              <a
+                href={resumeHref}
+                download={contact.resumeFile}
+                data-achievement="resume"
+                className="inline-flex min-h-[44px] items-center rounded-full px-3 text-sm text-muted transition-colors hover:text-text-primary"
+              >
+                Résumé <span aria-hidden className="ml-1.5">↓</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-xs text-muted md:flex-row">
           <p>© {new Date().getFullYear()} Adarsh S — All rights reserved.</p>
           <p className="font-mono uppercase tracking-[0.2em]">Chennai · India</p>
         </div>

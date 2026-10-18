@@ -1,6 +1,7 @@
 import { m } from 'framer-motion';
 import { journalEntries, writingMeta } from '../data/content';
 import { SectionHeader } from '../components/SectionHeader';
+import { ContinueCard } from '../components/ContinueCard';
 import { Footer } from '../components/Footer';
 import { ChartGame } from '../components/ChartGame';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -129,6 +130,11 @@ export function JournalPage() {
           </div>
         </div>
       </section>
+      <ContinueCard
+        to="/work"
+        title="From markets to models"
+        teaser="See the AI systems I've built and how each one was measured."
+      />
       <Footer />
     </>
   );
