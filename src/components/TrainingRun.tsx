@@ -18,7 +18,16 @@ const STEPS = 1000;
 const NAV_CLEARANCE = 96;
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function drawChart(canvas: HTMLCanvasElement, step: number) {
+type Palette = { text: string; muted: string; accent: string; up: string };
+
+/** The theme's colours, read once per theme change rather than on every frame. */
+function readPalette(): Palette {
+  const css = getComputedStyle(document.documentElement);
+  const v = (name: string) => css.getPropertyValue(name).trim();
+  return { text: v('--text'), muted: v('--muted'), accent: v('--accent'), up: `rgb(${v('--up')})` };
+}
+
+function drawChart(canvas: HTMLCanvasElement, step: number, colors: Palette) {
   const ctx = canvas.getContext('2d');
   const w = canvas.clientWidth;
   const h = canvas.clientHeight;
@@ -31,15 +40,14 @@ function drawChart(canvas: HTMLCanvasElement, step: number) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
 
-  const css = getComputedStyle(document.documentElement);
-  const hsl = (name: string, a = 1) => `hsl(${css.getPropertyValue(name).trim()} / ${a})`;
-  const up = `rgb(${css.getPropertyValue('--up').trim()})`;
+  const hsl = (name: 'text' | 'muted' | 'accent', a = 1) => `hsl(${colors[name]} / ${a})`;
+  const up = colors.up;
 
   const left = 30;
   const X = (s: number) => left + ((w - left - 10) * s) / STEPS;
   const Y = (l: number) => 8 + (h - 24) * (1 - (l - 0.1) / 2.55);
 
-  ctx.strokeStyle = hsl('--text', 0.06);
+  ctx.strokeStyle = hsl('text', 0.06);
   ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) {
     const y = 8 + ((h - 24) * i) / 4;
@@ -48,7 +56,7 @@ function drawChart(canvas: HTMLCanvasElement, step: number) {
     ctx.lineTo(w - 10, y);
     ctx.stroke();
   }
-  ctx.fillStyle = hsl('--muted', 0.8);
+  ctx.fillStyle = hsl('muted', 0.8);
   ctx.font = '10px "JetBrains Mono", ui-monospace, monospace';
   ctx.fillText('loss', 0, 14);
   ctx.fillText('step', w - 34, h - 2);
@@ -62,17 +70,17 @@ function drawChart(canvas: HTMLCanvasElement, step: number) {
   };
   // The full run, faint, so the shape is visible from the start.
   line(STEPS, 5);
-  ctx.strokeStyle = hsl('--text', 0.08);
+  ctx.strokeStyle = hsl('text', 0.08);
   ctx.lineWidth = 1.5;
   ctx.stroke();
   line(step, 4);
-  ctx.strokeStyle = hsl('--accent');
+  ctx.strokeStyle = hsl('accent');
   ctx.lineWidth = 2.2;
   ctx.stroke();
 
   for (const c of checkpoints) {
     if (c.step > step) continue;
-    ctx.fillStyle = c.final ? up : hsl('--text');
+    ctx.fillStyle = c.final ? up : hsl('text');
     ctx.beginPath();
     ctx.arc(X(c.step), Y(loss(c.step)), 4.5, 0, Math.PI * 2);
     ctx.fill();
@@ -95,16 +103,24 @@ export function TrainingRun() {
     const still = reduceMotion();
     let step = still ? STEPS : 0;
     let raf = 0;
+    let colors = readPalette();
+    // What's on the canvas now; a frame that would draw the same picture is skipped.
+    let drawn = '';
+    // The run only follows the scroll while the section is near the screen.
+    let near = false;
 
     const render = () => {
-      drawChart(canvas, step);
+      const key = `${step.toFixed(1)} ${canvas.clientWidth}x${canvas.clientHeight}`;
+      if (key === drawn) return;
+      drawn = key;
+      drawChart(canvas, step, colors);
       if (stepRef.current) stepRef.current.textContent = String(Math.round(step));
       if (lossRef.current) lossRef.current.textContent = loss(step).toFixed(3);
     };
 
     const update = () => {
       raf = 0;
-      if (!still) {
+      if (!still && near) {
         // A checkpoint lights up as its top crosses the middle of the part of the screen the
         // visitor can read: below the pinned chart on phones, below the navbar beside it. The
         // chart's step then moves from one checkpoint's step to the next as the following one
@@ -132,17 +148,34 @@ export function TrainingRun() {
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
+    const redraw = () => {
+      colors = readPalette();
+      drawn = '';
+      schedule();
+    };
+    const onScroll = () => {
+      if (near) schedule();
+    };
 
-    window.addEventListener('scroll', schedule, { passive: true });
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        near = entry.isIntersecting;
+        schedule();
+      },
+      { rootMargin: '50% 0px' },
+    );
+    io.observe(list.parentElement ?? list);
+    window.addEventListener('scroll', onScroll, { passive: true });
     const resize = new ResizeObserver(schedule);
     resize.observe(canvas);
-    const unsubscribeTheme = subscribeTheme(schedule);
-    const unsubscribeArcade = subscribeArcade(schedule);
-    document.fonts.ready.then(schedule);
+    const unsubscribeTheme = subscribeTheme(redraw);
+    const unsubscribeArcade = subscribeArcade(redraw);
+    document.fonts.ready.then(redraw);
     schedule();
 
     return () => {
-      window.removeEventListener('scroll', schedule);
+      io.disconnect();
+      window.removeEventListener('scroll', onScroll);
       resize.disconnect();
       unsubscribeTheme();
       unsubscribeArcade();

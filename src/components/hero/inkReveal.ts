@@ -110,6 +110,8 @@ export const inkReveal: HeroEngine = (host, canvas, { proofs, reduced, onIntroDo
   let stop = () => {};
   let cancelled = false;
   const resize = new ResizeObserver(() => {
+    // Observing reports the current size straight away; only a real change needs a repaint.
+    if (stage && canvas.clientWidth === stage.W && canvas.clientHeight === stage.H) return;
     setup();
     draw(performance.now());
   });
