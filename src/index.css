@@ -699,6 +699,8 @@ html {
   .gh-skeleton { animation: none; }
 }
 /* The suggestion row scrolls sideways on phones; fade the edge so it reads as "more this way". */
+.ask-chips { scrollbar-width: none; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+.ask-chips::-webkit-scrollbar { display: none; }
 
 /* ---------- Hero terminal (HeroTerminal.tsx) ---------- */
 .hero-term-caret {
