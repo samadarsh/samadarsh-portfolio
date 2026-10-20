@@ -103,18 +103,32 @@ function useIsPhone() {
   return phone;
 }
 
-/** Height of the area above the on-screen keyboard, so the sheet never hides behind it. */
-function useVisibleHeight(active: boolean) {
-  const [height, setHeight] = useState<number | null>(null);
+/**
+ * The part of the page actually on screen above the on-screen keyboard: its height, and how far
+ * the browser has scrolled it down. When the keyboard opens, iOS Safari both shrinks that area
+ * and scrolls it down to bring the input into view, while fixed elements stay put; following
+ * only the height left the sheet above the screen, with the page showing below it.
+ */
+function useVisibleArea(active: boolean) {
+  const [area, setArea] = useState<{ top: number; height: number } | null>(null);
   useEffect(() => {
     const vv = window.visualViewport;
     if (!active || !vv) return;
-    const update = () => setHeight(vv.height);
+    const update = () =>
+      setArea((prev) =>
+        prev && prev.top === vv.offsetTop && prev.height === vv.height
+          ? prev
+          : { top: vv.offsetTop, height: vv.height },
+      );
     update();
     vv.addEventListener('resize', update);
-    return () => vv.removeEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
   }, [active]);
-  return height;
+  return area;
 }
 
 export function AskAdarshProvider({ children }: { children: ReactNode }) {
@@ -371,7 +385,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   const logRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const dragControls = useDragControls();
-  const visibleHeight = useVisibleHeight(phone);
+  const visible = useVisibleArea(phone);
 
   // Escape closes; the phone sheet also locks the page behind it.
   useEffect(() => {
@@ -596,14 +610,12 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   );
 
   if (phone) {
-    const sheetHeight = visibleHeight
-      ? Math.min(visibleHeight - 12, window.innerHeight * 0.9)
-      : undefined;
+    const sheetHeight = visible ? Math.min(visible.height - 12, window.innerHeight * 0.9) : undefined;
     return (
       <m.div
         className="fixed inset-x-0 top-0 z-[96] flex flex-col justify-end"
         // Pin the overlay to the visible area so the sheet sits right above the keyboard.
-        style={{ height: visibleHeight ?? '100dvh' }}
+        style={visible ? { top: visible.top, height: visible.height } : { height: '100dvh' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0, transition: { delay: 0.15 } }}
