@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { startTransition, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { socialLinks } from '../data/content';
 import { activityStats, type GitHubActivity as Activity } from '../lib/github';
 
@@ -38,7 +38,9 @@ export function GitHubActivity() {
           .then((r) => (r.ok ? (r.json() as Promise<Activity>) : Promise.reject(r.status)))
           .then((data) => {
             if (!Array.isArray(data.weeks) || !data.weeks.length) throw new Error('empty');
-            setState({ status: 'ready', data });
+            // Building the 371-cell grid is the heaviest render on the page; as a transition React
+            // does it in slices, so a visitor scrolling past doesn't feel a stall.
+            startTransition(() => setState({ status: 'ready', data }));
           })
           .catch(() => setState({ status: 'error' }));
       },
@@ -64,6 +66,11 @@ export function GitHubActivity() {
     const el = scrollerRef.current;
     if (el && state.status === 'ready') el.scrollLeft = el.scrollWidth;
   }, [state.status]);
+
+  const pick = (e: { target: EventTarget }) => {
+    const cell = (e.target as HTMLElement).closest<HTMLElement>('[data-date]');
+    if (cell) setPicked([cell.dataset.date!, Number(cell.dataset.count)]);
+  };
 
   const data = state.status === 'ready' ? state.data : null;
   const stats = useMemo(() => (data ? activityStats(data) : null), [data]);
@@ -154,6 +161,9 @@ export function GitHubActivity() {
                     role="img"
                     aria-label={`${plural(data.total, 'contribution')} on GitHub in the last year. Longest streak ${plural(stats!.longest, 'day')}.`}
                     onPointerLeave={() => setPicked(null)}
+                    // One handler for the whole grid rather than two per cell.
+                    onPointerOver={pick}
+                    onClick={pick}
                   >
                     {monthLabels.map((label, w) => (
                       <span
@@ -173,10 +183,9 @@ export function GitHubActivity() {
                           style={{
                             gridColumn: w + 1,
                             gridRow: new Date(`${date}T00:00:00Z`).getUTCDay() + 2,
-                            transitionDelay: `${w * 9}ms`,
                           }}
-                          onPointerEnter={() => setPicked([date, count])}
-                          onClick={() => setPicked([date, count])}
+                          data-date={date}
+                          data-count={count}
                           aria-hidden
                         />
                       )),
