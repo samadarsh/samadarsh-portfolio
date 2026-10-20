@@ -21,6 +21,8 @@ export function Skills() {
           {skillGroups.map((group, index) => (
             <m.div
               key={group.title}
+              // With an odd number of groups, the last one takes the full row instead of sitting alone.
+              className={index === skillGroups.length - 1 && skillGroups.length % 2 ? 'md:col-span-2' : undefined}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

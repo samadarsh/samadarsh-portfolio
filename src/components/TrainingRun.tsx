@@ -194,7 +194,7 @@ export function TrainingRun() {
         kicker="Experience"
         title="Six years of training,"
         italic="one model."
-        subtitle="Scroll to run it. Every checkpoint is a real step: a degree, research papers, trading desks, an AI team."
+        subtitle="Scroll to run it. Every checkpoint is a real step: a degree, research papers, red-teaming frontier models, an AI team."
       />
 
       <div className="grid grid-cols-1 border-t border-white/[0.06] md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">

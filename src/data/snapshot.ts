@@ -27,7 +27,7 @@ const link = (href: string, text: string) => `<a href="${esc(href)}">${esc(text)
 const list = (items: string[]) => `<ul>${items.map((item) => `<li>${item}</li>`).join('')}</ul>`;
 const para = (text: string) => `<p>${esc(text)}</p>`;
 
-const ROLE = `${experience[0].role} at ${experience[0].company}`;
+const ROLE = experience[0].role;
 const resumeUrl = `/${contact.resumeFile}`;
 
 const header = () =>
