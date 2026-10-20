@@ -538,18 +538,18 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
       <div
         ref={logRef}
         onScroll={onLogScroll}
-        className={`flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 ${phone ? 'flex flex-col' : ''}`}
+        className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
         data-lenis-prevent
         aria-live="polite"
       >
-        {/* On phones the conversation stacks from the bottom, right above the input, like a
-            messaging app, so it stays put when the keyboard opens. */}
-        {phone ? <div aria-hidden className="mt-auto" /> : null}
-        {messages.length === 0 ? (
-          <Welcome onPick={send} compact={phone} />
-        ) : (
-          messages.map((m) => <Bubble key={m.id} message={m} />)
-        )}
+        {/* The greeting opens every conversation and stays as its first message. It is always
+            the first child, so it isn't re-typed when the first question goes out. */}
+        <Greeting instant={messages.length > 0} />
+        {/* On phones the suggestions sit in the row above the input instead. */}
+        {messages.length === 0 && !phone ? <TryAsking onPick={send} /> : null}
+        {messages.map((m) => (
+          <Bubble key={m.id} message={m} />
+        ))}
         {loading && !streaming ? <TypingDots /> : null}
         {suggestions.length && !phone ? (
           <div className="flex flex-wrap gap-2 pt-1" aria-label="Suggested follow-up questions">
@@ -703,11 +703,14 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   );
 }
 
-function Welcome({ onPick, compact = false }: { onPick: (q: string) => void; compact?: boolean }) {
-  // Ash greets each new conversation like a person would: a moment of "typing", then hello.
-  // The greeting is local only; it never goes to the AI or counts against its quota.
+/**
+ * Ash greets each conversation like a person would: a moment of "typing", then hello. A
+ * conversation restored from earlier in the visit shows it straight away. The greeting is local
+ * only; it never goes to the AI or counts against its quota.
+ */
+function Greeting({ instant }: { instant: boolean }) {
   const [greeted, setGreeted] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    () => instant || window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   );
   useEffect(() => {
     if (greeted) return;
@@ -715,54 +718,50 @@ function Welcome({ onPick, compact = false }: { onPick: (q: string) => void; com
     return () => window.clearTimeout(id);
   }, [greeted]);
 
+  if (!greeted) return <TypingDots />;
   return (
-    <div className="flex flex-col gap-4">
-      {greeted ? (
-        <m.div
-          className="flex justify-start"
-          initial={{ opacity: 0, y: 8, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="max-w-[86%] rounded-2xl rounded-bl-md border border-white/[0.06] bg-white/[0.04] px-3.5 py-2.5 text-[15px] leading-relaxed text-text-primary/90">
-            <p className="font-medium text-text-primary">
-              Hi, I’m Ash, Adarsh’s personal assistant.
-            </p>
-            <p className="mt-1 text-text-primary/80">
-              Ask me anything about his work, projects or background, and I’ll point you to the
-              details.
-            </p>
-          </div>
-        </m.div>
-      ) : (
-        <TypingDots />
-      )}
-      {/* In chat mode these sit in the row above the input instead. */}
-      <div hidden={compact}>
-        <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-          Try asking
+    <m.div
+      className="flex justify-start"
+      initial={instant ? false : { opacity: 0, y: 8, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="max-w-[86%] rounded-2xl rounded-bl-md border border-white/[0.06] bg-white/[0.04] px-3.5 py-2.5 text-[15px] leading-relaxed text-text-primary/90">
+        <p className="font-medium text-text-primary">Hi, I’m Ash, Adarsh’s personal assistant.</p>
+        <p className="mt-1 text-text-primary/80">
+          Ask me anything about his work, projects or background, and I’ll point you to the
+          details.
         </p>
-        <div className="grid grid-cols-1 gap-2">
-          {SUGGESTIONS.map((s, i) => (
-            <m.button
-              key={s}
-              type="button"
-              onClick={() => onPick(s)}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.04 * i }}
-              className="group flex min-h-[44px] items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.02] px-3.5 text-left text-sm text-text-primary/90 transition-colors hover:border-accent/40 hover:bg-white/[0.04]"
+      </div>
+    </m.div>
+  );
+}
+
+/** The starter questions on a new conversation, as a list (the desktop window). */
+function TryAsking({ onPick }: { onPick: (q: string) => void }) {
+  return (
+    <div className="pt-1">
+      <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Try asking</p>
+      <div className="grid grid-cols-1 gap-2">
+        {SUGGESTIONS.map((s, i) => (
+          <m.button
+            key={s}
+            type="button"
+            onClick={() => onPick(s)}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.04 * i }}
+            className="group flex min-h-[44px] items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.02] px-3.5 text-left text-sm text-text-primary/90 transition-colors hover:border-accent/40 hover:bg-white/[0.04]"
+          >
+            {s}
+            <span
+              className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+              aria-hidden
             >
-              {s}
-              <span
-                className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
-                aria-hidden
-              >
-                →
-              </span>
-            </m.button>
-          ))}
-        </div>
+              →
+            </span>
+          </m.button>
+        ))}
       </div>
     </div>
   );
