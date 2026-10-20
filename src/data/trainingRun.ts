@@ -46,9 +46,10 @@ export const checkpoints: Checkpoint[] = [
     title: 'Graduated',
     body: `${degree.note} Two research papers: food recognition with nutritional insights, and music genre classification with deep learning.`,
   },
-  fromJob('Outlier', 560),
-  fromJob('Mercor', 720),
-  fromJob('Neeroma Technologies', 880),
+  fromJob('Outlier', 540),
+  fromJob('Mercor', 690),
+  fromJob('Bae AI', 800),
+  fromJob('Neeroma Technologies', 900),
   {
     step: 1000,
     label: 'converged · now',

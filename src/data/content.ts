@@ -113,7 +113,7 @@ export const experience: ExperienceItem[] = [
   {
     role: 'AI Engineer',
     company: 'Neeroma Technologies',
-    period: 'May 2026 — Sep 2026',
+    period: 'Jun 2026 — Present',
     summary:
       'Worked on Yantra, a multi-agent platform, evaluating LLM agent behaviour across design, deployment and ticketing workflows.',
     points: [
@@ -121,6 +121,18 @@ export const experience: ExperienceItem[] = [
       'Built L6 Tickets Agent triage logic and test cases exposing edge-case failures in agent decision-making.',
       'Verified QLearn AI tutor outputs for factual accuracy and grounding, flagging hallucinations in contextual Q&A.',
       'Used observability logs and regression tests to isolate the root causes of agent failures.',
+    ],
+  },
+  {
+    role: 'AI/ML Intern',
+    company: 'Bae AI',
+    period: 'May 2026 — Jun 2026',
+    summary:
+      'Built an AI-powered intent engine that transformed natural language shopping queries into structured recommendations.',
+    points: [
+      'Developed recommendation and response orchestration pipelines using TypeScript, Node.js, React, MongoDB, and Express.js.',
+      'Implemented ranking algorithms and retrieval workflows to enhance recommendation accuracy and relevance.',
+      'Executed 250+ automated tests and managed performance benchmarking and Docker-based deployments.',
     ],
   },
   {

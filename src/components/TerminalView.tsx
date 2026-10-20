@@ -180,7 +180,7 @@ function run(raw: string, fx: Effects): Result {
       return {
         out: (
           <>
-            <Acc>Adarsh S</Acc> — {experience[0].role} · {heroContent.location}
+            <Acc>Adarsh S</Acc> — {experience[0].role} at {experience[0].company}
             {'\n'}
             {heroContent.tagline}
             {'\n'}

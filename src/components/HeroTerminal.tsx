@@ -17,7 +17,7 @@ const STEPS: Step[] = [
   {
     cmd: 'whoisadarsh',
     out: [
-      { text: `Adarsh S — ${experience[0].role} · ${heroContent.location}` },
+      { text: `Adarsh S — ${experience[0].role} at ${experience[0].company}` },
       { text: heroContent.tagline, tone: 'muted' },
     ],
   },

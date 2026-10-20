@@ -28,13 +28,18 @@ export const interests = [
 /** Extra detail per employer, keyed by the company name used on the site. */
 export const roleDetails: Record<string, string[]> = {
   'Neeroma Technologies': [
-    'He worked mainly on Yantra, a multi-agent AI software factory, and QLearn, an AI-powered classroom/education platform.',
+    'He works mainly on Yantra, a multi-agent AI software factory, and QLearn, an AI-powered classroom/education platform.',
     'How Yantra works: instead of one general agent doing everything, specialised agents own each stage of the software lifecycle. L1 Design Agent handles design and planning; L2–L4 Development Agents build the software; L5 Deploy Agent handles deployment workflows; L6 Tickets Agent handles support tickets, triage, resolution and engineering hand-offs; L7 Marketing Agent handles marketing workflows.',
-    'His Yantra work spanned the L5 Deploy, L6 Tickets and L7 Marketing agents, Agent Studio, agent workflow and chat infrastructure, SSE chat streaming, frontend and backend debugging, permission and access-control fixes, ticketing and deployment workflows, UI/UX and tab-level audits, and regression testing with type and lint validation.',
-    'He worked directly on production-oriented code using Claude Code in the browser: investigating issues, implementing fixes, running tests and preparing changes for review and merge.',
+    'His Yantra work spans the L5 Deploy, L6 Tickets and L7 Marketing agents, Agent Studio, agent workflow and chat infrastructure, SSE chat streaming, frontend and backend debugging, permission and access-control fixes, ticketing and deployment workflows, UI/UX and tab-level audits, and regression testing with type and lint validation.',
+    'He works directly on production-oriented code using Claude Code in the browser: investigating issues, implementing fixes, running tests and preparing changes for review and merge.',
     'L5 Deploy Agent: he worked extensively on its workflows, UI, deployment functionality, tab architecture, observability and regressions. He ran a systematic real-browser audit of the Deploy Agent’s tabs across its stages and fixed issues such as incorrect tab queries, tabs rendering empty, observability-panel issues, stage-card positioning, duplicate Runbooks entries, Core/Advanced tab separation, guide-entry inconsistencies and drift-guard issues. The audit also substantially reduced the overloaded production tab strip.',
     'L6 Tickets Agent: he audited and implemented changes around ticketing access control, server-side feature gates, ticket submission and resolution, SLA policies, the support widget, Human Board workflows, agent hand-off, documentation lookup and ticketing chat. He found that parts of the ticketing system had evolved along separate paths (different SLA logic and legacy submission routes), and moved the Tickets Agent chat onto the same progressive SSE streaming architecture the Development Agent uses.',
     'QLearn: he investigated application issues, implemented feature fixes, debugged UI behaviour, worked on AI classroom functionality (AI tutoring and AI-assisted learning), investigated configuration-related crashes, and supported the team in preparing product demos.',
+  ],
+  'Bae AI': [
+    'He built BAExt, an AI-powered intent engine for product/catalog search: it converts natural-language product requests into structured intent and ranks matching products.',
+    'Technical work: a MERN/TypeScript implementation covering natural-language intent parsing, product matching, an 11-signal ranking system, validation, fallback policies, Docker-based execution, automated tests and stress testing, on a mock catalog of about 1,200 SKUs, with 250+ automated tests and 300-query stress testing.',
+    'Hardest problem: making product matching deterministic and reliable instead of relying on an LLM to produce the answer. The system combines parsing, structured signals, validation and ranking so the same intent always produces predictable product selection.',
   ],
   'Sona Comstar': [
     'His work focused on developing and improving machine-learning pipelines: data preprocessing, feature engineering, outlier handling, cross-validation, hyperparameter tuning, predictive ML pipelines and model evaluation.',
@@ -114,7 +119,7 @@ export const skills: Record<string, string[]> = {
   ],
   'Vector search': ['Pinecone, FAISS, Chroma, Weaviate'],
   Development: [
-    'TypeScript, JavaScript, React, Node.js, Express, MongoDB (MERN)',
+    'TypeScript, JavaScript, React, Node.js, Express, MongoDB (MERN; used at Neeroma and Bae AI)',
     'FastAPI, Flask, Streamlit',
     'SQL, Docker, Git and GitHub',
   ],

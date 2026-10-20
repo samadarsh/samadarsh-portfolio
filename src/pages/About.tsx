@@ -47,7 +47,7 @@ export function AboutPage() {
               <ul className="mt-4 space-y-4 text-sm text-text-primary md:text-base">
                 <li className="flex items-start gap-3">
                   <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
-                  <span>Most recently AI Engineer at Neeroma Technologies, on the Yantra multi-agent platform.</span>
+                  <span>AI Engineer at Neeroma Technologies, building agents for Yantra.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-accent" />
