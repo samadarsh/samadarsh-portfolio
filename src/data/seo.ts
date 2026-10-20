@@ -42,7 +42,7 @@ export const pages = {
     path: '/about',
     title: 'About',
     description:
-      'About Adarsh S — AI engineer in Chennai, India, with experience across machine learning engineering and live financial markets.',
+      'About Adarsh S — AI engineer in Chennai, India, with experience across AI agents, LLM evaluation and red-teaming.',
     image: '/og/about.jpg',
     imageAlt: 'About Adarsh S, AI engineer in Chennai, India.',
   },

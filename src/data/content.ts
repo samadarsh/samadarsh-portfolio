@@ -99,14 +99,14 @@ export const heroContent = {
 export const stats = [
   { value: '7+', label: 'Shipped AI, data & client projects' },
   { value: '8.23', label: 'B.Tech CGPA · AI / DS' },
-  { value: '3+', label: 'Years across markets & data' },
+  { value: '2+', label: 'Years building & evaluating AI' },
   { value: '2', label: 'Research papers' },
 ] as const;
 
 export const aboutNarrative = [
   'I build AI systems end to end — agents, retrieval (RAG) pipelines and speech tools — and measure how well they actually work.',
   'Lately that means agents that deploy code and triage tickets, retrieval with page citations across company annual reports, and Tamil speech recognition.',
-  'Two years close to live financial markets shaped the way I think: structured, analytical, and grounded in real-world constraints.',
+  'Nearly two years red-teaming frontier LLMs and writing benchmark tasks taught me how models fail, and how to show it reproducibly.',
 ];
 
 export const experience: ExperienceItem[] = [
@@ -115,12 +115,12 @@ export const experience: ExperienceItem[] = [
     company: 'Neeroma Technologies',
     period: 'Jun 2026 — Present',
     summary:
-      'Worked on Yantra, a multi-agent software engineering platform covering design, development, deployment, ticketing, and marketing.',
+      'Worked on Yantra, a multi-agent platform, evaluating LLM agent behaviour across design, deployment and ticketing workflows.',
     points: [
-      'Implemented and enhanced the L5 Deploy Agent for automated deployment workflows and engineering operations.',
-      'Developed the L6 Tickets Agent with ticket triage, support workflows, permissions, SLA handling, and engineering hand-off.',
-      'Built and enhanced QLearn AI Classroom features for AI tutoring, contextual Q&A, content generation, and adaptive learning.',
-      'Resolved platform issues across browser automation, audio infrastructure, UI workflows, observability, and testing.',
+      'Debugged L5 Deploy Agent trajectories, tracing tool calls and reasoning steps to diagnose agent failures.',
+      'Built L6 Tickets Agent triage logic and test cases exposing edge-case failures in agent decision-making.',
+      'Verified QLearn AI tutor outputs for factual accuracy and grounding, flagging hallucinations in contextual Q&A.',
+      'Used observability logs and regression tests to isolate the root causes of agent failures.',
     ],
   },
   {
@@ -136,28 +136,29 @@ export const experience: ExperienceItem[] = [
     ],
   },
   {
-    role: 'Authorised Person',
-    company: 'Angel One',
-    period: 'Jan 2025 — May 2026',
-    kind: 'Proprietorship',
+    role: 'AI Benchmark Task Author',
+    company: 'Mercor',
+    period: 'Jun 2025 — Apr 2026',
+    kind: 'Contract',
     summary:
-      'Managed trading operations and client workflows while maintaining structured financial and transactional datasets.',
+      'Designed multi-hop reasoning and reasoning-trap prompts that reliably exposed weaknesses in state-of-the-art models.',
     points: [
-      'Applied quantitative and time-series analysis to market and portfolio data for opportunity identification and decision support.',
-      'Developed algorithmic trading systems using OpenAlgo to automate execution and strategy management processes.',
-      'Generated performance analytics and maintained trading datasets for portfolio monitoring and risk evaluation.',
+      'Tested tasks against leading LLMs, confirming reproducible failures across repeated model runs.',
+      'Distinguished genuine model limitations from prompt ambiguity using run logs and intermediate outputs.',
+      'Scaled validated model-breaking patterns across new domains while keeping task wording precise and unambiguous.',
     ],
   },
   {
-    role: 'Associate Trader',
-    company: 'Maxitome Management Services',
-    period: 'May 2024 — Nov 2024',
+    role: 'AI Red-Teaming Specialist',
+    company: 'Outlier',
+    period: 'Jul 2024 — May 2025',
+    kind: 'Contract',
     summary:
-      'F&O trading workflows with rule-based execution, backtesting, and live API-driven order management.',
+      'Authored model-breaking web-research tasks in the BrowseComp and GAIA formats, targeting frontier LLM failures.',
     points: [
-      'Backtested strategies and tracked performance across varying market conditions.',
-      'Handled live market data, API-based execution, and portfolio monitoring under pressure.',
-      'Refined rule-based systems through structured iteration and measurable outcomes.',
+      'Discovered obscure facts through OSINT and verified answer keys against primary sources and archives.',
+      'Traced model search trajectories and reasoning chains to diagnose the root causes of task failures.',
+      'Reviewed peer-authored tasks for ambiguity, answer uniqueness and source integrity before benchmark submission.',
     ],
   },
   {
@@ -224,6 +225,17 @@ export const skillGroups: SkillGroup[] = [
       'MCP & Tool Calling',
       'LLM Evaluation',
       'Streaming Inference',
+    ],
+  },
+  {
+    title: 'AI Evaluation',
+    items: [
+      'LLM Red-Teaming',
+      'Adversarial Prompting',
+      'BrowseComp & GAIA Tasks',
+      'OSINT & Source Verification',
+      'Trajectory Debugging',
+      'Failure Analysis',
     ],
   },
   {

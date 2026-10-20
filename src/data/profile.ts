@@ -4,7 +4,7 @@
 // Keep everything here factual and public-safe: no internal company metrics or client details.
 
 export const story =
-  'He started with an interest in software and data, which led him to a B.Tech in Artificial Intelligence and Data Science. Over time he moved from traditional machine learning into deep learning, NLP, LLMs, RAG and AI agents. His experience in trading and financial markets gave him another area to apply AI, particularly automation and decision-support systems. Today his main focus is building practical AI systems that interact with real software, data and workflows rather than only generating text.';
+  'He started with an interest in software and data, which led him to a B.Tech in Artificial Intelligence and Data Science. Over time he moved from traditional machine learning into deep learning, NLP, LLMs, RAG and AI agents. His interest in trading and financial markets gave him another area to apply AI, particularly automation and decision-support systems. Today his main focus is building practical AI systems that interact with real software, data and workflows rather than only generating text.';
 
 export const strengths = [
   'Problem solving: he investigates the actual root cause rather than patching the visible symptom.',
@@ -16,7 +16,6 @@ export const proudOf = [
   'Working on real AI products (Yantra and QLearn at Neeroma) where AI interacts with software-engineering and education workflows, beyond academic ML projects.',
   'His agent work on Yantra, especially the L5 Deploy Agent and L6 Tickets Agent, and the engineering challenges of multi-agent applications.',
   'His open-source contributions to OpenClaw and OpenAlgo.',
-  'Combining AI engineering with hands-on financial-markets experience, an unusual mix of technical and domain knowledge.',
 ];
 
 export const interests = [
@@ -41,13 +40,6 @@ export const roleDetails: Record<string, string[]> = {
     'He built BAExt, an AI-powered intent engine for product/catalog search: it converts natural-language product requests into structured intent and ranks matching products.',
     'Technical work: a MERN/TypeScript implementation covering natural-language intent parsing, product matching, an 11-signal ranking system, validation, fallback policies, Docker-based execution, automated tests and stress testing, on a mock catalog of about 1,200 SKUs, with 250+ automated tests and 300-query stress testing.',
     'Hardest problem: making product matching deterministic and reliable instead of relying on an LLM to produce the answer. The system combines parsing, structured signals, validation and ranking so the same intent always produces predictable product selection.',
-  ],
-  'Angel One': [
-    'He worked with clients in the equity and derivatives markets: client onboarding and KYC, resolving trading-platform issues, understanding client requirements, market and time-series analysis, portfolio and trading assistance, setting up automated trading workflows with Angel One APIs, and maintaining structured client records.',
-    'He also worked with algorithmic-trading infrastructure, including OpenAlgo.',
-  ],
-  'Maxitome Management Services': [
-    'His work involved market analysis, trading, monitoring market movements, studying price action, working with trading strategies and supporting trading operations. It gave him a practical understanding of financial markets, which later fed his interest in combining AI/ML with trading and financial technology.',
   ],
   'Sona Comstar': [
     'His work focused on developing and improving machine-learning pipelines: data preprocessing, feature engineering, outlier handling, cross-validation, hyperparameter tuning, predictive ML pipelines and model evaluation.',
@@ -76,7 +68,7 @@ export const finalYearProject =
   'Final-year B.Tech project: Real-time Nutritional Guidance using YOLOv6, which uses computer vision to identify food and provide nutritional guidance. His food-recognition research publication comes from the same area.';
 
 export const marketsBackground =
-  'His interest in financial markets developed alongside his AI/ML background. He worked as an Associate Trader at Maxitome, then as an Authorised Person with Angel One, gaining practical exposure to equity markets, derivatives, technical analysis, trading systems, market data and algorithmic trading. His AI background led him to explore how machine learning and automation apply to financial workflows.';
+  'His interest in financial markets and algorithmic trading developed alongside his AI/ML background. He writes about markets at Haugtun Research and has contributed fixes to OpenAlgo, an open-source algorithmic trading platform. His AI background led him to explore how machine learning and automation apply to financial workflows.';
 
 export const haugtunAbout =
   'Haugtun is his market and trading initiative, aimed at people interested in financial markets, trading, market analysis, trading technology and automated trading. He uses it to share market and trading content.';
@@ -119,6 +111,12 @@ export const skills: Record<string, string[]> = {
     'OpenAI API, Groq, Llama, Gemini, Ollama',
     'LLM inference and streaming',
   ],
+  'AI evaluation and red-teaming': [
+    'BrowseComp and GAIA task authoring',
+    'LLM red-teaming and adversarial prompting',
+    'OSINT and primary-source verification',
+    'Model trajectory debugging and failure analysis',
+  ],
   'Vector search': ['Pinecone, FAISS, Chroma, Weaviate'],
   Development: [
     'TypeScript, JavaScript, React, Node.js, Express, MongoDB (MERN; used at Neeroma and Bae AI)',
@@ -127,7 +125,7 @@ export const skills: Record<string, string[]> = {
   ],
   'Data and analytics': ['Excel, Power BI, Pandas, NumPy'],
   'Financial technology': [
-    'Angel One API, OpenAlgo, broker APIs',
+    'OpenAlgo and broker APIs',
     'Algorithmic trading, market and time-series analysis',
   ],
 };
