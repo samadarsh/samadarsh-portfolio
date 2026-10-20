@@ -554,7 +554,7 @@ html {
 
 /* ---------- Publications gallery (Publications.tsx) ----------
    Each card's drawing rests in its finished state; when the row first comes into view
-   (.pub-seen) it plays once: boxes land on the plate, nutrient and genre bars fill. */
+   (.pub-seen) it plays once: boxes land on the plate, the waveform sweeps in, nutrient and genre bars fill. */
 .pub-row { scrollbar-width: none; overscroll-behavior-x: contain; }
 .pub-row::-webkit-scrollbar { display: none; }
 .pub-plate {
@@ -580,13 +580,14 @@ html {
 @media (prefers-reduced-motion: no-preference) {
   .pub-row:not(.pub-seen) .pub-box { opacity: 0; transform: scale(1.25); }
   .pub-row:not(.pub-seen) .pub-nutri i, .pub-row:not(.pub-seen) .pub-genres b { transform: scaleX(0); }
-  .pub-row:not(.pub-seen) .pub-wave i { transform: scaleY(0.15); }
+  /* The waveform sweeps in as one piece rather than 34 bars each animating on their own. */
+  .pub-row:not(.pub-seen) .pub-wave { clip-path: inset(0 100% 0 0); }
   .pub-box { transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
   .pub-box + .pub-box { transition-delay: 0.18s; }
   .pub-nutri i, .pub-genres b { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s; }
   .pub-nutri i:nth-of-type(2), .pub-genres b:nth-of-type(2) { transition-delay: 0.55s; }
   .pub-nutri i:nth-of-type(3), .pub-genres b:nth-of-type(3) { transition-delay: 0.65s; }
-  .pub-wave i { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); transition-delay: calc(var(--i) * 12ms); }
+  .pub-wave { transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
 }
 
 /* ---------- "How it works" diagram (ArchitectureFlow.tsx) ---------- */
@@ -681,8 +682,10 @@ html {
 }
 .gh-month { grid-row: 1; height: 1rem; white-space: nowrap; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: hsl(var(--muted)); }
 .gh-cell { display: block; aspect-ratio: 1; border-radius: 2px; background: rgb(var(--ink) / 0.05); }
-.gh-grid .gh-cell { transition: opacity 0.35s ease, transform 0.35s ease; }
-.gh-grid:not(.gh-seen):not(.gh-skeleton) .gh-cell { opacity: 0; transform: scale(0.6); }
+.gh-grid { transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+/* The grid arrives as one piece: animating its 371 cells one by one restyled and re-layered each of
+   them every frame, which a phone felt as a stutter while scrolling past. */
+.gh-grid:not(.gh-seen):not(.gh-skeleton) { opacity: 0; transform: translateY(10px); }
 .gh-grid .gh-cell:hover { outline: 1px solid hsl(var(--text) / 0.6); outline-offset: 1px; }
 .gh-l1 { background: hsl(var(--accent) / 0.28); }
 .gh-l2 { background: hsl(var(--accent) / 0.48); }
@@ -694,8 +697,8 @@ html {
 @keyframes gh-pulse { 50% { opacity: 0.4; } }
 .gh-scroll { scrollbar-width: thin; scrollbar-color: rgb(var(--ink) / 0.15) transparent; }
 @media (prefers-reduced-motion: reduce) {
-  .gh-grid .gh-cell { transition: none; }
-  .gh-grid:not(.gh-seen) .gh-cell { opacity: 1; transform: none; }
+  .gh-grid { transition: none; }
+  .gh-grid:not(.gh-seen) { opacity: 1; transform: none; }
   .gh-skeleton { animation: none; }
 }
 /* The suggestion row scrolls sideways on phones; fade the edge so it reads as "more this way". */

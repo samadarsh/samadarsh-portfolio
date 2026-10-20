@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { publications, type Publication } from '../data/content';
 import { useBackToClose } from '../hooks/useBackToClose';
@@ -133,7 +133,7 @@ function MusicFigure() {
     <div aria-hidden className="pub-music absolute inset-0">
       <div className="pub-wave">
         {WAVE.map((h, i) => (
-          <i key={i} style={{ height: h, '--i': i } as CSSProperties} />
+          <i key={i} style={{ height: h }} />
         ))}
       </div>
       <div className="pub-genres">
