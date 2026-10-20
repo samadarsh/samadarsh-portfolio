@@ -7,7 +7,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type FormEvent,
   type ReactNode,
 } from 'react';
 import { useBackToClose } from '../hooks/useBackToClose';
@@ -391,17 +390,10 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   const reduced = useReducedMotion();
   const dragControls = useDragControls();
   const visible = useVisibleArea(phone);
-  // With the keyboard up, the phone sheet becomes a full-screen chat, like a messaging app:
-  // a slim header, the conversation, and the input sitting right on the keyboard.
+  // Like a messaging app, the phone chat looks the same with the keyboard up or down: only its
+  // height changes, so the input sits right on the keyboard. It follows the keyboard instantly;
+  // easing it lagged behind iOS's own movement and showed the page behind it.
   const keyboard = phone && !!visible?.keyboard;
-  // Glide with the keyboard as it opens or closes, but follow scrolling instantly.
-  const [gliding, setGliding] = useState(false);
-  useEffect(() => {
-    if (!phone || reduced) return;
-    setGliding(true);
-    const id = window.setTimeout(() => setGliding(false), 400);
-    return () => window.clearTimeout(id);
-  }, [keyboard, phone, reduced]);
 
   // Escape closes; the phone sheet also locks the page behind it.
   useEffect(() => {
@@ -447,8 +439,9 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         )
       : [];
 
-  // In chat mode the suggestions move to a sideways row above the input, so they stay in view.
-  const chips = keyboard ? (messages.length === 0 ? SUGGESTIONS : suggestions) : [];
+  // On phones the suggestions sit in a sideways row above the input, keyboard up or down, so they
+  // stay in view and nothing rearranges when the keyboard opens.
+  const chips = phone ? (messages.length === 0 ? SUGGESTIONS : suggestions) : [];
 
   // Grow the input with its text, up to about four lines.
   useEffect(() => {
@@ -464,11 +457,6 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
     setInput('');
   };
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    send(input);
-  };
-
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.y > 110 || info.velocity.y > 600) onClose();
   };
@@ -476,22 +464,17 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   const body = (
     <>
       <header
-        className={`relative flex items-center border-b border-white/[0.06] ${
-          keyboard ? 'gap-2.5 px-3 py-1.5' : `gap-3 px-4 pb-3 ${phone ? 'touch-none pt-5' : 'pt-3'}`
-        }`}
+        className={`relative flex items-center gap-3 border-b border-white/[0.06] px-4 pb-3 ${phone ? 'touch-none pt-5' : 'pt-3'}`}
         onPointerDown={phone && !keyboard ? (e) => dragControls.start(e) : undefined}
       >
-        {phone && !keyboard ? (
+        {phone ? (
+          // Dragging is off while typing, so the handle steps back then.
           <span
-            className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-white/[0.18]"
+            className={`absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-white/[0.18] transition-opacity ${keyboard ? 'opacity-0' : ''}`}
             aria-hidden
           />
         ) : null}
-        <span
-          className={`relative flex flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#9a8a6c] font-mono font-semibold text-bg ${
-            keyboard ? 'h-8 w-8 text-[10px]' : 'h-10 w-10 text-xs'
-          }`}
-        >
+        <span className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#9a8a6c] font-mono text-xs font-semibold text-bg">
           AS
           <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-surface bg-emerald-400" />
         </span>
@@ -555,17 +538,20 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
       <div
         ref={logRef}
         onScroll={onLogScroll}
-        className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4"
+        className={`flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 ${phone ? 'flex flex-col' : ''}`}
         data-lenis-prevent
         aria-live="polite"
       >
+        {/* On phones the conversation stacks from the bottom, right above the input, like a
+            messaging app, so it stays put when the keyboard opens. */}
+        {phone ? <div aria-hidden className="mt-auto" /> : null}
         {messages.length === 0 ? (
-          <Welcome onPick={send} compact={keyboard} />
+          <Welcome onPick={send} compact={phone} />
         ) : (
           messages.map((m) => <Bubble key={m.id} message={m} />)
         )}
         {loading && !streaming ? <TypingDots /> : null}
-        {suggestions.length && !keyboard ? (
+        {suggestions.length && !phone ? (
           <div className="flex flex-wrap gap-2 pt-1" aria-label="Suggested follow-up questions">
             {suggestions.map((q, i) => (
               <m.button
@@ -584,11 +570,9 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         ) : null}
       </div>
 
-      <form
-        onSubmit={onSubmit}
-        autoComplete="off"
-        className={`border-t border-white/[0.06] ${keyboard ? 'px-3 pb-2 pt-2' : 'p-3'}`}
-      >
+      {/* Not a <form>: Safari treats form fields as autofillable and puts its AutoFill bar
+          (passwords, cards, locations) above the keyboard. Enter and the button send instead. */}
+      <div className="border-t border-white/[0.06] p-3">
         {chips.length ? (
           <div className="ask-chips -mx-3 mb-2 flex gap-2 overflow-x-auto px-3" aria-label="Suggested questions">
             {chips.map((q) => (
@@ -628,7 +612,8 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
             className="max-h-[120px] min-h-[40px] flex-1 resize-none bg-transparent py-2 text-base text-text-primary outline-none placeholder:text-muted/70 md:text-[15px]"
           />
           <button
-            type="submit"
+            type="button"
+            onClick={() => send(input)}
             // Like a messaging app, sending keeps the input focused and the keyboard up.
             onMouseDown={(e) => e.preventDefault()}
             disabled={!input.trim() || loading}
@@ -650,29 +635,25 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
             </svg>
           </button>
         </div>
-        <p className={`text-center text-[11px] text-muted/60 ${keyboard ? 'mt-1.5' : 'mt-2'}`}>
-          {keyboard
+        <p className="mt-2 text-center text-[11px] text-muted/60">
+          {phone
             ? 'AI answers can be wrong.'
             : `AI answers can be wrong. For anything important, email ${contact.email}`}
         </p>
-      </form>
+      </div>
     </>
   );
 
   if (phone) {
-    const sheetHeight = keyboard
-      ? visible!.height
-      : visible
-        ? Math.min(visible.height - 12, window.innerHeight * 0.9)
-        : undefined;
-    const glide = gliding ? 'top 0.25s ease-out, height 0.25s ease-out' : undefined;
+    const sheetHeight = visible ? Math.min(visible.height - 12, window.innerHeight * 0.9) : undefined;
+
     return (
       <m.div
         className="fixed inset-x-0 top-0 z-[96] flex flex-col justify-end"
         // Pin the overlay to the visible area so the sheet sits right above the keyboard.
         style={
           visible
-            ? { top: visible.top, height: visible.height, transition: glide }
+            ? { top: visible.top, height: visible.height }
             : { height: '100dvh' }
         }
         initial={{ opacity: 0 }}
@@ -690,12 +671,11 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           dragConstraints={{ top: 0, bottom: 0 }}
           dragElastic={{ top: 0, bottom: 0.7 }}
           onDragEnd={onDragEnd}
-          className={`relative flex w-full flex-col overflow-hidden bg-surface ${
-            keyboard
-              ? ''
-              : 'rounded-t-[28px] border-t border-white/[0.1] pb-[env(safe-area-inset-bottom)] shadow-[0_-30px_80px_-20px_rgba(0,0,0,0.9)]'
+          // The home-bar padding goes while the keyboard is up, so the input sits right on it.
+          className={`relative flex w-full flex-col overflow-hidden rounded-t-[28px] border-t border-white/[0.1] bg-surface shadow-[0_-30px_80px_-20px_rgba(0,0,0,0.9)] ${
+            keyboard ? '' : 'pb-[env(safe-area-inset-bottom)]'
           }`}
-          style={{ height: sheetHeight ?? '90dvh', transition: glide }}
+          style={{ height: sheetHeight ?? '90dvh' }}
           initial={{ y: '100%' }}
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
