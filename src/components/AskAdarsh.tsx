@@ -110,16 +110,21 @@ function useIsPhone() {
  * only the height left the sheet above the screen, with the page showing below it.
  */
 function useVisibleArea(active: boolean) {
-  const [area, setArea] = useState<{ top: number; height: number } | null>(null);
+  const [area, setArea] = useState<{ top: number; height: number; keyboard: boolean } | null>(
+    null,
+  );
   useEffect(() => {
     const vv = window.visualViewport;
     if (!active || !vv) return;
-    const update = () =>
+    const update = () => {
+      // The keyboard takes well over 150 px; a pinch zoom also shrinks the area, so it doesn't count.
+      const keyboard = vv.scale < 1.01 && window.innerHeight - vv.height > 150;
       setArea((prev) =>
-        prev && prev.top === vv.offsetTop && prev.height === vv.height
+        prev && prev.top === vv.offsetTop && prev.height === vv.height && prev.keyboard === keyboard
           ? prev
-          : { top: vv.offsetTop, height: vv.height },
+          : { top: vv.offsetTop, height: vv.height, keyboard },
       );
+    };
     update();
     vv.addEventListener('resize', update);
     vv.addEventListener('scroll', update);
@@ -386,6 +391,17 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   const reduced = useReducedMotion();
   const dragControls = useDragControls();
   const visible = useVisibleArea(phone);
+  // With the keyboard up, the phone sheet becomes a full-screen chat, like a messaging app:
+  // a slim header, the conversation, and the input sitting right on the keyboard.
+  const keyboard = phone && !!visible?.keyboard;
+  // Glide with the keyboard as it opens or closes, but follow scrolling instantly.
+  const [gliding, setGliding] = useState(false);
+  useEffect(() => {
+    if (!phone || reduced) return;
+    setGliding(true);
+    const id = window.setTimeout(() => setGliding(false), 400);
+    return () => window.clearTimeout(id);
+  }, [keyboard, phone, reduced]);
 
   // Escape closes; the phone sheet also locks the page behind it.
   useEffect(() => {
@@ -414,7 +430,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   useEffect(() => {
     const el = logRef.current;
     if (el && stick.current) el.scrollTop = el.scrollHeight;
-  }, [messages, loading]);
+  }, [messages, loading, visible?.height]);
   // A new question always brings the conversation back to the bottom.
   const asked = messages.filter((m) => m.role === 'user');
   useEffect(() => {
@@ -430,6 +446,9 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           asked.map((m) => m.content),
         )
       : [];
+
+  // In chat mode the suggestions move to a sideways row above the input, so they stay in view.
+  const chips = keyboard ? (messages.length === 0 ? SUGGESTIONS : suggestions) : [];
 
   // Grow the input with its text, up to about four lines.
   useEffect(() => {
@@ -457,16 +476,22 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   const body = (
     <>
       <header
-        className={`relative flex items-center gap-3 border-b border-white/[0.06] px-4 pb-3 ${phone ? 'touch-none pt-5' : 'pt-3'}`}
-        onPointerDown={phone ? (e) => dragControls.start(e) : undefined}
+        className={`relative flex items-center border-b border-white/[0.06] ${
+          keyboard ? 'gap-2.5 px-3 py-1.5' : `gap-3 px-4 pb-3 ${phone ? 'touch-none pt-5' : 'pt-3'}`
+        }`}
+        onPointerDown={phone && !keyboard ? (e) => dragControls.start(e) : undefined}
       >
-        {phone ? (
+        {phone && !keyboard ? (
           <span
             className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-white/[0.18]"
             aria-hidden
           />
         ) : null}
-        <span className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#9a8a6c] font-mono text-xs font-semibold text-bg">
+        <span
+          className={`relative flex flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#9a8a6c] font-mono font-semibold text-bg ${
+            keyboard ? 'h-8 w-8 text-[10px]' : 'h-10 w-10 text-xs'
+          }`}
+        >
           AS
           <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-surface bg-emerald-400" />
         </span>
@@ -535,12 +560,12 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         aria-live="polite"
       >
         {messages.length === 0 ? (
-          <Welcome onPick={send} />
+          <Welcome onPick={send} compact={keyboard} />
         ) : (
           messages.map((m) => <Bubble key={m.id} message={m} />)
         )}
         {loading && !streaming ? <TypingDots /> : null}
-        {suggestions.length ? (
+        {suggestions.length && !keyboard ? (
           <div className="flex flex-wrap gap-2 pt-1" aria-label="Suggested follow-up questions">
             {suggestions.map((q, i) => (
               <m.button
@@ -559,7 +584,27 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
         ) : null}
       </div>
 
-      <form onSubmit={onSubmit} className="border-t border-white/[0.06] p-3">
+      <form
+        onSubmit={onSubmit}
+        autoComplete="off"
+        className={`border-t border-white/[0.06] ${keyboard ? 'px-3 pb-2 pt-2' : 'p-3'}`}
+      >
+        {chips.length ? (
+          <div className="ask-chips -mx-3 mb-2 flex gap-2 overflow-x-auto px-3" aria-label="Suggested questions">
+            {chips.map((q) => (
+              <button
+                key={q}
+                type="button"
+                // Keeps the input focused, so the keyboard stays up and the answer can be followed.
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => send(q)}
+                className="min-h-[36px] flex-shrink-0 whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.03] px-3.5 text-[13px] text-text-primary/85 transition-colors active:border-accent/50"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <div className="flex items-end gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.03] p-1.5 pl-3.5 transition-colors focus-within:border-accent/50">
           <label htmlFor="ask-input" className="sr-only">
             Ask a question about Adarsh
@@ -571,6 +616,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
             value={input}
             maxLength={500}
             enterKeyHint="send"
+            autoComplete="off"
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
@@ -583,6 +629,8 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           />
           <button
             type="submit"
+            // Like a messaging app, sending keeps the input focused and the keyboard up.
+            onMouseDown={(e) => e.preventDefault()}
             disabled={!input.trim() || loading}
             className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent text-bg transition-all enabled:hover:brightness-110 disabled:opacity-30"
             aria-label="Send"
@@ -602,20 +650,31 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
             </svg>
           </button>
         </div>
-        <p className="mt-2 text-center text-[11px] text-muted/60">
-          AI answers can be wrong. For anything important, email {contact.email}
+        <p className={`text-center text-[11px] text-muted/60 ${keyboard ? 'mt-1.5' : 'mt-2'}`}>
+          {keyboard
+            ? 'AI answers can be wrong.'
+            : `AI answers can be wrong. For anything important, email ${contact.email}`}
         </p>
       </form>
     </>
   );
 
   if (phone) {
-    const sheetHeight = visible ? Math.min(visible.height - 12, window.innerHeight * 0.9) : undefined;
+    const sheetHeight = keyboard
+      ? visible!.height
+      : visible
+        ? Math.min(visible.height - 12, window.innerHeight * 0.9)
+        : undefined;
+    const glide = gliding ? 'top 0.25s ease-out, height 0.25s ease-out' : undefined;
     return (
       <m.div
         className="fixed inset-x-0 top-0 z-[96] flex flex-col justify-end"
         // Pin the overlay to the visible area so the sheet sits right above the keyboard.
-        style={visible ? { top: visible.top, height: visible.height } : { height: '100dvh' }}
+        style={
+          visible
+            ? { top: visible.top, height: visible.height, transition: glide }
+            : { height: '100dvh' }
+        }
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0, transition: { delay: 0.15 } }}
@@ -625,14 +684,18 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
           role="dialog"
           aria-modal="true"
           aria-labelledby="ask-title"
-          drag="y"
+          drag={keyboard ? false : 'y'}
           dragControls={dragControls}
           dragListener={false}
           dragConstraints={{ top: 0, bottom: 0 }}
           dragElastic={{ top: 0, bottom: 0.7 }}
           onDragEnd={onDragEnd}
-          className="relative flex w-full flex-col overflow-hidden rounded-t-[28px] border-t border-white/[0.1] bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-30px_80px_-20px_rgba(0,0,0,0.9)]"
-          style={{ height: sheetHeight ?? '90dvh' }}
+          className={`relative flex w-full flex-col overflow-hidden bg-surface ${
+            keyboard
+              ? ''
+              : 'rounded-t-[28px] border-t border-white/[0.1] pb-[env(safe-area-inset-bottom)] shadow-[0_-30px_80px_-20px_rgba(0,0,0,0.9)]'
+          }`}
+          style={{ height: sheetHeight ?? '90dvh', transition: glide }}
           initial={{ y: '100%' }}
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
@@ -660,7 +723,7 @@ function ChatBox({ phone, messages, loading, onAsk, onClear, onClose }: ChatBoxP
   );
 }
 
-function Welcome({ onPick }: { onPick: (q: string) => void }) {
+function Welcome({ onPick, compact = false }: { onPick: (q: string) => void; compact?: boolean }) {
   // Ash greets each new conversation like a person would: a moment of "typing", then hello.
   // The greeting is local only; it never goes to the AI or counts against its quota.
   const [greeted, setGreeted] = useState(
@@ -694,7 +757,8 @@ function Welcome({ onPick }: { onPick: (q: string) => void }) {
       ) : (
         <TypingDots />
       )}
-      <div>
+      {/* In chat mode these sit in the row above the input instead. */}
+      <div hidden={compact}>
         <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
           Try asking
         </p>
