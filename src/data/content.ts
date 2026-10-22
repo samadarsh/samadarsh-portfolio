@@ -106,14 +106,14 @@ export const stats = [
 export const aboutNarrative = [
   'I build AI systems end to end — agents, retrieval (RAG) pipelines and speech tools — and measure how well they actually work.',
   'Lately that means agents that deploy code and triage tickets, retrieval with page citations across company annual reports, and Tamil speech recognition.',
-  'Nearly two years red-teaming frontier LLMs and writing benchmark tasks taught me how models fail, and how to show it reproducibly.',
+  'Nearly two years evaluating frontier LLMs taught me how models fail, and how to show it reproducibly.',
 ];
 
 export const experience: ExperienceItem[] = [
   {
     role: 'AI Engineer',
     company: 'Neeroma Technologies',
-    period: 'Jun 2026 — Present',
+    period: 'May 2026 — Sep 2026',
     summary:
       'Worked on Yantra, a multi-agent platform, evaluating LLM agent behaviour across design, deployment and ticketing workflows.',
     points: [
@@ -126,13 +126,13 @@ export const experience: ExperienceItem[] = [
   {
     role: 'AI/ML Intern',
     company: 'Bae AI',
-    period: 'May 2026 — Jun 2026',
+    period: 'Apr 2026 — May 2026',
     summary:
-      'Built an AI-powered intent engine that transformed natural language shopping queries into structured recommendations.',
+      'Built the BAExt Intent Engine, a deterministic pipeline that turns shopping queries into structured intent and ranked products without using an LLM, over a 1,200-SKU mock catalog.',
     points: [
-      'Developed recommendation and response orchestration pipelines using TypeScript, Node.js, React, MongoDB, and Express.js.',
-      'Implemented ranking algorithms and retrieval workflows to enhance recommendation accuracy and relevance.',
-      'Executed 250+ automated tests and managed performance benchmarking and Docker-based deployments.',
+      'Developed the MERN-stack architecture: intent parsing, 11-signal product ranking, answer generation, fallback handling and end-to-end response orchestration.',
+      'Added query caching, eligibility filtering, grounded output validation and Docker Compose deployment, with performance benchmarking and 300-query stress tests.',
+      'Ran 250+ automated tests and offline validation suites covering parser accuracy, ranking stability, response formatting and stress scenarios.',
     ],
   },
   {
@@ -256,7 +256,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     title: 'Markets & Analytics',
-    items: ['Algorithmic Trading', 'OpenAlgo', 'Backtesting', 'Time-Series Analysis', 'F&O Workflows'],
+    items: ['Algorithmic Trading', 'OpenAlgo', 'Backtesting', 'Time-Series Analysis', 'F&O Workflows', 'NISM Series VIII'],
   },
 ];
 

@@ -28,10 +28,10 @@ export const interests = [
 /** Extra detail per employer, keyed by the company name used on the site. */
 export const roleDetails: Record<string, string[]> = {
   'Neeroma Technologies': [
-    'He works mainly on Yantra, a multi-agent AI software factory, and QLearn, an AI-powered classroom/education platform.',
+    'He worked mainly on Yantra, a multi-agent AI software factory, and QLearn, an AI-powered classroom/education platform.',
     'How Yantra works: instead of one general agent doing everything, specialised agents own each stage of the software lifecycle. L1 Design Agent handles design and planning; L2–L4 Development Agents build the software; L5 Deploy Agent handles deployment workflows; L6 Tickets Agent handles support tickets, triage, resolution and engineering hand-offs; L7 Marketing Agent handles marketing workflows.',
-    'His Yantra work spans the L5 Deploy, L6 Tickets and L7 Marketing agents, Agent Studio, agent workflow and chat infrastructure, SSE chat streaming, frontend and backend debugging, permission and access-control fixes, ticketing and deployment workflows, UI/UX and tab-level audits, and regression testing with type and lint validation.',
-    'He works directly on production-oriented code using Claude Code in the browser: investigating issues, implementing fixes, running tests and preparing changes for review and merge.',
+    'His Yantra work spanned the L5 Deploy, L6 Tickets and L7 Marketing agents, Agent Studio, agent workflow and chat infrastructure, SSE chat streaming, frontend and backend debugging, permission and access-control fixes, ticketing and deployment workflows, UI/UX and tab-level audits, and regression testing with type and lint validation.',
+    'He worked directly on production-oriented code using Claude Code in the browser: investigating issues, implementing fixes, running tests and preparing changes for review and merge.',
     'L5 Deploy Agent: he worked extensively on its workflows, UI, deployment functionality, tab architecture, observability and regressions. He ran a systematic real-browser audit of the Deploy Agent’s tabs across its stages and fixed issues such as incorrect tab queries, tabs rendering empty, observability-panel issues, stage-card positioning, duplicate Runbooks entries, Core/Advanced tab separation, guide-entry inconsistencies and drift-guard issues. The audit also substantially reduced the overloaded production tab strip.',
     'L6 Tickets Agent: he audited and implemented changes around ticketing access control, server-side feature gates, ticket submission and resolution, SLA policies, the support widget, Human Board workflows, agent hand-off, documentation lookup and ticketing chat. He found that parts of the ticketing system had evolved along separate paths (different SLA logic and legacy submission routes), and moved the Tickets Agent chat onto the same progressive SSE streaming architecture the Development Agent uses.',
     'QLearn: he investigated application issues, implemented feature fixes, debugged UI behaviour, worked on AI classroom functionality (AI tutoring and AI-assisted learning), investigated configuration-related crashes, and supported the team in preparing product demos.',
@@ -83,6 +83,7 @@ export const openSource = [
 ];
 
 export const certifications = [
+  'NISM Series VIII (Equity Derivatives) certified',
   'Google Data Analytics (Coursera)',
   'Python Masterclass (Udemy)',
   'Mastering Model Context Protocol (LinkedIn Learning)',
