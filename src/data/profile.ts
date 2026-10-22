@@ -83,6 +83,7 @@ export const openSource = [
 ];
 
 export const certifications = [
+  'NISM Series VIII (Equity Derivatives) certified',
   'Google Data Analytics (Coursera)',
   'Python Masterclass (Udemy)',
   'Mastering Model Context Protocol (LinkedIn Learning)',
