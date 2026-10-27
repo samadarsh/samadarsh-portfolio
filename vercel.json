@@ -5,12 +5,5 @@
       "source": "/((?!assets/|api/|.*\\.).*)",
       "destination": "/"
     }
-  ],
-  "redirects": [
-    {
-      "source": "/Adarsh_S_Resume.pdf",
-      "destination": "/Adarsh.pdf",
-      "permanent": true
-    }
   ]
 }
