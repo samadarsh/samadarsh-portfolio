@@ -113,7 +113,7 @@ export const experience: ExperienceItem[] = [
   {
     role: 'AI Engineer',
     company: 'Neeroma Technologies',
-    period: 'May 2026 — Sep 2026',
+    period: 'Jun 2026 — Sep 2026',
     summary:
       'Worked on Yantra, a multi-agent platform, evaluating LLM agent behaviour across design, deployment and ticketing workflows.',
     points: [
@@ -126,7 +126,7 @@ export const experience: ExperienceItem[] = [
   {
     role: 'AI/ML Intern',
     company: 'Bae AI',
-    period: 'Apr 2026 — May 2026',
+    period: 'May 2026 — Jun 2026',
     summary:
       'Built the BAExt Intent Engine, a deterministic pipeline that turns shopping queries into structured intent and ranked products without using an LLM, over a 1,200-SKU mock catalog.',
     points: [
