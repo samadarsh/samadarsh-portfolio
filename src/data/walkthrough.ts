@@ -355,8 +355,8 @@ export const walkthroughs: Record<string, Walkthrough> = {
       {
         label: 'Confirm',
         title: 'Nothing is ordered until you say so.',
-        body: "Every step is a state the backend checks and records. Two guardrails stand in front of the order: you have to confirm it, and the live cart has to stay under Swiggy's Rs 1,000 cap.",
-        facts: ['9 recorded transitions', '2 guardrails, both held'],
+        body: "Every step is a state the backend checks and records. A real order has to clear seven locks; this run tested two of them: you have to confirm it, and the live cart has to stay under Swiggy's Rs 1,000 cap.",
+        facts: ['9 recorded transitions', '2 guardrails tested, both held'],
       },
     ],
     query: 'high protein meal',

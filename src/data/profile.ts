@@ -52,6 +52,7 @@ export const projectDetails: Record<string, string[]> = {
     'Independent project, accepted into the Swiggy Builders Club, which validated its direction and integration approach.',
     'Why he built it: to bring food discovery, ordering, AI assistance and nutritional awareness together instead of treating ordering and nutrition as separate experiences.',
     'What makes it technically interesting: it explores how an AI agent can act on real food-ordering infrastructure (the official Swiggy MCP APIs) rather than only generating text.',
+    'Testing and safety: 165 backend tests (ranking, allergens, OAuth/PKCE, MCP response shapes, checkout locks), Playwright and GitHub Actions CI. It runs against a mock Swiggy by default, and a real order must clear seven locks: live mode, staging environment, explicit opt-in, human confirmation, the Rs 1,000 cap, cash on delivery only, and a duplicate-order guard. MIT licensed.',
   ],
   'fin-sight': [
     'The idea: ground answers about financial documents in retrieved source text instead of the model’s internal knowledge.',
