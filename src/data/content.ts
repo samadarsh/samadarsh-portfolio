@@ -270,11 +270,12 @@ export const projects: Project[] = [
     summary:
       'Approved Swiggy Builders Club project — a two-product food intelligence platform where NutriOrder AI powers nutrition-aware Swiggy ordering and SmartPantry AI handles household pantry, recipes, and grocery planning via Swiggy Food and Instamart MCP.',
     highlights: [
-      'NutriOrder AI: health-profile-driven meal ranking across nutrition, cost, delivery time, taste, and availability — with explainable scores, cart review, and Food MCP order tracking.',
-      'SmartPantry AI: shared household pantry, low-stock alerts, cook-today recipe matching, priority grocery lists, and Instamart cart preview through Instamart MCP.',
-      'Swiggy Builders Club MCP stack with OAuth 2.1 PKCE, encrypted tokens, environment locks, and explicit confirmation before any Food or Instamart mutation.',
+      'NutriOrder AI: ranks real Swiggy dishes on ten weighted factors (protein, calories, goal, diet, cuisine, budget, delivery time, rating, popularity and order history), drops anything that clashes with your allergies, and explains every score before a reviewed, confirmed checkout with live order tracking.',
+      'SmartPantry AI: household profiles with each member’s diet and allergies, a pantry that tracks expiry, cook-today recipes from what’s in stock, a grocery list grouped by aisle, and an Instamart cart.',
+      'Nutrition coach: calorie and protein targets from the Mifflin–St Jeor equation, meals logged by hand or by photo (Gemini vision), and weekly trends.',
+      'Built on Swiggy MCP with OAuth 2.1 + PKCE and AES-256-GCM encrypted tokens. A real order must clear seven locks, including explicit confirmation, Swiggy’s Rs 1,000 cap, cash on delivery only and a duplicate-order guard.',
     ],
-    stack: ['Next.js', 'FastAPI', 'Swiggy MCP', 'TypeScript', 'SQLAlchemy', 'Tailwind'],
+    stack: ['Next.js', 'FastAPI', 'Swiggy MCP', 'TypeScript', 'SQLAlchemy', 'PostgreSQL', 'Gemini', 'Tailwind'],
     links: {
       live: 'https://bite-wise-theta.vercel.app',
       github: 'https://github.com/samadarsh/BiteWise',
@@ -283,9 +284,9 @@ export const projects: Project[] = [
     video: 'projects/bite-wise.mp4',
     architecture: [
       { label: 'Next.js app', detail: 'NutriOrder AI + SmartPantry AI interfaces' },
-      { label: 'FastAPI backend', detail: 'Meal ranking, pantry and cart logic' },
+      { label: 'FastAPI backend', detail: 'Ranking, allergen checks, pantry and order logic' },
       { label: 'OAuth 2.1 PKCE', detail: 'Per-user Swiggy auth, AES-256-GCM encrypted tokens' },
-      { label: 'Swiggy MCP', detail: 'Food and Instamart, with explicit confirmation before any order' },
+      { label: 'Swiggy MCP', detail: 'Food and Instamart, with retries, caching and seven locks before any real order' },
     ],
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
