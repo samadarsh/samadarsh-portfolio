@@ -134,7 +134,7 @@ export function GitHubActivity() {
                   key={label}
                   className="flex flex-col justify-between gap-1.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3 md:p-4"
                 >
-                  <dt className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted md:text-[10px] md:tracking-[0.14em]">
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
                     {/* "Contributions" doesn't fit a third of a phone screen */}
                     <span className="md:hidden">{short}</span>
                     <span className="hidden md:inline">{label}</span>

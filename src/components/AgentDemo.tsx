@@ -154,7 +154,7 @@ export function AgentDemo() {
                   }`}
                 >
                   <span className="block font-display text-lg text-text-primary">{c.title}</span>
-                  <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-muted">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
                     {c.tag}
                   </span>
                 </Link>

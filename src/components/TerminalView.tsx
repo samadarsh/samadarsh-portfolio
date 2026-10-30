@@ -654,7 +654,7 @@ export default function TerminalView({
             autoComplete="off"
             spellCheck={false}
             enterKeyHint="go"
-            className="h-11 min-w-0 flex-1 bg-transparent text-base text-text-primary caret-accent md:h-auto outline-none placeholder:text-muted/60 md:text-sm"
+            className="h-11 min-w-0 flex-1 bg-transparent text-base text-text-primary caret-accent md:h-auto outline-none placeholder:text-muted md:text-sm"
           />
           <button
             type="button"

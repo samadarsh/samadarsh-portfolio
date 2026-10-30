@@ -128,7 +128,7 @@ export function ProjectPreview({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-            <p className="font-mono text-[11px] md:text-[10px] uppercase tracking-[0.3em] text-white/70">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/70">
               {eyebrow ?? 'Preview'}
             </p>
             <p className="mt-3 font-display text-3xl text-white drop-shadow-md md:text-4xl">
