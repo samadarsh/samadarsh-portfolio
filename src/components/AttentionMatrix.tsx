@@ -78,7 +78,7 @@ export function AttentionMatrix() {
                       <button
                         type="button"
                         onClick={() => setPick(lineOf(col, false))}
-                        className={`flex min-h-[40px] w-full items-end justify-center pb-1.5 font-mono text-[10.5px] leading-tight transition-colors md:h-32 md:min-h-0 ${
+                        className={`flex min-h-[40px] w-full items-end justify-center pb-1.5 font-mono text-[11px] leading-tight transition-colors md:h-32 md:min-h-0 ${
                           lineActive(col, false)
                             ? 'text-text-primary'
                             : 'text-muted hover:text-text-primary'

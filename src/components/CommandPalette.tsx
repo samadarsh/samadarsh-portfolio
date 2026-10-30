@@ -495,7 +495,7 @@ function Palette({ onClose }: { onClose: () => void }) {
                 <li key={c.id} role="presentation">
                   {heading ? (
                     <p
-                      className="px-3 pb-1.5 pt-3 font-mono text-[11px] md:text-[10px] uppercase tracking-[0.2em] text-muted"
+                      className="px-3 pb-1.5 pt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-muted"
                       role="presentation"
                     >
                       {heading}

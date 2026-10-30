@@ -345,7 +345,7 @@ export function ChartGame() {
         ) : null}
       </p>
       {data ? (
-        <p className="text-xs text-muted/70">Daily data: {data.source}. Not investment advice.</p>
+        <p className="text-xs text-muted">Daily data: {data.source}. Not investment advice.</p>
       ) : null}
     </section>
   );
