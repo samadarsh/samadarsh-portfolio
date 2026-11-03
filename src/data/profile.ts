@@ -15,7 +15,7 @@ export const strengths = [
 export const proudOf = [
   'Working on real AI products (Yantra and QLearn at Neeroma) where AI interacts with software-engineering and education workflows, beyond academic ML projects.',
   'His agent work on Yantra, especially the L5 Deploy Agent and L6 Tickets Agent, and the engineering challenges of multi-agent applications.',
-  'His open-source contributions to Granite Switch, OpenClaw and OpenAlgo.',
+  'His open-source contributions to IBM Granite Switch, OpenAlgo and OpenClaw.',
 ];
 
 export const interests = [

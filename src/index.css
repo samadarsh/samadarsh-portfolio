@@ -597,7 +597,8 @@ html {
 .osf-knob.is-right::after { left: -19px; }
 .osf-fig {
   position: absolute; top: calc(50% + 0.75rem); left: 50%; transform: translate(-50%, -50%);
-  width: min(19rem, calc(100vw - 5rem)); display: grid; justify-items: start; gap: 0.7rem;
+  /* On phones it leaves room for the handle, which rests at the panel's edge there. */
+  width: min(19rem, calc(100vw - 8.5rem)); display: grid; justify-items: start; gap: 0.7rem;
   font: 12.5px/1.5 'JetBrains Mono', ui-monospace, monospace; color: hsl(var(--muted));
   animation: osf-in 0.45s ease both;
 }

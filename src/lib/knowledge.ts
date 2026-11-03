@@ -103,7 +103,7 @@ export function buildKnowledge() {
     `# Open-source contributions (pull requests to other people's projects; he is a contributor, not a maintainer)`,
     ...openSourceProjects.map(
       (p) =>
-        `## ${p.name}${p.org ? ` (${p.org})` : ''}, github.com/${p.repo}: ${p.about}\n` +
+        `## ${p.name}, github.com/${p.repo}: ${p.about}\n` +
         list(
           openSource
             .filter((f) => f.project === p.name)
