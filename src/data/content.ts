@@ -84,6 +84,23 @@ export type Publication = {
   href?: string;
 };
 
+export type OpenSourcePr = {
+  number: number;
+  status: 'Merged' | 'Open' | 'Closed';
+  /** Month it merged, for merged PRs. */
+  when?: string;
+  title: string;
+  note?: string;
+};
+
+export type OpenSourceProject = {
+  name: string;
+  /** owner/name on GitHub. */
+  repo: string;
+  about: string;
+  prs: OpenSourcePr[];
+};
+
 export type SkillGroup = {
   title: string;
   items: string[];
@@ -214,6 +231,84 @@ export const publications: Publication[] = [
     topics: ['Audio', 'Deep learning', 'Classification'],
   },
 ];
+
+// Pull requests to other people's projects. Status is as of the last edit here: when one
+// merges or closes, change it in this list and the About section, terminal and Ask Ash follow.
+export const openSource: OpenSourceProject[] = [
+  {
+    name: 'Granite Switch',
+    repo: 'generative-computing/granite-switch',
+    about: "IBM's composable adapter models: LoRA adapters combined into one checkpoint and served on vLLM.",
+    prs: [
+      {
+        number: 143,
+        status: 'Merged',
+        when: 'Oct 2026',
+        title: 'Brought the developer guide and audio docs in line with the code after the old SingleSwitch engine was removed.',
+      },
+      {
+        number: 157,
+        status: 'Open',
+        title: 'vLLM now refuses float16 and fp8 KV caches at startup: they corrupt the routing mask, so adapters were picked wrongly while the model kept generating.',
+      },
+    ],
+  },
+  {
+    name: 'OpenClaw',
+    repo: 'openclaw/openclaw',
+    about: 'An open-source personal AI assistant that runs on your own devices.',
+    prs: [
+      {
+        number: 160239,
+        status: 'Merged',
+        when: 'Oct 2026',
+        title: 'Fixed the macOS VM install guide to install Node.js first, so setup works on a fresh VM.',
+      },
+      {
+        number: 162736,
+        status: 'Closed',
+        note: 'acknowledged by the maintainers',
+        title: "Documented opening the VM's dashboard from the Mac with an SSH tunnel and a one-time pairing link.",
+      },
+    ],
+  },
+  {
+    name: 'OpenAlgo',
+    repo: 'marketcalls/openalgo',
+    about: 'An open-source algorithmic trading platform for Indian brokers.',
+    prs: [
+      {
+        number: 2133,
+        status: 'Merged',
+        when: 'Oct 2026',
+        title: 'A login no longer reloads the master contract while a download is still rewriting it.',
+      },
+      {
+        number: 2119,
+        status: 'Merged',
+        when: 'Sep 2026',
+        title: 'Stopped the navbar overflowing and clipping on 1280 to 1535px screens.',
+      },
+      {
+        number: 2233,
+        status: 'Open',
+        title: "Kotak's available cash now counts same-day deposits and withdrawals, with tests.",
+      },
+      {
+        number: 2192,
+        status: 'Open',
+        title: "Sandbox feed subscriptions queue in lock order, so a quick place and cancel can't leave a symbol subscribed with nothing watching it.",
+      },
+      {
+        number: 2170,
+        status: 'Open',
+        title: "Upstox and Zerodha ticks now carry the exchange's real last-trade time.",
+      },
+    ],
+  },
+];
+
+export const prUrl = (repo: string, n: number) => `https://github.com/${repo}/pull/${n}`;
 
 export const skillGroups: SkillGroup[] = [
   {

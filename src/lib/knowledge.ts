@@ -8,6 +8,8 @@ import {
   experience,
   heroContent,
   journalEntries,
+  openSource,
+  prUrl,
   projects,
   publications,
   SITE_URL as SITE,
@@ -23,7 +25,6 @@ import {
   haugtunAbout,
   interests,
   marketsBackground,
-  openSource,
   projectDetails,
   proudOf,
   roleDetails,
@@ -98,8 +99,17 @@ export function buildKnowledge() {
     ...skillGroups.map((g) => `- ${g.title}: ${g.items.join(', ')}`),
     ...Object.entries(skills).map(([k, v]) => `- ${k}: ${v.join('; ')}`),
 
-    `# Open-source contributions`,
-    list(openSource),
+    `# Open-source contributions (pull requests to other people's projects; he is a contributor, not a maintainer)`,
+    ...openSource.map(
+      (p) =>
+        `## ${p.name} (github.com/${p.repo}): ${p.about}\n` +
+        list(
+          p.prs.map(
+            (pr) =>
+              `PR #${pr.number}, ${pr.status.toLowerCase()}${pr.when ? ` ${pr.when}` : ''}${pr.note ? `, ${pr.note}` : ''}: ${pr.title} ${prUrl(p.repo, pr.number)}`,
+          ),
+        ),
+    ),
 
     `# Markets and trading`,
     marketsBackground,

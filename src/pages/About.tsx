@@ -4,6 +4,7 @@ import { SectionHeader } from '../components/SectionHeader';
 import { TrainingRun } from '../components/TrainingRun';
 import { Skills } from '../components/Skills';
 import { Publications } from '../components/Publications';
+import { OpenSource } from '../components/OpenSource';
 import { PageSequence } from '../components/PageSequence';
 import { Footer } from '../components/Footer';
 import { aboutNarrative, heroContent } from '../data/content';
@@ -72,6 +73,12 @@ export function AboutPage() {
       <section id="publications" className="scroll-mt-20 pb-24 md:pb-32">
         <div className="container mx-auto max-w-6xl px-6">
           <Publications />
+        </div>
+      </section>
+
+      <section id="open-source" className="scroll-mt-20 pb-24 md:pb-32">
+        <div className="container mx-auto max-w-6xl px-6">
+          <OpenSource />
         </div>
       </section>
 

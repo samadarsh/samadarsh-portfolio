@@ -6,6 +6,7 @@ import {
   experience,
   heroContent,
   projects,
+  openSource,
   publications,
   socialLinks,
   type Project,
@@ -152,7 +153,7 @@ function run(raw: string, fx: Effects): Result {
           <>
             {[
               ['whoisadarsh', 'who is Adarsh'],
-              ['ls [dir]', 'list projects/, experience/, papers/'],
+              ['ls [dir]', 'list projects/, experience/, papers/, oss/'],
               ['cat <project>', 'read a project, e.g. cat finsight'],
               ['open <project>', 'open its case study'],
               ['cd <page>', 'go to ~, work, about or journal'],
@@ -205,10 +206,12 @@ function run(raw: string, fx: Effects): Result {
               <Acc>experience/</Acc>
               {'   '}
               <Acc>papers/</Acc>
+              {'   '}
+              <Acc>oss/</Acc>
               {'   '}resume.pdf
             </>
           ),
-          suggest: ['ls projects', 'ls experience', 'ls papers'],
+          suggest: ['ls projects', 'ls experience', 'ls oss'],
         };
       if (dir === 'projects' || dir === 'work')
         return {
@@ -247,6 +250,25 @@ function run(raw: string, fx: Effects): Result {
               {'\n'}
             </Fragment>
           )),
+        };
+      if (dir === 'oss' || dir === 'opensource' || dir === 'open-source')
+        return {
+          out: openSource.map((p) => (
+            <Fragment key={p.repo}>
+              <Acc>{p.name}</Acc> <Muted>{p.repo}</Muted>
+              {'\n'}
+              {p.prs.map((pr) => (
+                <Fragment key={pr.number}>
+                  {'  '}
+                  <Muted>{`#${pr.number}`.padEnd(9)}</Muted>
+                  {pr.status.padEnd(8)}
+                  {pr.title}
+                  {'\n'}
+                </Fragment>
+              ))}
+            </Fragment>
+          )),
+          suggest: ['cd about', 'ls papers'],
         };
       return { out: <span className="text-red-300">ls: {arg}: No such file or directory</span> };
     }
@@ -479,7 +501,7 @@ function complete(value: string) {
     return match.length === 1 ? `cd ${match[0]}` : value;
   }
   if (cmd === 'ls') {
-    const match = ['projects', 'experience', 'papers'].filter((d) =>
+    const match = ['projects', 'experience', 'papers', 'oss'].filter((d) =>
       d.startsWith(rest.join(' ').toLowerCase()),
     );
     return match.length === 1 ? `ls ${match[0]}` : value;
