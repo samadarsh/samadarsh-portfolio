@@ -4,6 +4,7 @@ import { getLenis } from '../lib/smoothScroll';
 import { AgentScenes } from './walkthrough/AgentScenes';
 import { RagScenes } from './walkthrough/RagScenes';
 import { RepoScenes } from './walkthrough/RepoScenes';
+import { ServerScenes } from './walkthrough/ServerScenes';
 import { SpeechScenes } from './walkthrough/SpeechScenes';
 import { tokenize, type Token } from './walkthrough/tokens';
 
@@ -53,6 +54,7 @@ function Scenes({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
   if (d.kind === 'rag') return <RagScenes d={d} tokens={tokens} />;
   if (d.kind === 'speech') return <SpeechScenes d={d} tokens={tokens} />;
   if (d.kind === 'repo') return <RepoScenes d={d} tokens={tokens} />;
+  if (d.kind === 'server') return <ServerScenes d={d} tokens={tokens} />;
   return <AgentScenes d={d} tokens={tokens} />;
 }
 
