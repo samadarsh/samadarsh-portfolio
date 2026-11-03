@@ -6,7 +6,7 @@ Drop `.webp` screenshots in this folder. They appear automatically inside the br
 
 | File | Project |
 |------|---------|
-| `redis-go.webp` | redis-go (cover is the first frame of `redis-go.mp4`, made from the repo's demo GIF) |
+| `redis-go.webp` | redis-go (cover is the first frame of `redis-go.mp4`: the demo recording from just after `KEYS '*'`, so the still shows a complete session and the clip plays the restart, at 2×) |
 | `bite-wise.webp` | BiteWise |
 | `bluemoon-studio.webp` | Bluemoon Studio |
 | `oor-snacks.webp` | Oor Snacks |
