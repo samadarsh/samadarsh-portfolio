@@ -18,6 +18,10 @@
 // with Groq's openai/gpt-oss-120b on the free tier. The counts, classification, file list,
 // timings and one-line summary are its output; each file's gist condenses the purpose line
 // RepoMind wrote for it.
+//
+// redis-go: the session recorded in the repo's demo.gif on 3 Nov 2026, redis-cli against redis-go
+// on port 6380 with the AOF on. Every command, reply and log line is from that recording; the wire
+// bytes are SET name sam in RESP, the encoding the README shows and the AOF stores.
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
 export type WalkthroughStep = { label: string; title: string; body: string; facts: string[] };
@@ -140,13 +144,125 @@ export type RepoWalkthrough = Base & {
   seconds: number;
 };
 
-export type Walkthrough = RagWalkthrough | SpeechWalkthrough | AgentWalkthrough | RepoWalkthrough;
+export type ServerWalkthrough = Base & {
+  kind: 'server';
+  /** The command that starts the server, and its log lines as [message, detail]. */
+  start: { command: string; logs: [string, string][] };
+  /** The command shown on the wire (encoded as RESP by the scene), and the replies redis-cli got. */
+  wire: { command: string; replies: [string, string][] };
+  /** The keys at the end of the session, as KEYS listed them: [key, value, note]. */
+  keys: [string, string, string][];
+  /** The writes the AOF holds, in order. */
+  aof: { command: string; gist: string }[];
+  /** The shutdown, from the server's log. */
+  shutdown: { state: string; detail: string }[];
+  /** The restart: commands replayed, how long the replay took and how long the server was down. */
+  replay: { commands: number; micros: number; downSeconds: number };
+  /** The replies after the restart, typed out with the scroll. */
+  recovered: string;
+  /** Each key before the stop and after the restart: [key, before, after]. */
+  survived: [string, string, string][];
+  /** Facts about the binary, shown under its start-up log. */
+  traits: string[];
+};
+
+export type Walkthrough =
+  | RagWalkthrough
+  | SpeechWalkthrough
+  | AgentWalkthrough
+  | RepoWalkthrough
+  | ServerWalkthrough;
 
 /** The text the typing step types out. */
 export const typedText = (w: Walkthrough) =>
-  w.kind === 'rag' ? w.answer : w.kind === 'speech' ? w.transcript : w.kind === 'agent' ? w.explanation : w.summary;
+  w.kind === 'rag'
+    ? w.answer
+    : w.kind === 'speech'
+      ? w.transcript
+      : w.kind === 'agent'
+        ? w.explanation
+        : w.kind === 'server'
+          ? w.recovered
+          : w.summary;
 
 export const walkthroughs: Record<string, Walkthrough> = {
+  'redis-go': {
+    kind: 'server',
+    intro:
+      'One real session, traced as you scroll: the demo recorded in the repo, from a cold start to a restart that keeps the data. Every command, reply and log line below is from that run.',
+    typeStep: 4,
+    listStep: 3,
+    steps: [
+      {
+        label: 'Start',
+        title: 'A Redis server, written from scratch.',
+        body: 'One Go binary with zero dependencies. Started with persistence on, it replays its append-only file, empty the first time, then listens for any Redis client.',
+        facts: ['port 6380', 'AOF loaded in 13 µs'],
+      },
+      {
+        label: 'Speak RESP',
+        title: 'The real Redis client talks to it.',
+        body: 'redis-cli sends each command in RESP, the Redis wire protocol: an array of length-prefixed strings. One goroutine per client reads the bytes and turns them into a command.',
+        facts: ['SET name sam → OK', 'GET name → "sam"'],
+      },
+      {
+        label: 'Store',
+        title: 'Counters, and keys that expire.',
+        body: 'INCR runs under the store’s write lock, so two clients can’t lose an update. A key set with EX 60 starts counting down, and KEYS lists all three.',
+        facts: ['INCR visits → 2', 'TTL session → 58'],
+      },
+      {
+        label: 'Stop',
+        title: 'Stop it. Every write is on disk.',
+        body: 'Each write was appended to the AOF as it ran, under the store’s lock. Stopping the server lets in-flight commands finish, then flushes the file and closes it.',
+        facts: ['4 writes logged', 'AOF flushed and closed'],
+      },
+      {
+        label: 'Recover',
+        title: 'Start it again. Nothing is lost.',
+        body: 'On restart the AOF is replayed before the server takes connections, so every key comes back. The session kept its expiry too: 58 seconds left before the restart, 37 after.',
+        facts: ['4 commands replayed in 252 µs', 'down for 7 s'],
+      },
+    ],
+    start: {
+      command: '/tmp/redis-go-demo -addr :6380 -aof /tmp/redis-go-demo.aof',
+      logs: [
+        ['AOF loaded', '0 commands · 13 µs'],
+        ['persistence enabled', 'appendfsync = everysec'],
+        ['ready to accept connections', 'addr = [::]:6380'],
+      ],
+    },
+    wire: {
+      command: 'SET name sam',
+      replies: [
+        ['SET name sam', 'OK'],
+        ['GET name', '"sam"'],
+      ],
+    },
+    keys: [
+      ['name', '"sam"', 'SET name sam'],
+      ['visits', '2', 'INCR visits, twice'],
+      ['session', '"abc"', 'SET with EX 60 · TTL 58 s'],
+    ],
+    aof: [
+      { command: 'SET name sam', gist: 'write 1' },
+      { command: 'INCR visits', gist: 'write 2' },
+      { command: 'INCR visits', gist: 'write 3' },
+      { command: 'SET session abc', gist: 'write 4, with its expiry' },
+    ],
+    shutdown: [
+      { state: 'shutting down', detail: 'kill %1 · in-flight commands finish' },
+      { state: 'AOF flushed and closed', detail: 'then the process exits' },
+    ],
+    replay: { commands: 4, micros: 252, downSeconds: 7 },
+    recovered: 'GET name → "sam" · GET visits → "2" · TTL session → 37',
+    survived: [
+      ['name', '"sam"', '"sam"'],
+      ['visits', '2', '"2"'],
+      ['session TTL', '58 s', '37 s'],
+    ],
+    traits: ['one Go binary', 'zero dependencies', 'fsync every second'],
+  },
   'fin-sight': {
     kind: 'rag',
     intro:

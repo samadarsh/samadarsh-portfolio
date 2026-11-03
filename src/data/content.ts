@@ -445,6 +445,21 @@ export const projects: Project[] = [
       { label: 'Thread-safe store', detail: 'With TTL key expiry' },
       { label: 'AOF persistence', detail: 'Crash recovery from the append-only file' },
     ],
+    results: {
+      setup:
+        'redis-benchmark against redis-go and Redis 8.10.3 on the same Apple M3 Pro, both on localhost with persistence off: SET, GET, INCR and MSET, 1,000,000 requests from 50 clients, without and with pipelining (16 commands per round trip).',
+      metrics: [
+        { value: '93%', label: 'SET throughput vs Redis', detail: '167,280 vs 180,050 req/s' },
+        { value: '88%', label: 'GET throughput vs Redis', detail: '167,140 vs 189,214 req/s' },
+        { value: '2.3M', label: 'Pipelined GET req/s', detail: "104% of Redis's at 16 per round trip" },
+        { value: '58%', label: 'Pipelined INCR vs Redis', detail: 'Number parsing under one write lock' },
+      ],
+      note: "Results vary by about ±10% between runs. Without pipelining the network round trip is the limit, not the server. Where redis-go beats Redis it is using about three cores (~310% CPU) to Redis's one, so per core Redis is more efficient.",
+      source: {
+        label: 'Method, full table and how to rerun it',
+        href: 'https://github.com/samadarsh/redis-go#benchmarks',
+      },
+    },
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {

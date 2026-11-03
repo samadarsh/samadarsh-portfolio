@@ -111,6 +111,19 @@ const walkthrough = (p: Project) => {
       para(`One-line summary: ${w.summary} (${w.calls} LLM calls, ${w.seconds} s, ${w.model}.)`) +
       `</section>`
     );
+  if (w.kind === 'server')
+    return (
+      `<section><h2>One session, end to end</h2>` +
+      para(w.intro) +
+      para(`Started with ${w.start.command}: ${w.start.logs.map(([m, x]) => `${m} (${x})`).join(', ')}.`) +
+      para(
+        `Commands: ${w.wire.replies.map(([c, r]) => `${c} → ${r}`).join('; ')}. Keys: ${w.keys.map(([k, v, n]) => `${k} = ${v} (${n})`).join('; ')}.`,
+      ) +
+      para(
+        `Stopped: ${w.shutdown.map((s) => s.state).join(', then ')}. Restarted ${w.replay.downSeconds} s later; the AOF replayed ${w.replay.commands} commands in ${w.replay.micros} µs. After the restart: ${w.recovered}.`,
+      ) +
+      `</section>`
+    );
   if (w.kind === 'agent') {
     const pick = w.ranked[0];
     return (
