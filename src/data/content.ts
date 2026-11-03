@@ -84,21 +84,31 @@ export type Publication = {
   href?: string;
 };
 
-export type OpenSourcePr = {
-  number: number;
-  status: 'Merged' | 'Open' | 'Closed';
-  /** Month it merged, for merged PRs. */
-  when?: string;
-  title: string;
-  note?: string;
-};
+export type OpenSourceFixId = 'kv' | 'cash' | 'feed' | 'ticks' | 'contract' | 'vm' | 'nav' | 'docs';
 
 export type OpenSourceProject = {
   name: string;
+  org?: string;
   /** owner/name on GitHub. */
   repo: string;
   about: string;
-  prs: OpenSourcePr[];
+};
+
+export type OpenSourceFix = {
+  id: OpenSourceFixId;
+  /** Matches an OpenSourceProject name. */
+  project: string;
+  title: string;
+  /** For the phone chip row. */
+  short: string;
+  before: string;
+  after: string;
+  tags: string[];
+  /**
+   * The pull requests behind the fix. The page links to the first and shows no number or
+   * status; the status is here so Ask Ash never calls an open PR merged.
+   */
+  prs: { number: number; status: 'Merged' | 'Open' | 'Closed'; note?: string }[];
 };
 
 export type SkillGroup = {
@@ -232,81 +242,129 @@ export const publications: Publication[] = [
   },
 ];
 
-// Pull requests to other people's projects. Status is as of the last edit here: when one
-// merges or closes, change it in this list and the About section, terminal and Ask Ash follow.
-export const openSource: OpenSourceProject[] = [
+// Fixes in other people's projects, told as what was broken and what changed (from the commit
+// messages). When a PR's status changes, update it here; Ask Ash reads it.
+export const openSourceProjects: OpenSourceProject[] = [
   {
     name: 'Granite Switch',
+    org: 'IBM',
     repo: 'generative-computing/granite-switch',
-    about: "IBM's composable adapter models: LoRA adapters combined into one checkpoint and served on vLLM.",
-    prs: [
-      {
-        number: 143,
-        status: 'Merged',
-        when: 'Oct 2026',
-        title: 'Brought the developer guide and audio docs in line with the code after the old SingleSwitch engine was removed.',
-      },
-      {
-        number: 157,
-        status: 'Open',
-        title: 'vLLM now refuses float16 and fp8 KV caches at startup: they corrupt the routing mask, so adapters were picked wrongly while the model kept generating.',
-      },
-    ],
-  },
-  {
-    name: 'OpenClaw',
-    repo: 'openclaw/openclaw',
-    about: 'An open-source personal AI assistant that runs on your own devices.',
-    prs: [
-      {
-        number: 160239,
-        status: 'Merged',
-        when: 'Oct 2026',
-        title: 'Fixed the macOS VM install guide to install Node.js first, so setup works on a fresh VM.',
-      },
-      {
-        number: 162736,
-        status: 'Closed',
-        note: 'acknowledged by the maintainers',
-        title: "Documented opening the VM's dashboard from the Mac with an SSH tunnel and a one-time pairing link.",
-      },
-    ],
+    about: 'composable adapter models: LoRA adapters combined into one checkpoint and served on vLLM',
   },
   {
     name: 'OpenAlgo',
     repo: 'marketcalls/openalgo',
-    about: 'An open-source algorithmic trading platform for Indian brokers.',
-    prs: [
-      {
-        number: 2133,
-        status: 'Merged',
-        when: 'Oct 2026',
-        title: 'A login no longer reloads the master contract while a download is still rewriting it.',
-      },
-      {
-        number: 2119,
-        status: 'Merged',
-        when: 'Sep 2026',
-        title: 'Stopped the navbar overflowing and clipping on 1280 to 1535px screens.',
-      },
-      {
-        number: 2233,
-        status: 'Open',
-        title: "Kotak's available cash now counts same-day deposits and withdrawals, with tests.",
-      },
-      {
-        number: 2192,
-        status: 'Open',
-        title: "Sandbox feed subscriptions queue in lock order, so a quick place and cancel can't leave a symbol subscribed with nothing watching it.",
-      },
-      {
-        number: 2170,
-        status: 'Open',
-        title: "Upstox and Zerodha ticks now carry the exchange's real last-trade time.",
-      },
-    ],
+    about: 'an open-source algorithmic trading platform for Indian brokers',
+  },
+  {
+    name: 'OpenClaw',
+    repo: 'openclaw/openclaw',
+    about: 'an open-source personal AI assistant that runs on your own devices',
   },
 ];
+
+export const openSource: OpenSourceFix[] = [
+  {
+    id: 'kv',
+    project: 'Granite Switch',
+    title: 'Stopped a silent routing failure in vLLM.',
+    short: 'vLLM routing',
+    before:
+      "With a float16 or fp8 KV cache, the switch's −1e9 routing mask became −inf. 0 × −inf is NaN, so every adapter was picked wrongly while the model kept generating normal-looking text.",
+    after:
+      'vLLM now refuses those caches at startup and names the flag to change. The check runs on CPU in the tests, along with the arithmetic it rests on.',
+    tags: ['vLLM', 'LoRA routing', 'Numerics'],
+    prs: [{ number: 157, status: 'Open' }],
+  },
+  {
+    id: 'cash',
+    project: 'OpenAlgo',
+    title: 'Counted the money deposited today.',
+    short: 'Same-day cash',
+    before:
+      'An account funded with ₹3,00,000 on top of ₹1,040 cash showed ₹1,040 available: Kotak keeps same-day deposits outside collateral until they settle.',
+    after:
+      "Available cash now adds the day's pay-in and subtracts the pay-out, so the figures add up to Kotak's own net balance. Covered by tests on two recorded responses.",
+    tags: ['Broker API', 'Python', 'Tests'],
+    prs: [{ number: 2233, status: 'Open' }],
+  },
+  {
+    id: 'feed',
+    project: 'OpenAlgo',
+    title: 'Closed a race in the paper-trading feed.',
+    short: 'Feed race',
+    before:
+      'A place and a cancel on two threads could change the subscriber count in one order and queue their feed calls in the other. The symbol stayed subscribed with nothing watching it.',
+    after:
+      'Each feed call is queued inside the same lock that changes the count, so the queue order always matches the count.',
+    tags: ['Concurrency', 'WebSockets', 'Python'],
+    prs: [{ number: 2192, status: 'Open' }],
+  },
+  {
+    id: 'ticks',
+    project: 'OpenAlgo',
+    title: 'Put the real trade time on live ticks.',
+    short: 'Trade time',
+    before:
+      "Zerodha ticks reported the exchange's packet time as the last-trade time, and read the real trade time as a price change: the timestamp divided by 100.",
+    after:
+      'Last-trade time is now parsed from its own bytes on Zerodha and Upstox ticks, and exchange time keeps its own field.',
+    tags: ['Market data', 'Binary parsing'],
+    prs: [{ number: 2170, status: 'Open' }],
+  },
+  {
+    id: 'contract',
+    project: 'OpenAlgo',
+    title: 'Kept a login from loading a half-written contract.',
+    short: 'Contract load',
+    before:
+      'A login during a forced re-download reset the running download and loaded the symbol cache from a table that was still being rewritten.',
+    after:
+      'A cached load now claims the broker the same way a download does, so the two never overlap. The running download loads the cache once it finishes.',
+    tags: ['Race condition', 'Python'],
+    prs: [{ number: 2133, status: 'Merged' }],
+  },
+  {
+    id: 'vm',
+    project: 'OpenClaw',
+    title: 'Made the macOS VM setup work end to end.',
+    short: 'macOS VM setup',
+    before:
+      'On a fresh macOS VM the install step failed because Node.js was never installed. Once it ran, the guide never said how to open the dashboard from the Mac.',
+    after:
+      "The guide installs Node.js first, then reaches the VM's dashboard through an SSH tunnel and a one-time pairing link.",
+    tags: ['Docs', 'macOS', 'SSH'],
+    prs: [
+      { number: 160239, status: 'Merged' },
+      { number: 162736, status: 'Closed', note: 'acknowledged by the maintainers' },
+    ],
+  },
+  {
+    id: 'nav',
+    project: 'OpenAlgo',
+    title: 'Fixed the navbar on 1280 to 1535px screens.',
+    short: 'Navbar overflow',
+    before:
+      'Nine labelled items, the logo and the controls need 1,412px, but the page container gives 1,248px. Even after shrinking, the bar overflowed by 84px and clipped the logo.',
+    after: 'The bar fits at every width in that range.',
+    tags: ['Tailwind', 'Responsive UI'],
+    prs: [{ number: 2119, status: 'Merged' }],
+  },
+  {
+    id: 'docs',
+    project: 'Granite Switch',
+    title: 'Brought the developer docs back in line with the code.',
+    short: 'Developer docs',
+    before:
+      "The developer guide still described SingleSwitch and a trainable router, both already removed, and its install command used an option that doesn't exist.",
+    after: 'It now documents the coded-memory MultiSwitch, the correct install command and the audio setup.',
+    tags: ['Docs', 'Developer experience'],
+    prs: [{ number: 143, status: 'Merged' }],
+  },
+];
+
+export const projectOf = (fix: OpenSourceFix) =>
+  openSourceProjects.find((p) => p.name === fix.project) as OpenSourceProject;
 
 export const prUrl = (repo: string, n: number) => `https://github.com/${repo}/pull/${n}`;
 

@@ -253,19 +253,11 @@ function run(raw: string, fx: Effects): Result {
         };
       if (dir === 'oss' || dir === 'opensource' || dir === 'open-source')
         return {
-          out: openSource.map((p) => (
-            <Fragment key={p.repo}>
-              <Acc>{p.name}</Acc> <Muted>{p.repo}</Muted>
+          out: openSource.map((f) => (
+            <Fragment key={f.id}>
+              <Acc>{f.project.padEnd(16)}</Acc>
+              {f.title}
               {'\n'}
-              {p.prs.map((pr) => (
-                <Fragment key={pr.number}>
-                  {'  '}
-                  <Muted>{`#${pr.number}`.padEnd(9)}</Muted>
-                  {pr.status.padEnd(8)}
-                  {pr.title}
-                  {'\n'}
-                </Fragment>
-              ))}
             </Fragment>
           )),
           suggest: ['cd about', 'ls papers'],

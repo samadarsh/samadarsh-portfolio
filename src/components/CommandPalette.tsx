@@ -150,13 +150,13 @@ function useCommands(): Command[] {
         run: () => goTo('/about', 'publications'),
       })),
 
-      ...openSource.map<Command>((p) => ({
-        id: `oss-${p.repo}`,
+      ...openSource.map<Command>((f) => ({
+        id: `oss-${f.id}`,
         group: 'Open source',
         icon: '↗',
-        label: p.name,
-        hint: `${p.prs.length} PRs`,
-        keywords: `open source contribution pull request pr github ${p.repo} ${p.about} ${p.prs.map((pr) => pr.title).join(' ')}`,
+        label: f.title,
+        hint: f.project.toLowerCase(),
+        keywords: `open source contribution fix github ${f.project} ${f.short} ${f.tags.join(' ')} ${f.before}`,
         run: () => goTo('/about', 'open-source'),
       })),
 

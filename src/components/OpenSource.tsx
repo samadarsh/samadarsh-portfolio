@@ -1,109 +1,261 @@
-import { m } from 'framer-motion';
-import { openSource, prUrl, type OpenSourcePr } from '../data/content';
+import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
+import { openSource, prUrl, projectOf, type OpenSourceFixId } from '../data/content';
+import { FIGURES } from './OpenSourceFigures';
 
 /**
- * The About page's open-source work: pull requests to other people's projects, grouped by
- * project, each with its status and a link to the PR. Laid out like Publications, with the
- * intro on the left and the projects on the right.
+ * The About page's open-source fixes as a before/after split. Pick a fix and its drawing plays
+ * the bug, then a divider sweeps in the fixed state; drag across the panel (or move the mouse
+ * over it) to give either side more room. Each side keeps its drawing whole and centred in its
+ * own area, so text is never cut in half. One fix shows at a time; the list keeps the overview.
+ *
+ * The divider is a CSS variable written straight to the panel, so dragging never re-renders.
  */
 
-const all = openSource.flatMap((p) => p.prs);
-const merged = all.filter((pr) => pr.status === 'Merged').length;
-const open = all.filter((pr) => pr.status === 'Open').length;
-
-// The status colour sits in the dot and border; the word stays in body colour so it reads at
-// 11px in every theme (green and orange text on the light theme's surface fall under 4.5:1).
-const badge: Record<OpenSourcePr['status'], { ring: string; dot: string; text: string }> = {
-  Merged: { ring: 'border-[rgb(var(--up)/0.45)]', dot: 'bg-[rgb(var(--up))]', text: 'text-text-primary' },
-  Open: { ring: 'border-accent/45', dot: 'bg-accent', text: 'text-text-primary' },
-  Closed: { ring: 'border-white/[0.12]', dot: 'bg-muted', text: 'text-muted' },
-};
+const STEP_MS = 900;
+/** Where the divider rests: side by side where both drawings fit, otherwise on the fix. */
+const restingCut = (panel: HTMLElement | null) => ((panel?.clientWidth ?? 0) >= 640 ? 50 : 0);
+const reducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function OpenSource() {
+  const [active, setActive] = useState<OpenSourceFixId>(openSource[0].id);
+  const [frame, setFrame] = useState(FIGURES[openSource[0].id].bad);
+  const [seen, setSeen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLInputElement>(null);
+  const knobRef = useRef<HTMLDivElement>(null);
+  const timers = useRef<number[]>([]);
+  const raf = useRef(0);
+  const dragging = useRef(false);
+  const playing = useRef(false);
+
+  const fix = openSource.find((f) => f.id === active) ?? openSource[0];
+  const figure = FIGURES[fix.id];
+  const project = projectOf(fix);
+  const before = figure.frames[Math.min(frame, figure.bad)];
+  const after = figure.frames[figure.frames.length - 1];
+
+  const setCut = useCallback((v: number) => {
+    const cut = Math.max(0, Math.min(100, v));
+    panelRef.current?.style.setProperty('--osf-cut', `${cut}%`);
+    knobRef.current?.classList.toggle('is-left', cut < 6);
+    knobRef.current?.classList.toggle('is-right', cut > 94);
+    if (sliderRef.current) sliderRef.current.value = String(Math.round(cut));
+  }, []);
+
+  // Before the intro runs, rest where it will end.
+  useEffect(() => setCut(restingCut(panelRef.current)), [setCut]);
+
+  const stop = useCallback(() => {
+    timers.current.forEach((t) => window.clearTimeout(t));
+    timers.current = [];
+    cancelAnimationFrame(raf.current);
+    playing.current = false;
+  }, []);
+
+  // The intro plays once the section is on screen, so the first sweep isn't spent off-screen.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Play the bug frame by frame with the panel showing "before", then sweep the fix in.
+  useEffect(() => {
+    if (!seen) return;
+    stop();
+    const { bad } = FIGURES[active];
+    const rest = restingCut(panelRef.current);
+    if (reducedMotion()) {
+      timers.current.push(window.setTimeout(() => setFrame(bad), 0));
+      setCut(rest);
+      return stop;
+    }
+    setCut(100);
+    playing.current = true;
+    for (let i = 0; i <= bad; i++) {
+      timers.current.push(window.setTimeout(() => setFrame(i), i * STEP_MS));
+    }
+    timers.current.push(
+      window.setTimeout(
+        () => {
+          const start = performance.now();
+          const run = (t: number) => {
+            const p = Math.min(1, (t - start) / (rest ? 900 : 1100));
+            setCut(100 - (100 - rest) * (1 - Math.pow(1 - p, 3)));
+            if (p < 1) raf.current = requestAnimationFrame(run);
+            else playing.current = false;
+          };
+          raf.current = requestAnimationFrame(run);
+        },
+        bad * STEP_MS + 700,
+      ),
+    );
+    return stop;
+  }, [active, seen, setCut, stop]);
+
+  const fromPointer = (e: PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setCut(((e.clientX - r.left) / r.width) * 100);
+  };
+
+  // Any hand on the divider ends the intro and leaves the bug at its worst frame.
+  const takeOver = () => {
+    stop();
+    setFrame(FIGURES[active].bad);
+  };
+
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
-      <div className="max-w-xl lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+    <div ref={rootRef} className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+      <div className="lg:col-span-4">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent md:text-[11px]">
           Open source
         </p>
         <h3 className="mt-3 font-display text-3xl leading-tight tracking-tighter text-text-primary md:text-4xl">
-          Fixes, <span className="italic">sent upstream</span>.
+          Fixes I sent <span className="italic">upstream</span>.
         </h3>
-        <p className="mt-4 text-sm text-muted md:text-base">
-          Bug fixes and docs for projects I use, from IBM&apos;s Granite Switch to OpenAlgo.{' '}
-          {merged} merged so far, {open} in review.
+        <p className="mt-4 max-w-xl text-sm text-muted md:text-base">
+          Bug fixes and docs for IBM&apos;s Granite Switch, OpenAlgo and OpenClaw. Pick one and drag
+          across it to see what changed.
         </p>
+
+        <div
+          role="group"
+          aria-label="Fixes"
+          className="osf-picks -mx-6 mt-6 flex snap-x gap-2 overflow-x-auto px-6 pb-1 lg:mx-0 lg:mt-8 lg:grid lg:gap-1 lg:overflow-visible lg:px-0"
+        >
+          {openSource.map((f) => {
+            const on = f.id === active;
+            return (
+              <button
+                key={f.id}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setActive(f.id)}
+                className={`flex-shrink-0 snap-start rounded-full border px-3.5 py-2 text-left text-sm transition-colors lg:grid lg:gap-0.5 lg:rounded-xl lg:border-0 lg:px-3 lg:py-2.5 ${
+                  on
+                    ? 'border-accent/50 bg-surface text-text-primary'
+                    : 'border-white/[0.08] text-muted hover:text-text-primary'
+                }`}
+              >
+                <span
+                  className={`hidden font-mono text-[11px] tracking-[0.04em] lg:block ${on ? 'osf-pick-project' : 'text-muted'}`}
+                >
+                  {f.project}
+                </span>
+                <span className="lg:hidden">{f.short}</span>
+                <span className="hidden leading-snug lg:inline">{f.title}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <m.div
-        className="grid gap-4 lg:col-span-8"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      >
-        {openSource.map((project) => (
-          <section
-            key={project.repo}
-            aria-label={project.name}
-            className="rounded-[22px] border border-white/[0.08] bg-surface p-5 md:p-6"
-          >
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h4 className="font-display text-[22px] leading-tight tracking-tight text-text-primary md:text-2xl">
-                {project.name}
-              </h4>
-              <a
-                href={`https://github.com/${project.repo}`}
-                target="_blank"
-                rel="noreferrer"
-                className="font-mono text-xs text-muted transition-colors hover:text-text-primary"
-              >
-                {project.repo}
-              </a>
-            </div>
-            <p className="mt-1.5 text-sm text-muted">{project.about}</p>
+      <div className="grid min-w-0 content-start gap-4 lg:col-span-8">
+        <div className="lg:hidden">
+          <p className="font-mono text-[11px] tracking-[0.04em] text-accent">{fix.project}</p>
+          <h4 className="mt-1 font-display text-2xl leading-tight tracking-tight text-text-primary">
+            {fix.title}
+          </h4>
+        </div>
 
-            <ul className="mt-4 divide-y divide-white/[0.06] border-t border-white/[0.06]">
-              {project.prs.map((pr) => (
-                <li key={pr.number}>
-                  <a
-                    href={prUrl(project.repo, pr.number)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group grid min-h-[44px] grid-cols-[1fr_auto] gap-x-3 gap-y-1.5 py-3 md:grid-cols-[auto_1fr_auto] md:items-baseline md:gap-x-4"
-                  >
-                    {/* Phones: status and number on their own line, the text below at full width. */}
-                    <span className="flex items-center gap-2">
-                      <span
-                        className={`inline-flex w-[5.25rem] items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[11px] ${badge[pr.status].ring} ${badge[pr.status].text}`}
-                      >
-                        <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${badge[pr.status].dot}`} />
-                        {pr.status}
-                      </span>
-                      <span className="font-mono text-xs text-muted md:hidden">#{pr.number}</span>
-                    </span>
-                    <span className="col-span-2 row-start-2 text-sm leading-relaxed text-text-primary/90 md:col-span-1 md:row-start-auto md:text-[15px]">
-                      <span className="mr-2 hidden font-mono text-xs text-muted md:inline">
-                        #{pr.number}
-                      </span>
-                      {pr.title}
-                      {pr.when || pr.note ? (
-                        <span className="text-muted"> ·{'\u00a0'}{pr.when ?? pr.note}</span>
-                      ) : null}
-                    </span>
-                    <span
-                      aria-hidden
-                      className="col-start-2 row-start-1 text-muted transition-colors group-hover:text-accent md:col-start-auto md:row-start-auto"
-                    >
-                      ↗
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </m.div>
+        <div
+          ref={panelRef}
+          className="osf-panel"
+          onPointerDown={(e) => {
+            takeOver();
+            dragging.current = true;
+            e.currentTarget.setPointerCapture(e.pointerId);
+            fromPointer(e);
+          }}
+          onPointerMove={(e) => {
+            if (!dragging.current && e.pointerType !== 'mouse') return;
+            if (playing.current) takeOver();
+            fromPointer(e);
+          }}
+          onPointerUp={() => (dragging.current = false)}
+          onPointerCancel={() => (dragging.current = false)}
+        >
+          <div className="osf-region osf-before">
+            <span className="osf-tag is-bad">Before</span>
+            <div key={`${fix.id}-${frame}`} className="osf-fig">
+              {before()}
+            </div>
+          </div>
+          <div className="osf-region osf-after" aria-hidden>
+            <span className="osf-tag is-good">After</span>
+            <div className="osf-fig">
+              {after()}
+            </div>
+          </div>
+          <div ref={knobRef} className="osf-knob" aria-hidden />
+        </div>
+
+        <input
+          ref={sliderRef}
+          type="range"
+          min={0}
+          max={100}
+          defaultValue={50}
+
+          aria-label="Compare before and after"
+          className="osf-slider"
+          onInput={(e) => {
+            takeOver();
+            setCut(Number(e.currentTarget.value));
+          }}
+        />
+
+        <div className="grid gap-3 md:grid-cols-2" aria-live="polite">
+          <p className="rounded-2xl bg-surface p-4 text-sm leading-relaxed text-muted md:p-5 md:text-[15px]">
+            <span className="osf-label is-bad">What was broken</span>
+            {fix.before}
+          </p>
+          <p className="rounded-2xl bg-surface p-4 text-sm leading-relaxed text-muted md:p-5 md:text-[15px]">
+            <span className="osf-label is-good">What I changed</span>
+            {fix.after}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <p className="min-w-0 flex-1 basis-60 text-sm text-muted">
+            <span className="text-text-primary">
+              {project.name}
+              {project.org ? ` · ${project.org}` : ''}
+            </span>
+            , {project.about}.
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            {fix.tags.map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-white/[0.08] px-2.5 py-1 font-mono text-[11px] text-muted"
+              >
+                {t}
+              </span>
+            ))}
+            <a
+              href={prUrl(project.repo, fix.prs[0].number)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-white/[0.1] px-4 text-sm text-text-primary transition-colors hover:border-accent/50"
+            >
+              View the change <span aria-hidden>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
