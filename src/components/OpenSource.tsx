@@ -133,8 +133,8 @@ export function OpenSource() {
           Fixes I sent <span className="italic">upstream</span>.
         </h3>
         <p className="mt-4 max-w-xl text-sm text-muted md:text-base">
-          Bug fixes and docs for IBM Granite Switch, OpenAlgo and OpenClaw. Pick one and drag across
-          it to see what changed.
+          Bug fixes and docs for IBM Granite Switch, OpenAlgo and OpenClaw. Choose a fix below, then
+          drag across the panel to see what changed.
         </p>
 
         {/* Phones: the three projects as tabs, then that project's fixes. */}
@@ -194,7 +194,10 @@ export function OpenSource() {
           </div>
         </div>
 
-        {/* Laptops: the fixes grouped under each project, with its repository. */}
+        {/* Laptops: the fixes grouped under each project, with its repository. Each fix is an
+            outlined row with an arrow toward the panel, so the list reads as something to choose
+            from. Hover styles apply only where a pointer can hover, so touch laptops don't keep
+            a row lit after a tap. */}
         <div className="mt-8 hidden gap-6 lg:grid">
           {openSourceProjects.map((p) => (
             <div key={p.repo}>
@@ -209,7 +212,7 @@ export function OpenSource() {
               >
                 {p.repo}
               </a>
-              <div role="group" aria-label={`${p.name} fixes`} className="mt-2 grid gap-0.5">
+              <div role="group" aria-label={`${p.name} fixes`} className="mt-3 grid gap-1.5">
                 {fixesOf(p.name).map((f) => {
                   const on = f.id === active;
                   return (
@@ -218,11 +221,23 @@ export function OpenSource() {
                       type="button"
                       aria-pressed={on}
                       onClick={() => setActive(f.id)}
-                      className={`rounded-xl px-3 py-2 text-left text-[15px] leading-snug transition-colors ${
-                        on ? 'bg-surface text-text-primary' : 'text-muted hover:text-text-primary'
+                      className={`group grid min-h-[44px] grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-[14px] border px-3.5 py-2.5 text-left text-[15px] leading-snug transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                        on
+                          ? 'border-accent/60 bg-surface text-text-primary'
+                          : 'border-white/[0.1] text-muted [@media(hover:hover)]:hover:border-accent/50 [@media(hover:hover)]:hover:text-text-primary'
                       }`}
                     >
-                      {f.title}
+                      <span>{f.title}</span>
+                      <span
+                        aria-hidden
+                        className={`transition-[color,transform] duration-200 ${
+                          on
+                            ? 'text-accent'
+                            : 'text-muted [@media(hover:hover)]:group-hover:translate-x-0.5 [@media(hover:hover)]:group-hover:text-accent'
+                        }`}
+                      >
+                        →
+                      </span>
                     </button>
                   );
                 })}
