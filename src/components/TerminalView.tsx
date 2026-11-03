@@ -255,7 +255,7 @@ function run(raw: string, fx: Effects): Result {
         return {
           out: openSource.map((f) => (
             <Fragment key={f.id}>
-              <Acc>{f.project.padEnd(16)}</Acc>
+              <Acc>{f.project.padEnd(20)}</Acc>
               {f.title}
               {'\n'}
             </Fragment>

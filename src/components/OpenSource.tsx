@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
-import { openSource, prUrl, projectOf, type OpenSourceFixId } from '../data/content';
+import {
+  openSource,
+  openSourceProjects,
+  prUrl,
+  projectOf,
+  type OpenSourceFixId,
+} from '../data/content';
 import { FIGURES } from './OpenSourceFigures';
 
 /**
@@ -12,6 +18,7 @@ import { FIGURES } from './OpenSourceFigures';
  */
 
 const STEP_MS = 900;
+const fixesOf = (project: string) => openSource.filter((f) => f.project === project);
 /** Where the divider rests: side by side where both drawings fit, otherwise on the fix. */
 const restingCut = (panel: HTMLElement | null) => ((panel?.clientWidth ?? 0) >= 640 ? 50 : 0);
 const reducedMotion = () =>
@@ -126,45 +133,119 @@ export function OpenSource() {
           Fixes I sent <span className="italic">upstream</span>.
         </h3>
         <p className="mt-4 max-w-xl text-sm text-muted md:text-base">
-          Bug fixes and docs for IBM&apos;s Granite Switch, OpenAlgo and OpenClaw. Pick one and drag
-          across it to see what changed.
+          Bug fixes and docs for IBM Granite Switch, OpenAlgo and OpenClaw. Pick one and drag across
+          it to see what changed.
         </p>
 
-        <div
-          role="group"
-          aria-label="Fixes"
-          className="osf-picks -mx-6 mt-6 flex snap-x gap-2 overflow-x-auto px-6 pb-1 lg:mx-0 lg:mt-8 lg:grid lg:gap-1 lg:overflow-visible lg:px-0"
-        >
-          {openSource.map((f) => {
-            const on = f.id === active;
-            return (
-              <button
-                key={f.id}
-                type="button"
-                aria-pressed={on}
-                onClick={() => setActive(f.id)}
-                className={`flex-shrink-0 snap-start rounded-full border px-3.5 py-2 text-left text-sm transition-colors lg:grid lg:gap-0.5 lg:rounded-xl lg:border-0 lg:px-3 lg:py-2.5 ${
-                  on
-                    ? 'border-accent/50 bg-surface text-text-primary'
-                    : 'border-white/[0.08] text-muted hover:text-text-primary'
-                }`}
-              >
-                <span
-                  className={`hidden font-mono text-[11px] tracking-[0.04em] lg:block ${on ? 'osf-pick-project' : 'text-muted'}`}
+        {/* Phones: the three projects as tabs, then that project's fixes. */}
+        <div className="mt-6 lg:hidden">
+          <div role="group" aria-label="Projects" className="grid grid-cols-3 gap-1.5">
+            {openSourceProjects.map((p) => {
+              const fixes = fixesOf(p.name);
+              const on = p.name === project.name;
+              return (
+                <button
+                  key={p.repo}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setActive(fixes[0].id)}
+                  className={`grid min-h-[44px] content-start gap-0.5 rounded-2xl border px-2.5 py-2.5 text-left transition-colors ${
+                    on ? 'border-accent/50 bg-surface' : 'border-white/[0.08]'
+                  }`}
                 >
-                  {f.project}
-                </span>
-                <span className="lg:hidden">{f.short}</span>
-                <span className="hidden leading-snug lg:inline">{f.title}</span>
-              </button>
-            );
-          })}
+                  <span
+                    className={`truncate font-mono text-[11px] tracking-[0.04em] ${on ? 'osf-pick-project' : 'text-muted'}`}
+                  >
+                    {p.org ?? p.repo.split('/')[0]}
+                  </span>
+                  <span className="font-display text-base leading-tight tracking-tight text-text-primary">
+                    {p.short}
+                  </span>
+                  <span className="font-mono text-[11px] text-muted">
+                    {fixes.length} {fixes.length === 1 ? 'fix' : 'fixes'}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <div
+            role="group"
+            aria-label={`${project.name} fixes`}
+            className="osf-picks -mx-6 mt-2.5 flex gap-2 overflow-x-auto px-6 pb-1"
+          >
+            {fixesOf(project.name).map((f) => {
+              const on = f.id === active;
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setActive(f.id)}
+                  className={`flex-shrink-0 rounded-full border px-3.5 py-2 text-sm transition-colors ${
+                    on
+                      ? 'border-accent/50 bg-surface text-text-primary'
+                      : 'border-white/[0.08] text-muted hover:text-text-primary'
+                  }`}
+                >
+                  {f.short}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Laptops: the fixes grouped under each project, with its repository. */}
+        <div className="mt-8 hidden gap-6 lg:grid">
+          {openSourceProjects.map((p) => (
+            <div key={p.repo}>
+              <h4 className="font-display text-[22px] leading-tight tracking-tight text-text-primary">
+                {p.name}
+              </h4>
+              <a
+                href={`https://github.com/${p.repo}`}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-0.5 inline-block font-mono text-[11px] text-muted transition-colors hover:text-text-primary"
+              >
+                {p.repo}
+              </a>
+              <div role="group" aria-label={`${p.name} fixes`} className="mt-2 grid gap-0.5">
+                {fixesOf(p.name).map((f) => {
+                  const on = f.id === active;
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => setActive(f.id)}
+                      className={`rounded-xl px-3 py-2 text-left text-[15px] leading-snug transition-colors ${
+                        on ? 'bg-surface text-text-primary' : 'text-muted hover:text-text-primary'
+                      }`}
+                    >
+                      {f.title}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
       <div className="grid min-w-0 content-start gap-4 lg:col-span-8">
         <div className="lg:hidden">
-          <p className="font-mono text-[11px] tracking-[0.04em] text-accent">{fix.project}</p>
+          <p className="font-mono text-[11px] tracking-[0.04em]">
+            <span className="text-accent">{project.name}</span>
+            <span className="text-muted"> · </span>
+            <a
+              href={`https://github.com/${project.repo}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted underline decoration-white/20 underline-offset-2"
+            >
+              {project.repo}
+            </a>
+          </p>
           <h4 className="mt-1 font-display text-2xl leading-tight tracking-tight text-text-primary">
             {fix.title}
           </h4>
@@ -232,7 +313,6 @@ export function OpenSource() {
           <p className="min-w-0 flex-1 basis-60 text-sm text-muted">
             <span className="text-text-primary">
               {project.name}
-              {project.org ? ` · ${project.org}` : ''}
             </span>
             , {project.about}.
           </p>

@@ -88,6 +88,9 @@ export type OpenSourceFixId = 'kv' | 'cash' | 'feed' | 'ticks' | 'contract' | 'v
 
 export type OpenSourceProject = {
   name: string;
+  /** The name on the phone tab, under the owner line. */
+  short: string;
+  /** Shown above the short name on the phone tab; defaults to the GitHub owner. */
   org?: string;
   /** owner/name on GitHub. */
   repo: string;
@@ -243,21 +246,25 @@ export const publications: Publication[] = [
 ];
 
 // Fixes in other people's projects, told as what was broken and what changed (from the commit
-// messages). When a PR's status changes, update it here; Ask Ash reads it.
+// messages). Projects are listed in display order and fixes are grouped by project in the same
+// order. When a PR's status changes, update it here; Ask Ash reads it.
 export const openSourceProjects: OpenSourceProject[] = [
   {
-    name: 'Granite Switch',
+    name: 'IBM Granite Switch',
+    short: 'Granite Switch',
     org: 'IBM',
     repo: 'generative-computing/granite-switch',
     about: 'composable adapter models: LoRA adapters combined into one checkpoint and served on vLLM',
   },
   {
     name: 'OpenAlgo',
+    short: 'OpenAlgo',
     repo: 'marketcalls/openalgo',
     about: 'an open-source algorithmic trading platform for Indian brokers',
   },
   {
     name: 'OpenClaw',
+    short: 'OpenClaw',
     repo: 'openclaw/openclaw',
     about: 'an open-source personal AI assistant that runs on your own devices',
   },
@@ -266,7 +273,7 @@ export const openSourceProjects: OpenSourceProject[] = [
 export const openSource: OpenSourceFix[] = [
   {
     id: 'kv',
-    project: 'Granite Switch',
+    project: 'IBM Granite Switch',
     title: 'Stopped a silent routing failure in vLLM.',
     short: 'vLLM routing',
     before:
@@ -275,6 +282,17 @@ export const openSource: OpenSourceFix[] = [
       'vLLM now refuses those caches at startup and names the flag to change. The check runs on CPU in the tests, along with the arithmetic it rests on.',
     tags: ['vLLM', 'LoRA routing', 'Numerics'],
     prs: [{ number: 157, status: 'Open' }],
+  },
+  {
+    id: 'docs',
+    project: 'IBM Granite Switch',
+    title: 'Brought the developer docs back in line with the code.',
+    short: 'Developer docs',
+    before:
+      "The developer guide still described SingleSwitch and a trainable router, both already removed, and its install command used an option that doesn't exist.",
+    after: 'It now documents the coded-memory MultiSwitch, the correct install command and the audio setup.',
+    tags: ['Docs', 'Developer experience'],
+    prs: [{ number: 143, status: 'Merged' }],
   },
   {
     id: 'cash',
@@ -325,6 +343,17 @@ export const openSource: OpenSourceFix[] = [
     prs: [{ number: 2133, status: 'Merged' }],
   },
   {
+    id: 'nav',
+    project: 'OpenAlgo',
+    title: 'Fixed the navbar on 1280 to 1535px screens.',
+    short: 'Navbar overflow',
+    before:
+      'Nine labelled items, the logo and the controls need 1,412px, but the page container gives 1,248px. Even after shrinking, the bar overflowed by 84px and clipped the logo.',
+    after: 'The bar fits at every width in that range.',
+    tags: ['Tailwind', 'Responsive UI'],
+    prs: [{ number: 2119, status: 'Merged' }],
+  },
+  {
     id: 'vm',
     project: 'OpenClaw',
     title: 'Made the macOS VM setup work end to end.',
@@ -338,28 +367,6 @@ export const openSource: OpenSourceFix[] = [
       { number: 160239, status: 'Merged' },
       { number: 162736, status: 'Closed', note: 'acknowledged by the maintainers' },
     ],
-  },
-  {
-    id: 'nav',
-    project: 'OpenAlgo',
-    title: 'Fixed the navbar on 1280 to 1535px screens.',
-    short: 'Navbar overflow',
-    before:
-      'Nine labelled items, the logo and the controls need 1,412px, but the page container gives 1,248px. Even after shrinking, the bar overflowed by 84px and clipped the logo.',
-    after: 'The bar fits at every width in that range.',
-    tags: ['Tailwind', 'Responsive UI'],
-    prs: [{ number: 2119, status: 'Merged' }],
-  },
-  {
-    id: 'docs',
-    project: 'Granite Switch',
-    title: 'Brought the developer docs back in line with the code.',
-    short: 'Developer docs',
-    before:
-      "The developer guide still described SingleSwitch and a trainable router, both already removed, and its install command used an option that doesn't exist.",
-    after: 'It now documents the coded-memory MultiSwitch, the correct install command and the audio setup.',
-    tags: ['Docs', 'Developer experience'],
-    prs: [{ number: 143, status: 'Merged' }],
   },
 ];
 
