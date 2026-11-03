@@ -12,6 +12,7 @@ import {
   projects,
   openSource,
   prUrl,
+  projectOf,
   publications,
   skillGroups,
   SITE_URL,
@@ -170,11 +171,9 @@ const about = () =>
     ),
   )}</section>` +
   `<section><h2>Open source</h2>${list(
-    openSource.flatMap((p) =>
-      p.prs.map(
-        (pr) =>
-          `${esc(p.name)} <a href="${prUrl(p.repo, pr.number)}">#${pr.number}</a> (${pr.status}): ${esc(pr.title)}`,
-      ),
+    openSource.map(
+      (f) =>
+        `<a href="${prUrl(projectOf(f).repo, f.prs[0].number)}">${esc(f.project)}: ${esc(f.title)}</a> ${esc(f.before)} ${esc(f.after)}`,
     ),
   )}</section>` +
   `<section><h2>Skills</h2>${list(
@@ -239,8 +238,8 @@ export function llmsTxt() {
     '',
     '## Open source',
     '',
-    ...openSource.flatMap((p) =>
-      p.prs.map((pr) => `- [${p.name} #${pr.number}](${prUrl(p.repo, pr.number)}) (${pr.status}): ${pr.title}`),
+    ...openSource.map(
+      (f) => `- [${f.project}: ${f.title}](${prUrl(projectOf(f).repo, f.prs[0].number)}) ${f.after}`,
     ),
     '',
     '## Contact',

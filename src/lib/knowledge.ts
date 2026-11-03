@@ -9,6 +9,7 @@ import {
   heroContent,
   journalEntries,
   openSource,
+  openSourceProjects,
   prUrl,
   projects,
   publications,
@@ -100,14 +101,18 @@ export function buildKnowledge() {
     ...Object.entries(skills).map(([k, v]) => `- ${k}: ${v.join('; ')}`),
 
     `# Open-source contributions (pull requests to other people's projects; he is a contributor, not a maintainer)`,
-    ...openSource.map(
+    ...openSourceProjects.map(
       (p) =>
-        `## ${p.name} (github.com/${p.repo}): ${p.about}\n` +
+        `## ${p.name}${p.org ? ` (${p.org})` : ''}, github.com/${p.repo}: ${p.about}\n` +
         list(
-          p.prs.map(
-            (pr) =>
-              `PR #${pr.number}, ${pr.status.toLowerCase()}${pr.when ? ` ${pr.when}` : ''}${pr.note ? `, ${pr.note}` : ''}: ${pr.title} ${prUrl(p.repo, pr.number)}`,
-          ),
+          openSource
+            .filter((f) => f.project === p.name)
+            .map(
+              (f) =>
+                `${f.title} Before: ${f.before} After: ${f.after} (${f.prs
+                  .map((pr) => `PR #${pr.number}, ${pr.status.toLowerCase()}${pr.note ? `, ${pr.note}` : ''}: ${prUrl(p.repo, pr.number)}`)
+                  .join('; ')})`,
+            ),
         ),
     ),
 

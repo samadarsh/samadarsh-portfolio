@@ -562,6 +562,82 @@ html {
   .pdemo *, .pdemo *::before, .pdemo *::after { animation: none !important; transition: none !important; }
 }
 
+/* ---------- Open-source before/after reveal (OpenSource.tsx, OpenSourceFigures.tsx) ----------
+   Two stacked sides; the "after" side is clipped to the right of --osf-cut, which the component
+   writes straight to the panel. Status colours are mixed toward the text colour so the small
+   mono labels stay legible on both themes' surfaces. */
+.osf-picks { scrollbar-width: none; overscroll-behavior-x: contain; }
+/* The selected fix's project label sits on the surface tint, where plain accent is under 4.5:1 in light mode. */
+.osf-pick-project { color: color-mix(in srgb, hsl(var(--accent)) 82%, hsl(var(--text))); }
+.osf-picks::-webkit-scrollbar { display: none; }
+.osf-panel {
+  --osf-bad: color-mix(in srgb, rgb(var(--down)) 78%, hsl(var(--text)));
+  --osf-good: color-mix(in srgb, rgb(var(--up)) 78%, hsl(var(--text)));
+  position: relative; height: 19rem; border-radius: 22px; overflow: hidden;
+  border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--surface));
+  touch-action: pan-y; user-select: none; -webkit-user-select: none;
+}
+@media (hover: hover) and (pointer: fine) { .osf-panel { cursor: ew-resize; } }
+/* Each side is its own region; its drawing stays whole and centred in whatever width it has. */
+.osf-region { position: absolute; top: 0; bottom: 0; overflow: hidden; }
+.osf-before { left: 0; width: var(--osf-cut, 50%); background: hsl(var(--surface)); }
+.osf-after { left: var(--osf-cut, 50%); right: 0; background: color-mix(in srgb, hsl(var(--surface)) 92%, rgb(var(--up))); }
+.osf-tag { position: absolute; top: 1rem; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
+.osf-before .osf-tag { left: 1.1rem; }
+.osf-after .osf-tag { right: 1.1rem; }
+.osf-knob { position: absolute; top: 0; bottom: 0; left: var(--osf-cut, 50%); width: 2px; margin-left: -1px; background: hsl(var(--text) / 0.85); pointer-events: none; }
+.osf-knob::after {
+  content: '‹ ›'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center;
+  background: hsl(var(--text)); color: hsl(var(--bg)); font-size: 15px; letter-spacing: 0.1em;
+  box-shadow: 0 6px 20px -6px rgb(0 0 0 / 0.5);
+}
+/* At the panel's edges the handle stays fully on the panel. */
+.osf-knob.is-left::after { left: 21px; }
+.osf-knob.is-right::after { left: -19px; }
+.osf-fig {
+  position: absolute; top: calc(50% + 0.75rem); left: 50%; transform: translate(-50%, -50%);
+  width: min(19rem, calc(100vw - 5rem)); display: grid; justify-items: start; gap: 0.7rem;
+  font: 12.5px/1.5 'JetBrains Mono', ui-monospace, monospace; color: hsl(var(--muted));
+  animation: osf-in 0.45s ease both;
+}
+.osf-after .osf-fig { animation: none; }
+@keyframes osf-in { from { opacity: 0; } }
+.osf-fig p { margin: 0; }
+.osf-cap { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.osf-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.osf-cells { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; width: 100%; }
+.osf-cells .osf-cell { min-width: 0; padding-inline: 0; font-size: 11.5px; }
+.osf-cell { min-width: 3rem; padding: 0.4rem 0.5rem; border-radius: 8px; border: 1px solid rgb(var(--ink) / 0.12); text-align: center; color: hsl(var(--text)); }
+.osf-big { font: 500 clamp(1.9rem, 4.4vw, 2.6rem)/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: -0.02em; color: hsl(var(--text)); }
+.osf-chip { padding: 0.3rem 0.75rem; border-radius: 999px; border: 1px solid rgb(var(--ink) / 0.12); color: hsl(var(--text)); }
+.osf-lane { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 0.6rem; align-items: center; width: 100%; }
+.osf-bar { height: 8px; border-radius: 99px; background: rgb(var(--ink) / 0.1); overflow: hidden; }
+.osf-bar i { display: block; height: 100%; border-radius: 99px; background: hsl(var(--accent)); }
+.osf-bytes { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3px; width: 100%; }
+.osf-bytes span { padding: 0.4rem 0.25rem; border-radius: 6px; background: rgb(var(--ink) / 0.07); text-align: center; font-size: 11px; color: hsl(var(--text) / 0.8); }
+.osf-bytes span.is-on { background: hsl(var(--accent) / 0.22); color: hsl(var(--text)); }
+.osf-bytes span.is-bad { background: rgb(var(--down) / 0.2); color: hsl(var(--text)); }
+.osf-nav { position: relative; width: 100%; height: 2.25rem; border: 1px dashed rgb(var(--ink) / 0.2); border-radius: 10px; }
+.osf-items { position: absolute; top: 5px; bottom: 5px; left: 6px; display: flex; gap: 4px; }
+.osf-items i { flex: 1; min-width: 0; border-radius: 6px; background: rgb(var(--ink) / 0.12); }
+.osf-items i:first-child { flex: 0 0 1.4rem; background: hsl(var(--accent)); }
+.osf-term { display: grid; gap: 0.3rem; color: hsl(var(--text)); }
+.osf-term span { opacity: 0.4; }
+.osf-term span.is-on { opacity: 1; }
+.osf-panel .is-bad, .osf-label.is-bad { color: var(--osf-bad, color-mix(in srgb, rgb(var(--down)) 78%, hsl(var(--text)))); }
+.osf-panel .is-good, .osf-label.is-good { color: var(--osf-good, color-mix(in srgb, rgb(var(--up)) 78%, hsl(var(--text)))); }
+.osf-cell.is-bad, .osf-chip.is-bad { border-color: rgb(var(--down) / 0.45); background: rgb(var(--down) / 0.07); }
+.osf-cell.is-good, .osf-chip.is-good { border-color: rgb(var(--up) / 0.45); }
+.osf-label { display: block; margin-bottom: 0.3rem; font: 500 11px 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+.osf-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; }
+.osf-slider::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: rgb(var(--ink) / 0.15); }
+.osf-slider::-moz-range-track { height: 2px; border-radius: 2px; background: rgb(var(--ink) / 0.15); }
+.osf-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; margin-top: -7px; border-radius: 50%; background: hsl(var(--accent)); border: 0; }
+.osf-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: hsl(var(--accent)); border: 0; }
+.osf-slider:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 4px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { .osf-fig { animation: none; } }
+
 /* ---------- Publications gallery (Publications.tsx) ----------
    Each card's drawing rests in its finished state; when the row first comes into view
    (.pub-seen) it plays once: boxes land on the plate, the waveform sweeps in, nutrient and genre bars fill. */
