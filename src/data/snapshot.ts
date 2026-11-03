@@ -10,6 +10,8 @@ import {
   heroContent,
   journalEntries,
   projects,
+  openSource,
+  prUrl,
   publications,
   skillGroups,
   SITE_URL,
@@ -167,6 +169,14 @@ const about = () =>
       (p) => `${esc(p.title)}. ${esc(p.venues.map((v) => `${v.kind}: ${v.name}`).join('; '))}`,
     ),
   )}</section>` +
+  `<section><h2>Open source</h2>${list(
+    openSource.flatMap((p) =>
+      p.prs.map(
+        (pr) =>
+          `${esc(p.name)} <a href="${prUrl(p.repo, pr.number)}">#${pr.number}</a> (${pr.status}): ${esc(pr.title)}`,
+      ),
+    ),
+  )}</section>` +
   `<section><h2>Skills</h2>${list(
     skillGroups.map((g) => `${esc(g.title)}: ${esc(g.items.join(', '))}`),
   )}</section>`;
@@ -219,13 +229,19 @@ export function llmsTxt() {
     '',
     '## Pages',
     '',
-    `- [About](${SITE_URL}/about): experience, education, publications and skills.`,
+    `- [About](${SITE_URL}/about): experience, education, publications, open-source work and skills.`,
     `- [${pages.journal.title}](${SITE_URL}/journal): ${writingMeta.description}`,
     `- [Resume (PDF)](${SITE_URL}${resumeUrl})`,
     '',
     '## Experience',
     '',
     ...experience.map((e) => `- ${e.role}, ${e.company} (${e.period}): ${e.summary}`),
+    '',
+    '## Open source',
+    '',
+    ...openSource.flatMap((p) =>
+      p.prs.map((pr) => `- [${p.name} #${pr.number}](${prUrl(p.repo, pr.number)}) (${pr.status}): ${pr.title}`),
+    ),
     '',
     '## Contact',
     '',

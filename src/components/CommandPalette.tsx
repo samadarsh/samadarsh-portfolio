@@ -13,6 +13,7 @@ import {
 import { useBackToClose } from '../hooks/useBackToClose';
 import {
   contact,
+  openSource,
   publications,
   experience,
   journalEntries,
@@ -147,6 +148,16 @@ function useCommands(): Command[] {
         hint: pub.venues[0].kind === 'Journal' ? 'journal' : 'conference',
         keywords: `publication paper research ${pub.venues.map((v) => v.name).join(' ')} ${pub.topics.join(' ')}`,
         run: () => goTo('/about', 'publications'),
+      })),
+
+      ...openSource.map<Command>((p) => ({
+        id: `oss-${p.repo}`,
+        group: 'Open source',
+        icon: '↗',
+        label: p.name,
+        hint: `${p.prs.length} PRs`,
+        keywords: `open source contribution pull request pr github ${p.repo} ${p.about} ${p.prs.map((pr) => pr.title).join(' ')}`,
+        run: () => goTo('/about', 'open-source'),
       })),
 
       ...journalEntries.map<Command>((j) => ({

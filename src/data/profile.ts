@@ -15,7 +15,7 @@ export const strengths = [
 export const proudOf = [
   'Working on real AI products (Yantra and QLearn at Neeroma) where AI interacts with software-engineering and education workflows, beyond academic ML projects.',
   'His agent work on Yantra, especially the L5 Deploy Agent and L6 Tickets Agent, and the engineering challenges of multi-agent applications.',
-  'His open-source contributions to OpenClaw and OpenAlgo.',
+  'His open-source contributions to Granite Switch, OpenClaw and OpenAlgo.',
 ];
 
 export const interests = [
@@ -76,11 +76,6 @@ export const haugtunAbout =
 
 export const schooling = [
   'HSC (2019–2020) and SSLC (2017–2018), Don Bosco Matriculation Higher Secondary School, Peravallur, Chennai.',
-];
-
-export const openSource = [
-  'OpenClaw (contributor, not maintainer): fixed the macOS VM installation guide to provision Node.js before OpenClaw, resolving installation failures on fresh VMs; improved the guide’s Gateway setup and host-browser dashboard access using SSH tunnelling and the dashboard pairing flow. PRs #160239 and #162736.',
-  'OpenAlgo (contributor, not maintainer): fixed WebSocket market-data timestamps for Upstox and Zerodha so exchange trade time is exposed correctly across quote and depth feeds; resolved a master-contract race condition during concurrent login/download operations; added regression tests. PRs #2170, #2133 and #2119.',
 ];
 
 export const certifications = [
