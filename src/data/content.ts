@@ -422,6 +422,32 @@ export const skillGroups: SkillGroup[] = [
 
 export const projects: Project[] = [
   {
+    slug: 'redis-go',
+    title: 'redis-go',
+    eyebrow: 'Systems · Go',
+    year: '2026',
+    role: 'Solo Builder',
+    summary:
+      'A Redis-compatible key-value server built from scratch in Go that speaks the real Redis protocol, so it works with redis-cli.',
+    highlights: [
+      'Speaks the real Redis protocol (RESP), so it works with redis-cli; 17 commands implemented.',
+      'Thread-safe store with TTL key expiry, and AOF persistence with crash recovery.',
+      "About 90% of real Redis's throughput at 167k ops/sec, profiled with pprof.",
+      '59 tests run under the race detector in CI on GitHub Actions, with zero dependencies.',
+    ],
+    stack: ['Go', 'TCP', 'Concurrency', 'RESP protocol', 'GitHub Actions'],
+    links: { live: null, github: 'https://github.com/samadarsh/redis-go' },
+    cover: 'projects/redis-go.webp',
+    video: 'projects/redis-go.mp4',
+    architecture: [
+      { label: 'redis-cli', detail: 'The real Redis client' },
+      { label: 'TCP + RESP', detail: 'The real Redis protocol, 17 commands' },
+      { label: 'Thread-safe store', detail: 'With TTL key expiry' },
+      { label: 'AOF persistence', detail: 'Crash recovery from the append-only file' },
+    ],
+    accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
+  },
+  {
     slug: 'bite-wise',
     title: 'BiteWise',
     eyebrow: 'AI Product · Swiggy Builders Club',

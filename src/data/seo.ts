@@ -34,7 +34,7 @@ export const pages = {
     path: '/work',
     title: 'Work',
     description:
-      'Selected projects by Adarsh S — AI agents, RAG systems, speech AI and developer tools first, plus product and client websites shipped to production.',
+      'Selected projects by Adarsh S — a Redis-compatible server in Go, AI agents, RAG systems, speech AI and developer tools, plus product and client websites shipped to production.',
     image: '/og/work.jpg',
     imageAlt: 'Selected work by Adarsh S across AI, product and markets.',
   },
