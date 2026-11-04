@@ -53,7 +53,7 @@ export const attention: Partial<
     },
     evals: {
       w: 0.58,
-      note: 'At Outlier and Mercor: model-breaking tasks for frontier LLMs, tracing their search trajectories and reasoning chains.',
+      note: 'At Outlier and Mercor: model-breaking tasks and evaluation benchmarks for frontier LLMs and tool-using agents, tracing their search trajectories, tool calls and reasoning chains.',
     },
     repo: {
       w: 0.44,
