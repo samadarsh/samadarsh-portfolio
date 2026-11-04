@@ -143,9 +143,9 @@ export const experience: ExperienceItem[] = [
   {
     role: 'AI Engineer',
     company: 'Neeroma Technologies',
-    period: 'Jun 2026 — Oct 2026',
+    period: 'Jun 2026 — Present',
     summary:
-      'Worked on Yantra, a multi-agent platform, evaluating LLM agent behaviour across design, deployment and ticketing workflows.',
+      'Working on Yantra, a multi-agent platform, evaluating LLM agent behaviour across design, deployment and ticketing workflows.',
     points: [
       'Debugged L5 Deploy Agent trajectories, tracing tool calls and reasoning steps to diagnose agent failures.',
       'Built L6 Tickets Agent triage logic and test cases exposing edge-case failures in agent decision-making.',
