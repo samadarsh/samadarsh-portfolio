@@ -171,11 +171,13 @@ export const experience: ExperienceItem[] = [
     period: 'Jun 2025 — Apr 2026',
     kind: 'Contract',
     summary:
-      'Designed multi-hop reasoning and reasoning-trap prompts that reliably exposed weaknesses in state-of-the-art models.',
+      'Built evaluation benchmarks to test how frontier LLMs and tool-using AI agents handle multi-step research and reasoning, and to find where they fail.',
     points: [
-      'Tested tasks against leading LLMs, confirming reproducible failures across repeated model runs.',
-      'Distinguished genuine model limitations from prompt ambiguity using run logs and intermediate outputs.',
-      'Scaled validated model-breaking patterns across new domains while keeping task wording precise and unambiguous.',
+      'Designed multi-hop retrieval and reasoning benchmarks that required models to connect facts across several sources, exposing failure modes in leading tool-using LLMs.',
+      'Analyzed model run logs, tool-call traces and intermediate outputs to isolate the root cause of each failure, separating genuine model limitations from ambiguity in the task itself.',
+      'Validated reproducible failures across repeated model runs, so each benchmark gave a consistent, reliable signal rather than one-off errors.',
+      'Defined deterministic answer keys and evaluation criteria that let model responses be graded automatically and objectively.',
+      'Turned validated failure patterns into new tasks across different domains, keeping task specifications precise and unambiguous.',
     ],
   },
   {
