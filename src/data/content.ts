@@ -1,6 +1,12 @@
 export type ProjectLinks = {
   live: string | null;
   github: string | null;
+  /** Button text for the live link; "View live" when not set. */
+  liveLabel?: string;
+  /** Button text for the repository link; "GitHub" when not set. */
+  githubLabel?: string;
+  /** Lead the project card with the live link as a filled button, ahead of the case study. */
+  livePrimary?: boolean;
 };
 
 /** Animated cover for a project without a screenshot; see components/ProjectDemo.tsx. */
@@ -423,6 +429,40 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 export const projects: Project[] = [
+  {
+    slug: 'clox',
+    title: 'clox',
+    eyebrow: 'Systems · C',
+    year: '2026',
+    role: 'Solo Builder',
+    summary:
+      'A bytecode virtual machine for a programming language, written in C from scratch, that runs in a browser playground with a time-travel debugger via WebAssembly.',
+    highlights: [
+      'A full language with closures, classes and inheritance, run by a stack-based VM.',
+      'Mark-sweep garbage collector, tested with a stress mode that runs it on every allocation.',
+      'NaN boxing and other optimizations make it about as fast as Python 3.14.',
+      'Compiled to WebAssembly with Emscripten for a browser playground with a time-travel debugger.',
+      'Passes 246/246 official tests, with ASan/UBSan and CI on Linux and macOS.',
+    ],
+    stack: ['C', 'WebAssembly', 'Emscripten', 'GitHub Actions'],
+    links: {
+      live: 'https://samadarsh.github.io/clox/',
+      github: 'https://github.com/samadarsh/clox',
+      liveLabel: 'Try it live',
+      githubLabel: 'Code',
+      livePrimary: true,
+    },
+    cover: 'projects/clox.webp',
+    video: 'projects/clox.mp4',
+    architecture: [
+      { label: 'Source code', detail: 'Closures, classes and inheritance' },
+      { label: 'Bytecode', detail: 'What the stack-based VM runs' },
+      { label: 'Stack-based VM', detail: 'NaN boxing and other optimizations' },
+      { label: 'Mark-sweep GC', detail: 'Stress-tested on every allocation' },
+      { label: 'WebAssembly', detail: 'Browser playground with a time-travel debugger' },
+    ],
+    accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
+  },
   {
     slug: 'redis-go',
     title: 'redis-go',

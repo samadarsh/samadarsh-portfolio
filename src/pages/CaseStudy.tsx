@@ -83,7 +83,7 @@ export function CaseStudyPage() {
                   data-achievement="testdriver"
                   className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-text-primary px-5 text-sm font-medium text-bg"
                 >
-                  View live ↗
+                  {project.links.liveLabel ?? 'View live'} ↗
                 </a>
               ) : null}
               {project.links.github ? (
@@ -95,7 +95,7 @@ export function CaseStudyPage() {
                   data-magnetic
                   className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-white/[0.12] px-5 text-sm font-medium text-text-primary"
                 >
-                  GitHub ↗
+                  {project.links.githubLabel ?? 'GitHub'} ↗
                 </a>
               ) : null}
             </div>
