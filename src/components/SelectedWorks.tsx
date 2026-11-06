@@ -145,6 +145,23 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                   </div>
 
                   <div className="mt-5 flex flex-wrap items-center gap-x-6 lg:mt-7">
+                    {project.links.live && project.links.livePrimary ? (
+                      <a
+                        href={project.links.live}
+                        aria-describedby={
+                          sleepsWhenIdle(project.links.live) ? `${project.slug}-wake` : undefined
+                        }
+                        data-cursor="Live"
+                        data-magnetic
+                        data-achievement="testdriver"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-text-primary px-5 text-sm font-medium text-bg transition-colors hover:bg-accent"
+                      >
+                        {project.links.liveLabel ?? 'View live'}
+                        <ArrowIcon />
+                      </a>
+                    ) : null}
                     <Link
                       to={`/work/${project.slug}`}
                       data-cursor="Read"
@@ -160,7 +177,7 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                         →
                       </span>
                     </Link>
-                    {project.links.live ? (
+                    {project.links.live && !project.links.livePrimary ? (
                       <a
                         href={project.links.live}
                         aria-describedby={
@@ -173,7 +190,7 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                         className="group inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-text-primary"
                       >
                         <span className="border-b border-accent/40 pb-0.5 transition-colors group-hover:border-accent">
-                          View live
+                          {project.links.liveLabel ?? 'View live'}
                         </span>
                         <ArrowIcon />
                       </a>
@@ -186,7 +203,7 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
                         rel="noreferrer"
                         className="group inline-flex min-h-[44px] items-center gap-2 text-sm text-muted transition-colors hover:text-text-primary"
                       >
-                        <span>GitHub</span>
+                        <span>{project.links.githubLabel ?? 'GitHub'}</span>
                         <ArrowIcon />
                       </a>
                     ) : null}
