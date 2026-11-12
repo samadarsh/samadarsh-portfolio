@@ -461,6 +461,21 @@ export const projects: Project[] = [
       { label: 'Mark-sweep GC', detail: 'Stress-tested on every allocation' },
       { label: 'WebAssembly', detail: 'Browser playground with a time-travel debugger' },
     ],
+    results: {
+      setup:
+        'Five of the book’s benchmarks, run in clox and in line-for-line Python ports on the same Apple M3 Pro: clox built with Apple clang 21 at -O2, against Python 3.14.5 with profile-guided optimization and the JIT off. Best of 5 runs.',
+      metrics: [
+        { value: '1.16x', label: 'Faster than Python on method calls', detail: 'method_call: 0.127 s vs 0.147 s' },
+        { value: '1.14x', label: 'Faster than Python creating objects', detail: 'instantiation: 0.627 s vs 0.715 s' },
+        { value: '1.17x', label: 'Slower than Python on recursive calls', detail: 'fib: 0.766 s vs 0.656 s' },
+        { value: '2 ms', label: 'Startup, against 18 ms for Python', detail: 'On the programs’ own clocks, clox leads by 1.07x to 1.09x' },
+      ],
+      note: 'Python wins three of the five: fib, equality (1.05x) and string_equality (1.29x). On equality CPython drops statements that are only a constant; in the loop that really compares values, clox is faster, 1.40 s against 2.01 s. Python wins fib by specializing its bytecode as it runs, while clox hashes the name fib on every call.',
+      source: {
+        label: 'Full table, method and how to rerun it',
+        href: 'https://github.com/samadarsh/clox#benchmarks',
+      },
+    },
     accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
   },
   {
