@@ -111,6 +111,21 @@ const walkthrough = (p: Project) => {
       para(`One-line summary: ${w.summary} (${w.calls} LLM calls, ${w.seconds} s, ${w.model}.)`) +
       `</section>`
     );
+  if (w.kind === 'vm')
+    return (
+      `<section><h2>Programs, end to end</h2>` +
+      para(w.intro) +
+      para(`The REPL: ${w.repl.lines.map((l) => (l.in ? `> ${l.in}` : `→ ${l.out}`)).join(' ')}`) +
+      para(
+        `Compiled (${w.compile.source.join(' ')}): ${w.compile.chunks.map((c) => `${c.name}: ${c.code.map(([, , op, arg]) => (arg ? `${op} ${arg}` : op)).join(', ')}`).join('. ')}. ${w.compile.note}`,
+      ) +
+      para(
+        `Run, with the stack after each instruction: ${w.run.map((r) => `${r.op} [${r.stack.join(', ')}]${r.out ? ` prints ${r.out}` : ''}`).join('; ')}.`,
+      ) +
+      para(`${w.objects.file} prints: ${w.objects.output.split('\n').join(' / ')}.`) +
+      para(`${w.error.command}: ${w.error.lines.join(' ')} Exit code ${w.error.exitCode}.`) +
+      `</section>`
+    );
   if (w.kind === 'server')
     return (
       `<section><h2>One session, end to end</h2>` +
@@ -225,7 +240,9 @@ export function snapshotHtml(page: PageMeta) {
 export function llmsTxt() {
   const projectLine = (p: Project) => {
     const metric = p.results?.metrics[0];
-    const measured = metric ? ` Measured: ${metric.label.toLowerCase()} ${metric.value}.` : '';
+    // Lowercase the first word only when it is an ordinary word, so names and acronyms keep their case.
+    const label = metric?.label.replace(/^[A-Z](?=[a-z])/, (c) => c.toLowerCase());
+    const measured = metric ? ` Measured: ${label} ${metric.value}.` : '';
     return `- [${p.title}](${SITE_URL}/work/${p.slug}): ${p.eyebrow}. ${p.summary}${measured}`;
   };
   return [

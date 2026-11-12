@@ -22,6 +22,10 @@
 // redis-go: the session recorded in the repo's demo.gif on 3 Nov 2026, redis-cli against redis-go
 // on port 6380 with the AOF on. Every command, reply and log line is from that recording; the wire
 // bytes are SET name sam in RESP, the encoding the README shows and the AOF stores.
+//
+// clox: the REPL session, zoo.lox and oops.lox are the repo's recorded demo (demo.tape), and their
+// output is clox's own, rerun on 6 Nov 2026 at commit 34a073e. The bytecode and the stack after
+// each instruction are what `make trace` prints for the README's square example, at that commit.
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
 export type WalkthroughStep = { label: string; title: string; body: string; facts: string[] };
@@ -166,7 +170,30 @@ export type ServerWalkthrough = Base & {
   traits: string[];
 };
 
+export type VmWalkthrough = Base & {
+  kind: 'vm';
+  /** The REPL session: each line is what was typed (`in`) or what clox printed (`out`). */
+  repl: { command: string; lines: { in?: string; out?: string }[] };
+  /** A program and its bytecode, as `make trace` prints it: [offset, source line, op, operand]. */
+  compile: { source: string[]; chunks: { name: string; code: [string, string, string, string][] }[]; note: string };
+  /** The same program run one instruction at a time, with the stack after each one. */
+  run: {
+    fn: string;
+    at: string;
+    op: string;
+    stack: string[];
+    /** The stack slot where the running function's window starts. */
+    frame: number;
+    /** What the instruction printed. */
+    out?: string;
+  }[];
+  objects: { file: string; source: string[]; output: string };
+  error: { command: string; source: string[]; lines: string[]; exitCode: number };
+  traits: string[];
+};
+
 export type Walkthrough =
+  | VmWalkthrough
   | RagWalkthrough
   | SpeechWalkthrough
   | AgentWalkthrough
@@ -183,9 +210,148 @@ export const typedText = (w: Walkthrough) =>
         ? w.explanation
         : w.kind === 'server'
           ? w.recovered
-          : w.summary;
+          : w.kind === 'vm'
+            ? w.objects.output
+            : w.summary;
 
 export const walkthroughs: Record<string, Walkthrough> = {
+  clox: {
+    kind: 'vm',
+    intro:
+      'Real programs, traced through clox as you scroll. The REPL session and the demo programs are the ones recorded in the repo, and the bytecode and the stack are what clox’s own trace prints.',
+    typeStep: 3,
+    listStep: 1,
+    steps: [
+      {
+        label: 'REPL',
+        title: 'A language, and the machine that runs it.',
+        body: 'clox compiles a full programming language to bytecode and runs it on its own virtual machine, in about 2,600 lines of C with no dependencies. Its REPL compiles and runs one line at a time.',
+        facts: ['~2,600 lines of C', 'no dependencies'],
+      },
+      {
+        label: 'Compile',
+        title: 'Source in, bytecode out.',
+        body: 'A single-pass Pratt parser writes bytecode as it parses. Local variables become stack-slot numbers at compile time, so n costs no lookup when it runs; square is a global, so it is looked up by name.',
+        facts: ['single-pass Pratt parser', 'printed by make trace'],
+      },
+      {
+        label: 'Run',
+        title: 'Step through it, one instruction at a time.',
+        body: 'The VM reads an instruction and runs it on a stack of values. OP_CALL gives square a window on that stack, so the argument 3 is already its local n, with no copy. Scroll to step through the run, the way the playground’s time-travel debugger does.',
+        facts: ['14 instructions', 'prints 10'],
+      },
+      {
+        label: 'Objects',
+        title: 'Classes, inheritance and closures.',
+        body: 'Dog inherits from Animal and calls its speak through super. counter returns a closure that keeps count alive after counter has returned. Objects live on the heap, and a mark-sweep collector frees what nothing reaches once the heap has doubled.',
+        facts: ['Dog < Animal', 'GC stress-tested on every allocation'],
+      },
+      {
+        label: 'Fail',
+        title: 'When it fails, it says where.',
+        body: 'A runtime error stops the program with a message and a stack trace, one line per call, then exits with code 70. The bytecode keeps the source line of every byte, so each frame names its line.',
+        facts: ['3 frames', 'exit code 70'],
+      },
+    ],
+    repl: {
+      command: './build/release/clox',
+      lines: [
+        { in: 'var greeting = "Hello";' },
+        { in: 'print greeting + ", Lox!";' },
+        { out: 'Hello, Lox!' },
+        { in: 'fun square(x) { return x * x; }' },
+        { in: 'print square(12);' },
+        { out: '144' },
+      ],
+    },
+    compile: {
+      source: ['fun square(n) {', '  return n * n;', '}', 'print square(3) + 1;'],
+      chunks: [
+        {
+          name: '<script>',
+          code: [
+            ['0000', '3', 'OP_CLOSURE', "1 <fn square>"],
+            ['0002', '|', 'OP_DEFINE_GLOBAL', "0 'square'"],
+            ['0004', '4', 'OP_GET_GLOBAL', "0 'square'"],
+            ['0006', '|', 'OP_CONSTANT', "2 '3'"],
+            ['0008', '|', 'OP_CALL', '1'],
+            ['0010', '|', 'OP_CONSTANT', "3 '1'"],
+            ['0012', '|', 'OP_ADD', ''],
+            ['0013', '|', 'OP_PRINT', ''],
+            ['0014', '5', 'OP_NIL', ''],
+            ['0015', '|', 'OP_RETURN', ''],
+          ],
+        },
+        {
+          name: 'square',
+          code: [
+            ['0000', '2', 'OP_GET_LOCAL', '1'],
+            ['0002', '|', 'OP_GET_LOCAL', '1'],
+            ['0004', '|', 'OP_MULTIPLY', ''],
+            ['0005', '|', 'OP_RETURN', ''],
+            ['0006', '3', 'OP_NIL', ''],
+            ['0007', '|', 'OP_RETURN', ''],
+          ],
+        },
+      ],
+      note: 'n is local slot 1 (slot 0 holds the function being called), and OP_CALL 1 calls whatever sits one slot below the single argument.',
+    },
+    run: [
+      { fn: 'script', at: '0000', op: 'OP_CLOSURE 1 <fn square>', stack: ['<script>', '<fn square>'], frame: 0 },
+      { fn: 'script', at: '0002', op: "OP_DEFINE_GLOBAL 0 'square'", stack: ['<script>'], frame: 0 },
+      { fn: 'script', at: '0004', op: "OP_GET_GLOBAL 0 'square'", stack: ['<script>', '<fn square>'], frame: 0 },
+      { fn: 'script', at: '0006', op: "OP_CONSTANT 2 '3'", stack: ['<script>', '<fn square>', '3'], frame: 0 },
+      { fn: 'script', at: '0008', op: 'OP_CALL 1', stack: ['<script>', '<fn square>', '3'], frame: 1 },
+      { fn: 'square', at: '0000', op: 'OP_GET_LOCAL 1', stack: ['<script>', '<fn square>', '3', '3'], frame: 1 },
+      { fn: 'square', at: '0002', op: 'OP_GET_LOCAL 1', stack: ['<script>', '<fn square>', '3', '3', '3'], frame: 1 },
+      { fn: 'square', at: '0004', op: 'OP_MULTIPLY', stack: ['<script>', '<fn square>', '3', '9'], frame: 1 },
+      { fn: 'square', at: '0005', op: 'OP_RETURN', stack: ['<script>', '9'], frame: 0 },
+      { fn: 'script', at: '0010', op: "OP_CONSTANT 3 '1'", stack: ['<script>', '9', '1'], frame: 0 },
+      { fn: 'script', at: '0012', op: 'OP_ADD', stack: ['<script>', '10'], frame: 0 },
+      { fn: 'script', at: '0013', op: 'OP_PRINT', stack: ['<script>'], frame: 0, out: '10' },
+      { fn: 'script', at: '0014', op: 'OP_NIL', stack: ['<script>', 'nil'], frame: 0 },
+      { fn: 'script', at: '0015', op: 'OP_RETURN', stack: [], frame: 0 },
+    ],
+    objects: {
+      file: 'demo/zoo.lox',
+      source: [
+        'class Animal {',
+        '  init(name) { this.name = name; }',
+        '  speak() { return this.name + " makes a sound"; }',
+        '}',
+        'class Dog < Animal {',
+        '  speak() { return super.speak() + ": woof!"; }',
+        '}',
+        'fun counter() {',
+        '  var count = 0;',
+        '  fun next() { count = count + 1; return count; }',
+        '  return next;',
+        '}',
+        'var tick = counter();',
+        'print Dog("Rex").speak();',
+        'print tick();',
+        'print tick();',
+      ],
+      output: 'Rex makes a sound: woof!\n1\n2',
+    },
+    error: {
+      command: './build/release/clox demo/oops.lox',
+      source: [
+        'fun area(width, height) {',
+        '  return width * height;',
+        '}',
+        '',
+        'fun describe(shape) {',
+        '  return "area: " + area(shape, "tall");',
+        '}',
+        '',
+        'print describe(3);',
+      ],
+      lines: ['Operands must be numbers.', '[line 2] in area()', '[line 6] in describe()', '[line 9] in script'],
+      exitCode: 70,
+    },
+    traits: ['C, no dependencies', '246/246 official tests', 'NaN-boxed values'],
+  },
   'redis-go': {
     kind: 'server',
     intro:
