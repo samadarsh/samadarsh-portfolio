@@ -111,6 +111,22 @@ const walkthrough = (p: Project) => {
       para(`One-line summary: ${w.summary} (${w.calls} LLM calls, ${w.seconds} s, ${w.model}.)`) +
       `</section>`
     );
+  if (w.kind === 'vision') {
+    const pc = (x: number) => `${(x * 100).toFixed(1)}%`;
+    return (
+      `<section><h2>One photo, end to end</h2>` +
+      para(w.intro) +
+      para(
+        `Food-101 test photo ${w.photo.id}, classified whole: ${w.whole.label} ${pc(w.whole.p)}. Detected regions: ${w.regions.map((r) => `${r.coco} (${r.score.toFixed(2)}) classified as ${r.top[0][0]} ${pc(r.top[0][1])}${r.top[0][1] >= w.floor ? '' : ', not confident'}`).join('; ')}.`,
+      ) +
+      para(`${w.answer}. ${w.disclaimer}`) +
+      para(
+        `Errors on ${w.testImages} test images: ${w.models.map((m) => `${m.name} (${m.training}, ${m.params} parameters${m.deployed ? ', deployed' : ''}) ${m.errors}, ${pc(m.top1)} top-1`).join('; ')}. McNemar tests: ${w.tests.map((t) => `${t.pair} p = ${t.p}, ${t.verdict}`).join('; ')}. ${w.checks.join('. ')}.`,
+      ) +
+      (w.credit ? `<p>${link(w.credit.href, w.credit.text)}</p>` : '') +
+      `</section>`
+    );
+  }
   if (w.kind === 'vm')
     return (
       `<section><h2>Programs, end to end</h2>` +

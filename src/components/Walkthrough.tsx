@@ -6,6 +6,7 @@ import { RagScenes } from './walkthrough/RagScenes';
 import { RepoScenes } from './walkthrough/RepoScenes';
 import { ServerScenes } from './walkthrough/ServerScenes';
 import { SpeechScenes } from './walkthrough/SpeechScenes';
+import { VisionScenes } from './walkthrough/VisionScenes';
 import { VmScenes } from './walkthrough/VmScenes';
 import { tokenize, type Token } from './walkthrough/tokens';
 
@@ -57,6 +58,7 @@ function Scenes({ d, tokens }: { d: WalkthroughData; tokens: Token[] }) {
   if (d.kind === 'repo') return <RepoScenes d={d} tokens={tokens} />;
   if (d.kind === 'server') return <ServerScenes d={d} tokens={tokens} />;
   if (d.kind === 'vm') return <VmScenes d={d} tokens={tokens} />;
+  if (d.kind === 'vision') return <VisionScenes d={d} tokens={tokens} />;
   return <AgentScenes d={d} tokens={tokens} />;
 }
 
