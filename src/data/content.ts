@@ -430,6 +430,54 @@ export const skillGroups: SkillGroup[] = [
 
 export const projects: Project[] = [
   {
+    slug: 'food-vision',
+    title: 'Food Vision',
+    eyebrow: 'AI · Computer Vision',
+    year: '2026',
+    role: 'Solo Builder',
+    summary:
+      'Food recognition with nutrition for each dish: a fine-tuned CNN, a fine-tuned ViT and zero-shot CLIP compared on Food-101, plus multi-dish detection, served through FastAPI on ONNX Runtime with no PyTorch.',
+    highlights: [
+      'Three model families compared on identical leak-free splits, with McNemar significance tests instead of eyeballed accuracy.',
+      'Zero-shot CLIP (92.7%) is statistically tied with the fine-tuned ViT-S/16 (92.1%); the ViT is deployed, with 4× fewer parameters and lower latency.',
+      'Multi-dish photos: a YOLO11n detector finds the food regions, and the ViT names each one and adds approximate nutrition.',
+      'Every export is verified before it is served: the ONNX ViT agrees with PyTorch on all 2,000 test images.',
+      'Error analysis, Grad-CAM and a measurement of where ViT attention maps mislead, with 107 tests run in CI.',
+    ],
+    stack: ['PyTorch', 'ONNX Runtime', 'FastAPI', 'YOLO11', 'CLIP', 'Docker'],
+    links: {
+      live: 'https://huggingface.co/spaces/samadarsh/food-vision',
+      github: 'https://github.com/samadarsh/food-vision',
+      liveLabel: 'Try it live',
+      livePrimary: true,
+    },
+    cover: 'projects/food-vision.webp',
+    video: 'projects/food-vision.mp4',
+    architecture: [
+      { label: 'Food-101 subset', detail: '20 dishes, leak-free splits' },
+      { label: 'Three models', detail: 'EfficientNet-B0, ViT-S/16, zero-shot CLIP' },
+      { label: 'Evaluation', detail: 'McNemar tests, error analysis, Grad-CAM' },
+      { label: 'ONNX export', detail: 'Verified against PyTorch on 2,000 images' },
+      { label: 'FastAPI + Docker', detail: '/predict and /detect, no PyTorch' },
+    ],
+    results: {
+      setup:
+        'Three model families on the same leak-free Food-101 splits (20 dishes; 6,000 training, 1,500 validation and 2,000 test images): a fine-tuned EfficientNet-B0, a fine-tuned ViT-S/16 and zero-shot CLIP ViT-B/32. All numbers are on the held-out test split, 100 images per dish, and differences are checked with exact McNemar tests on the paired predictions.',
+      metrics: [
+        { value: '92.1%', label: 'Top-1 accuracy, fine-tuned ViT-S/16', detail: '99.25% top-5 · beats the CNN (90.45%), p = 0.019' },
+        { value: '92.7%', label: 'Zero-shot CLIP, with no training', detail: 'Tied with the ViT: McNemar p = 0.364' },
+        { value: '100%', label: 'ONNX agreement with PyTorch', detail: 'Top-1 on all 2,000 test images' },
+        { value: '24 ms', label: 'ViT inference on CPU, ONNX Runtime', detail: 'Mean of 100 runs at batch 1 · p95 24.5 ms' },
+      ],
+      note: 'The fine-tuned models overfit: training top-1 reaches about 99% while validation levels off at 86–89%. Steak against filet mignon is the main error for all three models, 42–43 errors each. Detection has no accuracy measurement, because Food-101 has no bounding boxes. Nutrition values are approximate references for a typical serving, not measurements of the pictured food.',
+      source: {
+        label: 'Full results, error analysis and how to reproduce them',
+        href: 'https://github.com/samadarsh/food-vision#results',
+      },
+    },
+    accent: 'from-zinc-700 via-zinc-800 to-zinc-900',
+  },
+  {
     slug: 'clox',
     title: 'clox',
     eyebrow: 'Systems · C',

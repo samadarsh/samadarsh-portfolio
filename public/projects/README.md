@@ -6,6 +6,7 @@ Drop `.webp` screenshots in this folder. They appear automatically inside the br
 
 | File | Project |
 |------|---------|
+| `food-vision.webp` | Food Vision (cover is the first frame of `food-vision.mp4`: the live Hugging Face Space analysing Food-101 test photo samosa/3661763, captured as stills at 960×600 with the host's floating badge hidden; it starts and ends on the result so the loop is seamless) |
 | `clox.webp` | clox (cover is the first frame of `clox.mp4`: the demo cropped to its top-left 960×600 at full size, rotated to start and end on the `zoo.lox` output so the loop is seamless, at 3×) |
 | `redis-go.webp` | redis-go (cover is the first frame of `redis-go.mp4`: the demo recording from just after `KEYS '*'`, so the still shows a complete session and the clip plays the restart, at 2×) |
 | `bite-wise.webp` | BiteWise |

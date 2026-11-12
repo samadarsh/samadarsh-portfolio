@@ -26,6 +26,11 @@
 // clox: the REPL session, zoo.lox and oops.lox are the repo's recorded demo (demo.tape), and their
 // output is clox's own, rerun on 6 Nov 2026 at commit 34a073e. The bytecode and the stack after
 // each instruction are what `make trace` prints for the README's square example, at that commit.
+//
+// Food Vision: Food-101 test photo samosa/3661763 run through the repo's own detect-and-classify
+// code with the released v0.1.0 ONNX models on 12 Nov 2026. The output image is pixel-identical to
+// the one committed in the repo, and the live Space returns the same numbers. The model comparison,
+// significance tests and ONNX check are the repo's recorded results (reports/eval, reports/deploy).
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
 export type WalkthroughStep = { label: string; title: string; body: string; facts: string[] };
@@ -192,7 +197,37 @@ export type VmWalkthrough = Base & {
   traits: string[];
 };
 
+export type VisionWalkthrough = Base & {
+  kind: 'vision';
+  /** The photo, square, under public/; `size` is its side in pixels, which the boxes are in. */
+  photo: { src: string; size: number; id: string };
+  /** What the classifier says of the whole photo. */
+  whole: { label: string; p: number };
+  /** The food regions, in the order the service returns them. */
+  regions: {
+    /** The detector's COCO label and score. */
+    coco: string;
+    score: number;
+    /** x1, y1, x2, y2 in photo pixels. */
+    box: [number, number, number, number];
+    /** The classifier's top three for the crop: [dish, probability]. */
+    top: [string, number][];
+  }[];
+  /** Results under this top-1 probability are returned with confident: false. */
+  floor: number;
+  /** The nutrition line for the dish, typed out with the scroll. */
+  answer: string;
+  disclaimer: string;
+  /** The three models, on the same test split. */
+  models: { name: string; training: string; top1: number; errors: number; params: string; deployed?: boolean }[];
+  testImages: number;
+  /** Exact McNemar tests on the paired test predictions. */
+  tests: { pair: string; p: number; verdict: string }[];
+  checks: string[];
+};
+
 export type Walkthrough =
+  | VisionWalkthrough
   | VmWalkthrough
   | RagWalkthrough
   | SpeechWalkthrough
@@ -212,9 +247,102 @@ export const typedText = (w: Walkthrough) =>
           ? w.recovered
           : w.kind === 'vm'
             ? w.objects.output
+            : w.kind === 'vision'
+              ? w.answer
             : w.summary;
 
 export const walkthroughs: Record<string, Walkthrough> = {
+  'food-vision': {
+    kind: 'vision',
+    intro:
+      'One real photo, traced through the service as you scroll, then the evidence behind the model that serves it. The boxes, scores and nutrition are the pipeline’s own output on a Food-101 test photo, the same one shown in the repo.',
+    typeStep: 3,
+    listStep: 1,
+    credit: {
+      text: 'Photo from the Food-101 test set (Bossard, Guillaumin and Van Gool, ECCV 2014)',
+      href: 'https://data.vision.ee.ethz.ch/cvl/datasets_extra/food-101/',
+    },
+    steps: [
+      {
+        label: 'Photo',
+        title: 'One photo, more than one dish.',
+        body: 'A Food-101 test photo that no model here trained on: two samosas and a small bowl of sauce. Classified whole, it gets one label. That is right, but it says nothing about how many dishes are on the plate.',
+        facts: ['512 × 512 px', 'whole photo → samosa 97%'],
+      },
+      {
+        label: 'Detect',
+        title: 'First, find every food region.',
+        body: 'YOLO11n, pretrained on COCO and exported to ONNX, proposes the regions. COCO has no samosa, so each one is proposed as a sandwich, and the sauce as a bowl. Letterboxing and NMS are re-implemented in NumPy, so serving needs no PyTorch.',
+        facts: ['3 regions', 'YOLO11n → ONNX'],
+      },
+      {
+        label: 'Classify',
+        title: 'Then name each one, and say when it is a guess.',
+        body: 'Each region is cropped with 5% of context and classified by the fine-tuned ViT-S/16 into its 20 dishes. The classifier always answers with one of them, even for a bowl of sauce, so every result carries a confident flag: true only at 50% or more.',
+        facts: ['samosa 97% and 89%', 'the bowl: 39%, not confident'],
+      },
+      {
+        label: 'Answer',
+        title: 'A dish, and what is in it.',
+        body: 'Each dish is joined with nutrition for one typical serving and returned as JSON by POST /detect. The values are approximate references, not measurements of the pictured food, and every response says so.',
+        facts: ['FastAPI · ONNX Runtime', 'no PyTorch in the image'],
+      },
+      {
+        label: 'Evidence',
+        title: 'Why the ViT is the one serving.',
+        body: 'Three model families were tested on the same 2,000 held-out images. Zero-shot CLIP and the fine-tuned ViT are statistically tied, and both beat the CNN. The ViT is deployed: it has 4× fewer parameters than CLIP and lower latency, and its ONNX export agrees with PyTorch on every test image.',
+        facts: ['ViT vs CLIP: p = 0.364', '100% ONNX agreement'],
+      },
+    ],
+    photo: { src: 'projects/food-vision-photo.webp', size: 512, id: 'samosa/3661763' },
+    whole: { label: 'samosa', p: 0.9735 },
+    regions: [
+      {
+        coco: 'sandwich',
+        score: 0.61,
+        box: [266.3, 113.8, 511.8, 395.3],
+        top: [
+          ['samosa', 0.8876],
+          ['steak', 0.0166],
+          ['omelette', 0.0119],
+        ],
+      },
+      {
+        coco: 'bowl',
+        score: 0.56,
+        box: [462.4, 1.3, 511.7, 84.8],
+        top: [
+          ['samosa', 0.3873],
+          ['frozen yogurt', 0.166],
+          ['spring rolls', 0.0705],
+        ],
+      },
+      {
+        coco: 'sandwich',
+        score: 0.56,
+        box: [0.7, 109.3, 266.6, 418.1],
+        top: [
+          ['samosa', 0.9667],
+          ['chicken curry', 0.0031],
+          ['pizza', 0.0029],
+        ],
+      },
+    ],
+    floor: 0.5,
+    answer: 'Samosa: 2 medium potato samosas (~140 g) · 460 kcal · protein 8 g · carbs 48 g · fat 26 g',
+    disclaimer: 'Approximate reference values for one typical serving, not measurements of the pictured food.',
+    models: [
+      { name: 'EfficientNet-B0', training: 'fine-tuned', top1: 0.9045, errors: 190, params: '4.0M' },
+      { name: 'ViT-S/16', training: 'fine-tuned', top1: 0.9205, errors: 159, params: '21.7M', deployed: true },
+      { name: 'CLIP ViT-B/32', training: 'zero-shot', top1: 0.927, errors: 146, params: '87.8M' },
+    ],
+    testImages: 2000,
+    tests: [
+      { pair: 'ViT vs CNN', p: 0.019, verdict: 'the ViT is better' },
+      { pair: 'ViT vs CLIP', p: 0.364, verdict: 'statistically tied' },
+    ],
+    checks: ['ONNX = PyTorch on 2,000 of 2,000', '107 tests in CI'],
+  },
   clox: {
     kind: 'vm',
     intro:
