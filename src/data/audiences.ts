@@ -18,7 +18,7 @@ export const audienceViews: Record<Audience, AudienceView> = {
     label: 'Everyone',
     note: 'Pick who you are and the page reorders for you.',
     order: ['matrix', 'about', 'works', 'agent'],
-    projects: ['redis-go', 'bite-wise', 'fin-sight', 'voicenote-ai'],
+    projects: ['food-vision', 'redis-go', 'bite-wise', 'fin-sight', 'voicenote-ai'],
     worksSubtitle:
       "A few of the systems I've shipped recently — each one built for production, not as a demo.",
   },
@@ -33,7 +33,7 @@ export const audienceViews: Record<Audience, AudienceView> = {
     label: 'Engineer',
     note: 'The agent demo and the most technical builds first.',
     order: ['agent', 'works', 'matrix', 'about'],
-    projects: ['redis-go', 'fin-sight', 'repomind'],
+    projects: ['food-vision', 'redis-go', 'fin-sight', 'repomind'],
     worksSubtitle: 'The most technical builds. Each project page shows how it is put together.',
   },
   founder: {
