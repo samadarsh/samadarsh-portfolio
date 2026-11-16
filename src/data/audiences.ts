@@ -26,8 +26,8 @@ export const audienceViews: Record<Audience, AudienceView> = {
     label: 'Recruiter',
     note: 'Quick facts first, then the short story and the work.',
     order: ['facts', 'about', 'works', 'matrix', 'agent'],
-    projects: ['bite-wise', 'fin-sight', 'voicenote-ai'],
-    worksSubtitle: 'Three projects that show the range: agents, retrieval and speech AI.',
+    projects: ['food-vision', 'bite-wise', 'fin-sight', 'voicenote-ai'],
+    worksSubtitle: 'Four projects that show the range: computer vision, agents, retrieval and speech AI.',
   },
   engineer: {
     label: 'Engineer',
@@ -40,7 +40,7 @@ export const audienceViews: Record<Audience, AudienceView> = {
     label: 'Founder',
     note: 'AI products first, then how I build them.',
     order: ['works', 'agent', 'matrix', 'about'],
-    projects: ['bite-wise', 'voicenote-ai', 'fin-sight'],
+    projects: ['food-vision', 'bite-wise', 'voicenote-ai', 'fin-sight'],
     worksSubtitle: 'AI products I built end to end, from the idea to a working build.',
   },
 };
