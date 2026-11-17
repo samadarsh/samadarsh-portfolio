@@ -1176,6 +1176,7 @@ html {
 .wt-box { --on: clamp(0, calc(var(--hits) - var(--i)), 1); position: absolute; border: 2px solid var(--c); border-radius: 3px; opacity: var(--on); transform: scale(calc(1.08 - 0.08 * var(--on))); transition: opacity 0.35s ease, transform 0.6s var(--wt-ease, ease); }
 .wt-box b { position: absolute; left: -2px; top: -2px; padding: 0.05rem 0.35rem; border-radius: 3px 0 3px 0; background: var(--c); font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 10.5px; line-height: 1.5; color: #17130f; white-space: nowrap; }
 .wt-box-narrow b { left: auto; right: -2px; top: 100%; border-radius: 0 0 3px 3px; }
+.wt-box-twin b { top: auto; bottom: -2px; border-radius: 0 3px 0 3px; }
 .wt-whole { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.1rem 0.75rem; align-items: baseline; padding: 0.55rem 0.8rem; border-radius: 0.7rem; border: 1px solid rgb(var(--ink) / 0.08); background: hsl(var(--bg)); opacity: clamp(0, calc(var(--wt-l) * 4 - 0.6), 1); transform: translateY(calc((1 - clamp(0, calc(var(--wt-l) * 4 - 0.6), 1)) * 10px)); }
 .wt-whole span { font-size: 12px; color: hsl(var(--muted)); }
 .wt-whole b { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 13px; color: hsl(var(--text)); }
