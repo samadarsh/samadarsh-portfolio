@@ -27,9 +27,10 @@
 // output is clox's own, rerun on 6 Nov 2026 at commit 34a073e. The bytecode and the stack after
 // each instruction are what `make trace` prints for the README's square example, at that commit.
 //
-// Food Vision: Food-101 test photo samosa/3661763 run through the repo's own detect-and-classify
-// code with the released v0.1.0 ONNX models on 12 Nov 2026. The output image is pixel-identical to
-// the one committed in the repo, and the live Space returns the same numbers. The model comparison,
+// Food Vision: Food-101 test photo hamburger/450282 run through the repo's own detect-and-classify
+// code with the released v0.1.0 ONNX models on 17 Nov 2026, on the author's Mac and again here with
+// the same numbers. It was picked from a scan of all 5,000 test photos of the 20 dishes for having
+// two dishes, both named correctly. The model comparison,
 // significance tests and ONNX check are the repo's recorded results (reports/eval, reports/deploy).
 
 /** Every walkthrough has five steps; the rail and the scroll engine assume it. */
@@ -215,6 +216,8 @@ export type VisionWalkthrough = Base & {
   }[];
   /** Results under this top-1 probability are returned with confident: false. */
   floor: number;
+  /** One line under each count in the response summary. */
+  notes: { entries: string; confident: string };
   /** The nutrition line for the dish, typed out with the scroll. */
   answer: string;
   disclaimer: string;
@@ -255,7 +258,7 @@ export const walkthroughs: Record<string, Walkthrough> = {
   'food-vision': {
     kind: 'vision',
     intro:
-      'One real photo, traced through the service as you scroll, then the evidence behind the model that serves it. The boxes, scores and nutrition are the pipeline’s own output on a Food-101 test photo, the same one shown in the repo.',
+      'One real photo, traced through the service as you scroll, then the evidence behind the model that serves it. The boxes, scores and nutrition are the pipeline’s own output on a held-out Food-101 test photo.',
     typeStep: 3,
     listStep: 1,
     credit: {
@@ -266,24 +269,24 @@ export const walkthroughs: Record<string, Walkthrough> = {
       {
         label: 'Photo',
         title: 'One photo, more than one dish.',
-        body: 'A Food-101 test photo that no model here trained on: two samosas and a small bowl of sauce. Classified whole, it gets one label. That is right, but it says nothing about how many dishes are on the plate.',
-        facts: ['512 × 512 px', 'whole photo → samosa 97%'],
+        body: 'A Food-101 test photo that no model here trained on: a burger with a side of fries. Classified whole, it gets one label, hamburger. That is right, but the fries are lost.',
+        facts: ['512 × 512 px', 'whole photo → hamburger 87%'],
       },
       {
         label: 'Detect',
         title: 'First, find every food region.',
-        body: 'YOLO11n, pretrained on COCO and exported to ONNX, proposes the regions. COCO has no samosa, so each one is proposed as a sandwich, and the sauce as a bowl. Letterboxing and NMS are re-implemented in NumPy, so serving needs no PyTorch.',
-        facts: ['3 regions', 'YOLO11n → ONNX'],
+        body: 'YOLO11n, pretrained on COCO and exported to ONNX, proposes the regions. COCO has no burger or fries, so the burger is proposed as a sandwich, and the fries as a sandwich and again as a hot dog. Letterboxing and NMS are re-implemented in NumPy, so serving needs no PyTorch.',
+        facts: ['3 regions, 2 dishes', 'YOLO11n → ONNX'],
       },
       {
         label: 'Classify',
-        title: 'Then name each one, and say when it is a guess.',
-        body: 'Each region is cropped with 5% of context and classified by the fine-tuned ViT-S/16 into its 20 dishes. The classifier always answers with one of them, even for a bowl of sauce, so every result carries a confident flag: true only at 50% or more.',
-        facts: ['samosa 97% and 89%', 'the bowl: 39%, not confident'],
+        title: 'Then name each one, and flag the guesses.',
+        body: 'Each region is cropped with 5% of context and classified by the fine-tuned ViT-S/16 into its 20 dishes. The classifier always answers with one of them, so every result carries a confident flag, true only at 50% or more. Both dishes here are right and clear it. The fries come back twice, because NMS only merges boxes of the same COCO class.',
+        facts: ['hamburger 91%', 'french fries 93%, found twice'],
       },
       {
         label: 'Answer',
-        title: 'A dish, and what is in it.',
+        title: 'Each dish, and what is in it.',
         body: 'Each dish is joined with nutrition for one typical serving and returned as JSON by POST /detect. The values are approximate references, not measurements of the pictured food, and every response says so.',
         facts: ['FastAPI · ONNX Runtime', 'no PyTorch in the image'],
       },
@@ -294,42 +297,44 @@ export const walkthroughs: Record<string, Walkthrough> = {
         facts: ['ViT vs CLIP: p = 0.364', '100% ONNX agreement'],
       },
     ],
-    photo: { src: 'projects/food-vision-photo.webp', size: 512, id: 'samosa/3661763' },
-    whole: { label: 'samosa', p: 0.9735 },
+    photo: { src: 'projects/food-vision-photo.webp', size: 512, id: 'hamburger/450282' },
+    whole: { label: 'hamburger', p: 0.8734 },
     regions: [
       {
         coco: 'sandwich',
-        score: 0.61,
-        box: [266.3, 113.8, 511.8, 395.3],
+        score: 0.74,
+        box: [155.8, 40.5, 511.4, 500.8],
         top: [
-          ['samosa', 0.8876],
-          ['steak', 0.0166],
-          ['omelette', 0.0119],
-        ],
-      },
-      {
-        coco: 'bowl',
-        score: 0.56,
-        box: [462.4, 1.3, 511.7, 84.8],
-        top: [
-          ['samosa', 0.3873],
-          ['frozen yogurt', 0.166],
-          ['spring rolls', 0.0705],
+          ['hamburger', 0.9096],
+          ['spring rolls', 0.0152],
+          ['steak', 0.0145],
         ],
       },
       {
         coco: 'sandwich',
-        score: 0.56,
-        box: [0.7, 109.3, 266.6, 418.1],
+        score: 0.43,
+        box: [0.7, 74.8, 235.9, 369.5],
         top: [
-          ['samosa', 0.9667],
-          ['chicken curry', 0.0031],
-          ['pizza', 0.0029],
+          ['french fries', 0.926],
+          ['spring rolls', 0.0131],
+          ['pancakes', 0.0053],
+        ],
+      },
+      {
+        coco: 'hot dog',
+        score: 0.33,
+        box: [0.3, 75.8, 236.4, 370.0],
+        top: [
+          ['french fries', 0.9274],
+          ['spring rolls', 0.0122],
+          ['filet mignon', 0.0058],
         ],
       },
     ],
     floor: 0.5,
-    answer: 'Samosa: 2 medium potato samosas (~140 g) · 460 kcal · protein 8 g · carbs 48 g · fat 26 g',
+    notes: { entries: 'one per region; the fries twice', confident: 'every result clears 50%' },
+    answer:
+      'Hamburger: 1 single-patty burger with bun (~220 g) · 500 kcal · protein 28 g. French fries: 1 medium portion (~117 g) · 365 kcal · protein 4 g',
     disclaimer: 'Approximate reference values for one typical serving, not measurements of the pictured food.',
     models: [
       { name: 'EfficientNet-B0', training: 'fine-tuned', top1: 0.9045, errors: 190, params: '4.0M' },

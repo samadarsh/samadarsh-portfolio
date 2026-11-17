@@ -22,6 +22,14 @@ const boxStyle = ([x1, y1, x2, y2]: Region['box'], size: number): CSSProperties 
   height: `${((y2 - y1) / size) * 100}%`,
 });
 
+/** How much two boxes overlap: intersection over union. */
+function iou(a: Region['box'], b: Region['box']) {
+  const w = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0]));
+  const h = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+  const area = (r: Region['box']) => (r[2] - r[0]) * (r[3] - r[1]);
+  return (w * h) / (area(a) + area(b) - w * h);
+}
+
 /** A region cut out of the photo: the photo as a background, scaled and shifted to the box. */
 function Crop({ region, d, color }: { region: Region; d: VisionWalkthrough; color: string }) {
   const [x1, y1, x2, y2] = region.box;
@@ -49,10 +57,13 @@ function Photo({ d, boxes }: { d: VisionWalkthrough; boxes?: 'coco' | 'dish' }) 
       {boxes
         ? d.regions.map((r, i) => {
             const narrow = r.box[2] - r.box[0] < d.photo.size * 0.2;
+            // A box on top of an earlier one (the same food, proposed under another COCO class)
+            // puts its label at the bottom, so the two labels don't cover each other.
+            const twin = d.regions.slice(0, i).some((o) => iou(o.box, r.box) > 0.8);
             return (
               <span
                 key={i}
-                className={narrow ? 'wt-box wt-box-narrow' : 'wt-box'}
+                className={['wt-box', narrow ? 'wt-box-narrow' : '', twin ? 'wt-box-twin' : ''].filter(Boolean).join(' ')}
                 style={{ ...boxStyle(r.box, d.photo.size), ['--i' as string]: i, ['--c' as string]: COLORS[i % COLORS.length] }}
               >
                 <b>{boxes === 'coco' ? `${r.coco} ${r.score.toFixed(2)}` : `${r.top[0][0]} ${pct(r.top[0][1])}`}</b>
@@ -85,7 +96,7 @@ export function VisionScenes({ d, tokens }: { d: VisionWalkthrough; tokens: Toke
           <b>
             {d.whole.label} {pct1(d.whole.p)}
           </b>
-          <span>one label for the whole plate</span>
+          <span>one label for the whole photo</span>
         </p>
       </div>
 
@@ -146,7 +157,7 @@ export function VisionScenes({ d, tokens }: { d: VisionWalkthrough; tokens: Toke
       <div className="wt-scene" data-scene="3">
         <div className="wt-scene-label">
           <span>POST /detect · nutrition joined</span>
-          <span className="wt-gen" data-busy="looking up" data-done={`${d.regions.length} dishes returned`} />
+          <span className="wt-gen" data-busy="looking up" data-done={`${d.regions.length} entries returned`} />
         </div>
         <div className="wt-answer-photo">
           <Photo d={d} boxes="dish" />
@@ -154,14 +165,14 @@ export function VisionScenes({ d, tokens }: { d: VisionWalkthrough; tokens: Toke
             <li>
               <code>dishes</code>
               <b>{d.regions.length}</b>
-              <span>one entry per food region</span>
+              <span>{d.notes.entries}</span>
             </li>
             <li>
               <code>confident</code>
               <b>
                 {confident} of {d.regions.length}
               </b>
-              <span>the bowl is flagged, not hidden</span>
+              <span>{d.notes.confident}</span>
             </li>
           </ul>
         </div>
