@@ -5,6 +5,29 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { allPages, fullTitle, pages, SITE_URL, type PageMeta } from './src/data/seo';
 import { llmsTxt, snapshotHtml } from './src/data/snapshot';
+import { buildKnowledge } from './src/lib/knowledge';
+
+/**
+ * Ask Ash sends the whole profile (src/lib/knowledge.ts) with every question, and Groq's free tier
+ * rejects a request over about 7,000 tokens. The profile once grew past that unnoticed and every
+ * question failed, so the build stops if it grows too large again. 27,000 characters is about
+ * 6,200 tokens with the rules in api/ask.ts.
+ */
+const MAX_KNOWLEDGE_CHARS = 27_000;
+function knowledgeBudget(): Plugin {
+  return {
+    name: 'knowledge-budget',
+    // Checked while the config loads, before any other plugin runs, so this message is the one shown.
+    config() {
+      const size = buildKnowledge().length;
+      if (size > MAX_KNOWLEDGE_CHARS)
+        throw new Error(
+          `knowledge-budget: Ask Ash's profile is ${size} characters, over ${MAX_KNOWLEDGE_CHARS}. ` +
+            `Groq's free tier would reject every question. Shorten src/lib/knowledge.ts.`,
+        );
+    },
+  };
+}
 
 const escapeAttr = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -93,6 +116,6 @@ function prerenderMeta(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), prerenderMeta()],
+  plugins: [react(), prerenderMeta(), knowledgeBudget()],
   base: '/',
 });

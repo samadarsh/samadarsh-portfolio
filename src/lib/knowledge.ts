@@ -66,13 +66,10 @@ export function buildKnowledge() {
         `## ${p.title} (${p.eyebrow}, ${p.year}), slug: ${p.slug}`,
         `Role: ${p.role}. ${p.summary}`,
         list(p.highlights),
-        p.architecture?.length
-          ? `How it works: ${p.architecture.map((s) => (s.detail ? `${s.label} (${s.detail})` : s.label)).join(' → ')}.`
-          : '',
         list(projectDetails[p.slug] ?? []),
         `Stack: ${p.stack.join(', ')}.`,
         p.results
-          ? `Measured results: ${p.results.metrics.map((r) => `${r.label}: ${r.value}${r.detail ? ` (${r.detail})` : ''}`).join('; ')}. ${p.results.setup}${p.results.note ? ` ${p.results.note}` : ''}`
+          ? `Measured results: ${p.results.metrics.map((r) => `${r.label}: ${r.value}${r.detail ? ` (${r.detail})` : ''}`).join('; ')}.`
           : '',
         p.links.live
           ? `Live: ${p.links.live}${wakeTime(p.links.live) ? ` (free hosting; the first visit can take ${wakeTime(p.links.live)!.long} to wake up)` : ''}`
@@ -109,7 +106,7 @@ export function buildKnowledge() {
             .filter((f) => f.project === p.name)
             .map(
               (f) =>
-                `${f.title} Before: ${f.before} After: ${f.after} (${f.prs
+                `${f.title} (${f.prs
                   .map((pr) => `PR #${pr.number}, ${pr.status.toLowerCase()}${pr.note ? `, ${pr.note}` : ''}: ${prUrl(p.repo, pr.number)}`)
                   .join('; ')})`,
             ),
