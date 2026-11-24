@@ -84,7 +84,7 @@ export function buildKnowledge() {
     ),
 
     `# Education`,
-    ...education.map((e) => `- ${e.degree}, ${e.school} (${e.period}). ${e.note}`),
+    ...education.map((e) => `- ${e.degree}, ${e.school}. ${e.note}`),
     `- ${finalYearProject}`,
     list(schooling),
 

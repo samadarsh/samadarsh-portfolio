@@ -51,15 +51,10 @@ export function Skills() {
           </h4>
           <ul className="mt-4 space-y-6">
             {education.map((item) => (
-              <li key={item.school + item.period}>
-                <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-                  <h5 className="font-display text-xl tracking-tight text-text-primary">
-                    {item.degree}
-                  </h5>
-                  <span className="font-mono text-xs uppercase tracking-wider text-muted">
-                    {item.period}
-                  </span>
-                </div>
+              <li key={item.school + item.degree}>
+                <h5 className="font-display text-xl tracking-tight text-text-primary">
+                  {item.degree}
+                </h5>
                 <p className="text-sm font-medium text-accent">{item.school}</p>
                 <p className="mt-2 text-sm text-muted">{item.note}</p>
               </li>
