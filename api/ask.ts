@@ -113,11 +113,13 @@ export async function POST(request: Request) {
   const ip = (request.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim();
   if (rateLimited(ip)) return json({ error: 'rate_limited' }, 429);
 
-  const messages = [
-    { role: 'system', content: SYSTEM_PROMPT },
-    ...cleanHistory(body.history),
-    { role: 'user', content: question },
-  ];
+  const system = { role: 'system', content: SYSTEM_PROMPT };
+  const ask = { role: 'user', content: question };
+  const messages = [system, ...cleanHistory(body.history), ask];
+  // Groq's free tier caps a single request's tokens (about 8,000 a minute; 7,000 for Qwen). The
+  // profile alone is about 6,400, so a long conversation can push a request over. Then the
+  // question is retried on its own, without the earlier turns.
+  const alone = [system, ask];
 
   // Try each model in turn: a rate limit or failure on one moves to the next, since every Groq
   // model has its own free quota. Only when all are rate-limited does the visitor see "busy".
@@ -127,7 +129,10 @@ export async function POST(request: Request) {
   for (const model of MODELS) {
     const remaining = deadline - Date.now();
     if (remaining < 3_000) break;
-    const upstream = await open(model, messages, Math.min(20_000, remaining));
+    let upstream = await open(model, messages, Math.min(20_000, remaining));
+    if ('status' in upstream && upstream.status === 413 && messages.length > alone.length) {
+      upstream = await open(model, alone, Math.min(20_000, deadline - Date.now()));
+    }
     if ('body' in upstream) return streamAnswer(model, upstream.body);
     if (upstream.status === 429) sawRateLimit = true;
   }
