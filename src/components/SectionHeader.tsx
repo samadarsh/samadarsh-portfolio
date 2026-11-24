@@ -6,6 +6,8 @@ type SectionHeaderProps = {
   subtitle?: string;
   align?: 'left' | 'center';
   italic?: string;
+  /** The heading level: h1 when this header titles the page, h2 for a section (the default). */
+  as?: 'h1' | 'h2';
 };
 
 export function SectionHeader({
@@ -14,6 +16,7 @@ export function SectionHeader({
   subtitle,
   align = 'left',
   italic,
+  as: Heading = 'h2',
 }: SectionHeaderProps) {
   const centered = align === 'center';
 
@@ -30,12 +33,12 @@ export function SectionHeader({
           {kicker}
         </p>
       ) : null}
-      <h2 className="font-display text-4xl leading-[1.05] tracking-tighter text-text-primary md:text-5xl lg:text-6xl">
+      <Heading className="section-title font-display text-4xl leading-[1.05] tracking-tighter text-text-primary md:text-5xl lg:text-6xl">
         {title}{' '}
         {italic ? (
           <span className="font-display italic text-text-primary/80">{italic}</span>
         ) : null}
-      </h2>
+      </Heading>
       {subtitle ? (
         <p className={`mt-5 text-base leading-relaxed text-muted md:text-lg ${centered ? 'mx-auto' : ''}`}>
           {subtitle}
