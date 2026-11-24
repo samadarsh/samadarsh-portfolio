@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { contact } from '../data/content';
 import { waitForElement } from '../lib/waitForElement';
-import { downloadResume } from '../lib/contact';
 import { useCommandPalette } from './CommandPalette';
-import { useToast } from './Toaster';
 import { useAskAdarsh } from './AskAdarsh';
 import { AssistantGlyph } from './AssistantGlyph';
 
@@ -16,7 +14,6 @@ import { AssistantGlyph } from './AssistantGlyph';
 export function MobileActionBar() {
   const { pathname } = useLocation();
   const palette = useCommandPalette();
-  const toast = useToast();
   const askAdarsh = useAskAdarsh();
   const [scrolledPast, setScrolledPast] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
@@ -55,7 +52,7 @@ export function MobileActionBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 96, opacity: 0 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-4 gap-1.5 rounded-2xl border border-white/[0.1] bg-surface/90 p-1.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] backdrop-blur-xl md:hidden"
+          className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-3 gap-1.5 rounded-2xl border border-white/[0.1] bg-surface/90 p-1.5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] backdrop-blur-xl md:hidden"
         >
           <a
             href={`mailto:${contact.email}`}
@@ -64,16 +61,6 @@ export function MobileActionBar() {
           >
             Email
           </a>
-          <button
-            type="button"
-            onClick={() => {
-              downloadResume();
-              toast({ title: 'Downloading resume', description: contact.resumeFile, icon: '📄' });
-            }}
-            className="flex h-12 items-center justify-center gap-2 rounded-xl text-sm text-text-primary active:bg-white/[0.06]"
-          >
-            Resume
-          </button>
           <button
             type="button"
             onClick={() => askAdarsh.open()}

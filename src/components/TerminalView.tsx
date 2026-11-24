@@ -11,7 +11,7 @@ import {
   socialLinks,
   type Project,
 } from '../data/content';
-import { copyText, downloadResume } from '../lib/contact';
+import { copyText } from '../lib/contact';
 import { unlock } from '../lib/achievements';
 import { getTheme, setTheme } from '../lib/theme';
 import { isArcade, toggleArcade } from '../lib/arcade';
@@ -69,7 +69,6 @@ const COMMANDS = [
   'git log',
   'ask',
   'contact',
-  'resume',
   'theme',
   'clear',
   'exit',
@@ -160,7 +159,6 @@ function run(raw: string, fx: Effects): Result {
               ['git log', 'career history'],
               ['ask <question>', 'ask Ash, the AI assistant'],
               ['contact', 'email and links'],
-              ['resume', 'download the resume'],
               ['theme', 'switch light / dark theme'],
               ['clear', 'clear the screen'],
               ['exit', fx.embedded ? 'go to the home page' : 'close the terminal'],
@@ -208,7 +206,6 @@ function run(raw: string, fx: Effects): Result {
               <Acc>papers/</Acc>
               {'   '}
               <Acc>oss/</Acc>
-              {'   '}resume.pdf
             </>
           ),
           suggest: ['ls projects', 'ls experience', 'ls oss'],
@@ -269,11 +266,6 @@ function run(raw: string, fx: Effects): Result {
     case 'less':
     case 'more': {
       if (!arg) return { out: <Muted>usage: cat &lt;project&gt; — try ls projects</Muted> };
-      if (/resume/i.test(arg))
-        return {
-          out: <Muted>cat: resume.pdf: binary file. Try `resume` to download it.</Muted>,
-          suggest: ['resume'],
-        };
       const p = findProject(arg);
       if (!p)
         return {
@@ -364,14 +356,8 @@ function run(raw: string, fx: Effects): Result {
               ))}
           </>
         ),
-        suggest: ['resume', 'ask how can I reach him?'],
+        suggest: ['ask how can I reach him?'],
       };
-
-    case 'resume':
-    case 'cv':
-      downloadResume();
-      unlock('resume');
-      return { out: <Muted>Downloading {contact.resumeFile}…</Muted> };
 
     case 'hire':
       unlock('hire');
@@ -381,7 +367,7 @@ function run(raw: string, fx: Effects): Result {
             Good taste. Write to <Acc>{contact.email}</Acc> and mention the terminal.
           </>
         ),
-        suggest: ['contact', 'resume'],
+        suggest: ['contact'],
       };
 
     case 'sudo':

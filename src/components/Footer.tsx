@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { contact, socialLinks } from '../data/content';
-import { resumeHref } from '../lib/contact';
-import { CopyEmailButton, ResumeButton } from './ContactActions';
+import { CopyEmailButton } from './ContactActions';
 
 const MARQUEE_TEXT = 'Built with intent · Engineered with discipline · Shipped to production';
 
@@ -73,7 +72,6 @@ export function Footer() {
                 <MailIcon />
                 <span>Email me</span>
               </a>
-              <ResumeButton />
             </div>
             <CopyEmailButton className="mt-3" />
           </div>
@@ -128,16 +126,6 @@ export function Footer() {
                 </NavLink>
               </li>
             ))}
-            <li>
-              <a
-                href={resumeHref}
-                download={contact.resumeFile}
-                data-achievement="resume"
-                className="inline-flex min-h-[44px] items-center rounded-full px-3 text-sm text-muted transition-colors hover:text-text-primary"
-              >
-                Résumé <span aria-hidden className="ml-1.5">↓</span>
-              </a>
-            </li>
           </ul>
         </nav>
 

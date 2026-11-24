@@ -7,7 +7,6 @@ export type AchievementId =
   | 'casestudy'
   | 'reader'
   | 'background'
-  | 'resume'
   | 'contact'
   | 'chart'
   | 'streak'
@@ -36,7 +35,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: 'Background check',
     description: 'Read through the experience',
   },
-  { id: 'resume', icon: '📄', name: 'Paper trail', description: 'Downloaded the resume' },
   { id: 'contact', icon: '✉️', name: 'Let’s talk', description: 'Copied or opened the email' },
   { id: 'chart', icon: '📈', name: 'Market watcher', description: 'Played Read the chart' },
   { id: 'streak', icon: '🔥', name: 'Hot hand', description: 'Three correct calls in a row' },
@@ -66,7 +64,12 @@ const writeSet = (key: string, set: Set<string>) => {
   }
 };
 
-let unlocked = typeof window !== 'undefined' ? readSet(STORAGE_KEY) : new Set<string>();
+// Only achievements that still exist count, so one that was removed can't push the total past 100%.
+const known = new Set<string>(ACHIEVEMENTS.map((a) => a.id));
+let unlocked =
+  typeof window !== 'undefined'
+    ? new Set([...readSet(STORAGE_KEY)].filter((id) => known.has(id)))
+    : new Set<string>();
 let snapshot: ReadonlySet<string> = new Set(unlocked);
 const changeListeners = new Set<() => void>();
 const unlockListeners = new Set<(a: Achievement) => void>();

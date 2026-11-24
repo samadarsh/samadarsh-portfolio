@@ -837,7 +837,6 @@ export const SITE_URL = 'https://samadarsh.vercel.app';
 
 export const contact = {
   email: 'samadarsh14@gmail.com',
-  resumeFile: 'Adarsh_S_Resume.pdf',
 } as const;
 
 export const socialLinks = [

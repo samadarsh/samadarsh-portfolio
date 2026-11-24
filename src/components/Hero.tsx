@@ -5,7 +5,6 @@ import { heroProofs, heroProofSentence } from '../data/heroProofs';
 import { useTheme } from '../hooks/useTheme';
 import { subscribeArcade } from '../lib/arcade';
 import { markNameShown, resetNameShown } from '../lib/heroName';
-import { ResumeButton } from './ContactActions';
 import { inkReveal } from './hero/inkReveal';
 import { pixelLens } from './hero/pixelLens';
 import { NextTokenTagline } from './NextTokenTagline';
@@ -80,7 +79,6 @@ export function Hero() {
               <span>See the work</span>
               <span className="transition-transform group-hover:translate-x-0.5">→</span>
             </Link>
-            <ResumeButton className="bg-bg/60 backdrop-blur" />
           </div>
         </div>
       </div>
