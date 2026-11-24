@@ -309,7 +309,7 @@ function run(raw: string, fx: Effects): Result {
           msg: `${x.role} @ ${x.company}`,
         })),
         ...education.map((e) => ({
-          date: e.period.split(/\s+—\s+/)[0],
+          date: '',
           msg: `${e.degree}, ${e.school}`,
         })),
       ];

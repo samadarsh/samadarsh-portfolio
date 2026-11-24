@@ -89,7 +89,7 @@ export const certifications = [
 
 export const achievements = [
   'Selected member of the Swiggy Builders Club (2026, after graduating; BiteWise is the approved project).',
-  'Event Management Head, Student Council of the Artificial Intelligence & Data Science Department, Easwari Engineering College (2023–2024, during the B.Tech).',
+  'Event Management Head, Student Council of the Artificial Intelligence & Data Science Department, Easwari Engineering College (during the B.Tech).',
 ];
 
 export const skills: Record<string, string[]> = {

@@ -205,7 +205,7 @@ const about = () =>
     )
     .join('')}</section>` +
   `<section><h2>Education</h2>${list(
-    education.map((e) => `${esc(e.degree)}, ${esc(e.school)} (${esc(e.period)}). ${esc(e.note)}`),
+    education.map((e) => `${esc(e.degree)}, ${esc(e.school)}. ${esc(e.note)}`),
   )}</section>` +
   `<section><h2>Publications</h2>${list(
     publications.map(

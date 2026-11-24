@@ -66,10 +66,10 @@ export type ExperienceItem = {
   points: string[];
 };
 
+/** No dates on purpose: the site lists the degree, not when it was taken. */
 export type EducationItem = {
   degree: string;
   school: string;
-  period: string;
   note: string;
 };
 
@@ -217,7 +217,6 @@ export const education: EducationItem[] = [
   {
     degree: 'B.Tech in Artificial Intelligence & Data Science',
     school: 'Easwari Engineering College',
-    period: '2020 — 2024',
     note: 'Graduated with CGPA 8.23. Foundation in machine learning, AI, and data-driven problem solving.',
   },
 ];

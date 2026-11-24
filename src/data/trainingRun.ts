@@ -35,14 +35,14 @@ const fromJob = (company: string, step: number): Checkpoint => {
 export const checkpoints: Checkpoint[] = [
   {
     step: 0,
-    label: `epoch 0 · ${degree.period.split(' ')[0]}`,
+    label: 'epoch 0',
     title: 'Initialised',
     body: `${degree.degree} begins at ${degree.school}.`,
   },
   fromJob('Sona Comstar', 300),
   {
     step: 420,
-    label: `checkpoint · ${degree.period.split(' ').pop()}`,
+    label: 'checkpoint · degree',
     title: 'Graduated',
     body: `${degree.note} Two research papers: food recognition with nutritional insights, and music genre classification with deep learning.`,
   },
