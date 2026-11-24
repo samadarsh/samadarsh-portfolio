@@ -10,7 +10,7 @@ export function WorkPage() {
   return (
     <>
       <div className="pt-28 md:pt-32">
-        <SelectedWorks />
+        <SelectedWorks headingLevel="h1" />
       </div>
       <PageSequence current="/work" />
       <Footer />

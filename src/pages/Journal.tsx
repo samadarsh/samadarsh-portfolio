@@ -15,6 +15,7 @@ export function JournalPage() {
       <section className="pt-32 md:pt-40">
         <div className="container mx-auto max-w-6xl px-6">
           <SectionHeader
+            as="h1"
             kicker="Writing"
             title="Thoughts from"
             italic="the markets."

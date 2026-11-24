@@ -19,6 +19,7 @@ export function AboutPage() {
       <section className="pt-32 md:pt-40">
         <div className="container mx-auto max-w-6xl px-6">
           <SectionHeader
+            as="h1"
             kicker="About"
             title="An AI engineer building"
             italic="agents, RAG and speech AI."

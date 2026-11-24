@@ -12,6 +12,8 @@ type SelectedWorksProps = {
   /** Show these projects, in this order, instead of the first few. */
   slugs?: string[];
   subtitle?: string;
+  /** h1 when the list is the page itself (the Work page); h2 inside another page (the default). */
+  headingLevel?: 'h1' | 'h2';
 };
 
 const ArrowIcon = () => (
@@ -67,7 +69,13 @@ function Highlights({ id, items }: { id: string; items: string[] }) {
   );
 }
 
-export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: SelectedWorksProps) {
+export function SelectedWorks({
+  showHeader = true,
+  limit,
+  slugs,
+  subtitle,
+  headingLevel = 'h2',
+}: SelectedWorksProps) {
   const items = slugs
     ? slugs.flatMap((slug) => projects.filter((p) => p.slug === slug))
     : limit
@@ -79,6 +87,7 @@ export function SelectedWorks({ showHeader = true, limit, slugs, subtitle }: Sel
       <div className="container mx-auto max-w-6xl px-6">
         {showHeader ? (
           <SectionHeader
+            as={headingLevel}
             kicker="Selected Works"
             title="Projects across AI,"
             italic="product, and markets."
