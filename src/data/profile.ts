@@ -75,7 +75,7 @@ export const haugtunAbout =
   'Haugtun is his market and trading initiative, aimed at people interested in financial markets, trading, market analysis, trading technology and automated trading. He uses it to share market and trading content.';
 
 export const schooling = [
-  'HSC (2019–2020) and SSLC (2017–2018), Don Bosco Matriculation Higher Secondary School, Peravallur, Chennai.',
+  'HSC and SSLC at Don Bosco Matriculation Higher Secondary School, Peravallur, Chennai.',
 ];
 
 export const certifications = [
