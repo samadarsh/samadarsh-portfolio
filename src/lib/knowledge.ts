@@ -46,7 +46,7 @@ export function buildKnowledge() {
     `Contact: ${contact.email}. ${socialLinks
       .filter((l) => l.label !== 'Email')
       .map((l) => `${l.label}: ${l.href}`)
-      .join('. ')}. Resume: ${SITE}/${contact.resumeFile}`,
+      .join('. ')}.`,
 
     `# Experience (most recent first)`,
     ...experience.map((x) =>

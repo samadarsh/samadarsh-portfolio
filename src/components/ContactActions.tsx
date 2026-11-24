@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { contact } from '../data/content';
-import { copyText, resumeHref } from '../lib/contact';
+import { copyText } from '../lib/contact';
 import { unlock } from '../lib/achievements';
 
 const CopyIcon = () => (
@@ -33,24 +33,6 @@ const CheckIcon = () => (
     aria-hidden
   >
     <polyline points="5 12 10 17 19 7" />
-  </svg>
-);
-
-const DownloadIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-  >
-    <path d="M12 4v11" />
-    <polyline points="7 10 12 15 17 10" />
-    <path d="M5 20h14" />
   </svg>
 );
 
@@ -98,24 +80,5 @@ export function CopyEmailButton({ className = '' }: { className?: string }) {
         {state === 'copied' ? 'Copied' : state === 'selected' ? 'Selected' : 'Copy'}
       </span>
     </button>
-  );
-}
-
-/** Downloads the resume PDF. */
-export function ResumeButton({ className = '' }: { className?: string }) {
-  return (
-    <a
-      href={resumeHref}
-      download={contact.resumeFile}
-      data-achievement="resume"
-      data-magnetic
-      data-cursor="PDF"
-      className={`group inline-flex items-center gap-2 rounded-full border border-dashed border-white/[0.16] px-5 py-3 text-sm sm:py-2.5 font-medium text-text-primary transition hover:border-accent/60 hover:bg-white/[0.03] ${className}`}
-    >
-      <span>Resume</span>
-      <span className="transition-transform group-hover:translate-y-0.5">
-        <DownloadIcon />
-      </span>
-    </a>
   );
 }

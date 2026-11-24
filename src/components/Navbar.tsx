@@ -6,7 +6,6 @@ import { useTerminal } from './Terminal';
 import { isMac } from '../lib/contact';
 import { playSound, setSoundOn } from '../lib/sound';
 import { useSoundOn } from '../hooks/useSound';
-import { ResumeButton } from './ContactActions';
 import { AchievementsButton } from './Achievements';
 import { socialLinks } from '../data/content';
 import { useGoTo } from '../hooks/useGoTo';
@@ -216,7 +215,6 @@ export function Navbar() {
           </ul>
 
           <div className="mt-2 flex flex-wrap gap-2 border-t border-white/[0.06] px-1 pt-4">
-            <ResumeButton />
             <button
               type="button"
               onClick={() => {

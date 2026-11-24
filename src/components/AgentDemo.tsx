@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { downloadResume } from '../lib/contact';
 import { contact } from '../data/content';
 import { SectionHeader } from './SectionHeader';
 
@@ -161,13 +160,6 @@ export function AgentDemo() {
               ))}
             </div>
             <div className="mt-3.5 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={downloadResume}
-                className="min-h-[40px] rounded-full border border-white/[0.1] px-4 text-sm text-text-primary"
-              >
-                Resume ↓
-              </button>
               <a
                 href="#contact"
                 data-agent="contact"

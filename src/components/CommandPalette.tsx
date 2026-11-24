@@ -22,7 +22,7 @@ import {
   writingMeta,
 } from '../data/content';
 import { useGoTo } from '../hooks/useGoTo';
-import { copyText, downloadResume, isMac } from '../lib/contact';
+import { copyText, isMac } from '../lib/contact';
 import { useToast } from './Toaster';
 import { lockScroll } from '../lib/smoothScroll';
 import { unlock } from '../lib/achievements';
@@ -39,7 +39,7 @@ type Command = {
   group: string;
   icon: ReactNode;
   label: string;
-  /** Short command-style alias shown on the right, e.g. `resume`. */
+  /** Short command-style alias shown on the right, e.g. `contact`. */
   hint: string;
   keywords?: string;
   run: () => void;
@@ -185,18 +185,6 @@ function useCommands(): Command[] {
               ? { title: 'Email copied', description: contact.email, icon: '✓' }
               : { title: 'Email', description: contact.email },
           );
-        },
-      },
-      {
-        id: 'resume',
-        group: 'Actions',
-        icon: '↓',
-        label: 'Download resume',
-        hint: 'resume',
-        keywords: 'cv pdf',
-        run: () => {
-          downloadResume();
-          toast({ title: 'Downloading resume', description: contact.resumeFile, icon: '📄' });
         },
       },
       {
@@ -494,7 +482,7 @@ function Palette({ onClose }: { onClose: () => void }) {
           {results.length === 0 ? (
             <li className="px-3 py-8 text-center text-sm text-muted">
               No matches. Try <span className="font-mono text-text-primary">projects</span>,{' '}
-              <span className="font-mono text-text-primary">resume</span> or{' '}
+              <span className="font-mono text-text-primary">contact</span> or{' '}
               <span className="font-mono text-text-primary">hire</span>.
             </li>
           ) : (

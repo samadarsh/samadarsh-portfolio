@@ -31,7 +31,6 @@ const list = (items: string[]) => `<ul>${items.map((item) => `<li>${item}</li>`)
 const para = (text: string) => `<p>${esc(text)}</p>`;
 
 const ROLE = `${experience[0].role} at ${experience[0].company}`;
-const resumeUrl = `/${contact.resumeFile}`;
 
 const header = () =>
   `<header><p>${link('/', 'Adarsh S')} · ${esc(ROLE)} · ${esc(heroContent.location)}</p>` +
@@ -39,7 +38,6 @@ const header = () =>
     link('/work', 'Work'),
     link('/about', 'About'),
     link('/journal', 'Haugtun Research'),
-    link(resumeUrl, 'Resume (PDF)'),
   ])}</nav></header>`;
 
 const footer = () =>
@@ -276,7 +274,6 @@ export function llmsTxt() {
     '',
     `- [About](${SITE_URL}/about): experience, education, publications, open-source work and skills.`,
     `- [${pages.journal.title}](${SITE_URL}/journal): ${writingMeta.description}`,
-    `- [Resume (PDF)](${SITE_URL}${resumeUrl})`,
     '',
     '## Experience',
     '',
